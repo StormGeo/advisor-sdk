@@ -58,7 +58,7 @@ func (a *queryParamsBuilder) addVariables(variables []string) *queryParamsBuilde
 
 func (a *queryParamsBuilder) addStartDate(startDate string) *queryParamsBuilder {
 	if startDate != "" {
-		a.params = append(a.params, "startDate="+startDate)
+		a.params = append(a.params, "startDate="+url.QueryEscape(startDate))
 	}
 
 	return a
@@ -66,7 +66,7 @@ func (a *queryParamsBuilder) addStartDate(startDate string) *queryParamsBuilder 
 
 func (a *queryParamsBuilder) addEndDate(endDate string) *queryParamsBuilder {
 	if endDate != "" {
-		a.params = append(a.params, "endDate="+endDate)
+		a.params = append(a.params, "endDate="+url.QueryEscape(endDate))
 	}
 
 	return a
@@ -89,5 +89,5 @@ func (a *queryParamsBuilder) addTimezone(timezone int8) *queryParamsBuilder {
 }
 
 func (a queryParamsBuilder) build() string {
-	return url.QueryEscape(strings.Join(a.params, "&"))
+	return strings.Join(a.params, "&")
 }
