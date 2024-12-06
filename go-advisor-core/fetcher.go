@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
-func Get(url string) (res AdvisorResponse, err error) {
+func get(url string) (res AdvisorResponse, err error) {
 	getResp, getErr := http.Get(url)
 	if getErr != nil {
 		return nil, getErr
@@ -34,7 +35,7 @@ func Get(url string) (res AdvisorResponse, err error) {
 	return bodyToJson, nil
 }
 
-func GetImage(url string) (imageBody io.ReadCloser, err error) {
+func getImage(url string) (imageBody io.ReadCloser, err error) {
 	getResp, getErr := http.Get(url)
 	if getErr != nil {
 		return nil, getErr
@@ -43,7 +44,7 @@ func GetImage(url string) (imageBody io.ReadCloser, err error) {
 	return getResp.Body, nil
 }
 
-func Post(url string, body []byte) (res AdvisorResponse, err error) {
+func post(url string, body []byte) (res AdvisorResponse, err error) {
 	postResp, postErr := http.Post(url, "application/json", bytes.NewBuffer(body))
 	if postErr != nil {
 		return nil, postErr
@@ -64,7 +65,7 @@ func Post(url string, body []byte) (res AdvisorResponse, err error) {
 	return bodyToJson, nil
 }
 
-func PostGeometry(url string, body []byte) (res AdvisorResponse, err error) {
+func postGeometry(url string, body []byte) (res AdvisorResponse, err error) {
 	postResp, postErr := http.Post(url, "application/json", bytes.NewBuffer(body))
 	if postErr != nil {
 		return nil, postErr
@@ -94,4 +95,49 @@ func PostGeometry(url string, body []byte) (res AdvisorResponse, err error) {
 	}
 
 	return nil, fmt.Errorf("%v", errorToJson)
+}
+
+func retryRequest(
+	funcName string,
+	retries uint8,
+	delay time.Duration,
+	url string,
+	body []byte,
+) (res interface{}, err error) {
+	for attempts := retries + 1; attempts > 0; attempts-- {
+		switch funcName {
+		case "get":
+			res, err = get(url)
+		case "post":
+			res, err = post(url, body)
+		case "postGeometry":
+			res, err = postGeometry(url, body)
+		}
+
+		if err == nil {
+			break
+		}
+
+		if attempts > 1 {
+			time.Sleep(delay)
+		}
+	}
+
+	return res, err
+}
+
+func retryGetImage(retries uint8, delay time.Duration, url string) (res io.ReadCloser, err error) {
+	for attempts := retries + 1; attempts > 0; attempts-- {
+		res, err = getImage(url)
+
+		if err == nil {
+			break
+		}
+
+		if attempts > 1 {
+			time.Sleep(delay)
+		}
+	}
+
+	return res, err
 }

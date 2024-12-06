@@ -58,7 +58,7 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 		},
 		Monitoring: monitoring{
 			GetAlerts: func() (response AdvisorResponse, err error) {
-				return Get(BASE_URL + "/v1/monitoring/alerts?token=" + config.Token)
+				return get(BASE_URL + "/v1/monitoring/alerts?token=" + config.Token)
 			},
 		},
 		Observed: observed{
@@ -73,12 +73,12 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 		},
 		Plan: plan{
 			GetInfo: func() (response AdvisorResponse, err error) {
-				return Get(BASE_URL + "/v1/plan/" + config.Token)
+				return get(BASE_URL + "/v1/plan/" + config.Token)
 			},
 		},
 		Schema: schema{
 			GetDefinition: func() (response AdvisorResponse, err error) {
-				return Get(BASE_URL + "/v1/schema/definition?token=" + config.Token)
+				return get(BASE_URL + "/v1/schema/definition?token=" + config.Token)
 			},
 			PostDefinition: makePostWithSchemaPayload("/v1/schema/definition", config),
 			PostParameters: makePostWithSchemaPayload("/v1/schema/parameters", config),
@@ -89,121 +89,87 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 	}
 }
 
-func makeGetWithBasePayload(route string, advisorCoreConfig AdvisorCoreConfig) RequestWithBasePayload {
-	url := BASE_URL + route + "?token=" + advisorCoreConfig.Token + "&"
+func formatUrl(route string, token string, params string) string {
+	url := BASE_URL + route + "?token=" + token
 
+	if params != "" {
+		url += "&" + params
+	}
+
+	return url
+}
+
+func makeGetWithBasePayload(route string, config AdvisorCoreConfig) RequestWithBasePayload {
 	return func(payload BasePayload) (response AdvisorResponse, err error) {
-		for attempts := advisorCoreConfig.Retries + 1; attempts > 0; attempts-- {
-			response, err = Get(url + payload.toQueryParams())
-			if err != nil {
-				time.Sleep(advisorCoreConfig.Delay)
-				fmt.Println("Waiting, attempts: ", attempts)
-				continue
-			}
-
-			break
-		}
-
-		return response, err
+		return retryRequest(
+			"get",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+		)
 	}
 }
 
-func makeGetWithClimatologyPayload(route string, advisorCoreConfig AdvisorCoreConfig) RequestWithClimatologyPayload {
-	url := BASE_URL + route + "?token=" + advisorCoreConfig.Token + "&"
-
+func makeGetWithClimatologyPayload(route string, config AdvisorCoreConfig) RequestWithClimatologyPayload {
 	return func(payload ClimatologyPayload) (response AdvisorResponse, err error) {
-		for attempts := advisorCoreConfig.Retries + 1; attempts > 0; attempts-- {
-			response, err = Get(url + payload.toQueryParams())
-			if err != nil {
-				time.Sleep(advisorCoreConfig.Delay)
-				fmt.Println("Waiting, attempts: ", attempts)
-				continue
-			}
-
-			break
-		}
-
-		return response, err
+		return retryRequest(
+			"get",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+		)
 	}
 }
 
-func makeGetWithCurrentWeatherPayload(route string, advisorCoreConfig AdvisorCoreConfig) RequestWithCurrentWeatherPayload {
-	url := BASE_URL + route + "?token=" + advisorCoreConfig.Token + "&"
-
+func makeGetWithCurrentWeatherPayload(route string, config AdvisorCoreConfig) RequestWithCurrentWeatherPayload {
 	return func(payload CurrentWeatherPayload) (response AdvisorResponse, err error) {
-		for attempts := advisorCoreConfig.Retries + 1; attempts > 0; attempts-- {
-			response, err = Get(url + payload.toQueryParams())
-			if err != nil {
-				time.Sleep(advisorCoreConfig.Delay)
-				fmt.Println("Waiting, attempts: ", attempts)
-				continue
-			}
-
-			break
-		}
-
-		return response, err
+		return retryRequest(
+			"get",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+		)
 	}
 }
 
-func makeGetWithRadiusPayload(route string, advisorCoreConfig AdvisorCoreConfig) RequestWithRadiusPayload {
-	url := BASE_URL + route + "?token=" + advisorCoreConfig.Token + "&"
-
+func makeGetWithRadiusPayload(route string, config AdvisorCoreConfig) RequestWithRadiusPayload {
 	return func(payload RadiusPayload) (response AdvisorResponse, err error) {
-		for attempts := advisorCoreConfig.Retries + 1; attempts > 0; attempts-- {
-			response, err = Get(url + payload.toQueryParams())
-			if err != nil {
-				time.Sleep(advisorCoreConfig.Delay)
-				fmt.Println("Waiting, attempts: ", attempts)
-				continue
-			}
-
-			break
-		}
-
-		return response, err
+		return retryRequest(
+			"get",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+		)
 	}
 }
 
-func makeGetWithStationPayload(route string, advisorCoreConfig AdvisorCoreConfig) RequestWithStationPayload {
-	url := BASE_URL + route + "?token=" + advisorCoreConfig.Token + "&"
-
+func makeGetWithStationPayload(route string, config AdvisorCoreConfig) RequestWithStationPayload {
 	return func(payload StationPayload) (response AdvisorResponse, err error) {
-		for attempts := advisorCoreConfig.Retries + 1; attempts > 0; attempts-- {
-			response, err = Get(url + payload.toQueryParams())
-			if err != nil {
-				time.Sleep(advisorCoreConfig.Delay)
-				fmt.Println("Waiting, attempts: ", attempts)
-				continue
-			}
-
-			break
-		}
-
-		return response, err
+		return retryRequest(
+			"get",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+		)
 	}
 }
 
-func makeGetImage(route string, advisorCoreConfig AdvisorCoreConfig) ImageRequestWithBasePayload {
-	url := BASE_URL + route + "?token=" + advisorCoreConfig.Token + "&"
-
+func makeGetImage(route string, config AdvisorCoreConfig) ImageRequestWithBasePayload {
 	return func(payload BasePayload) (imageBody io.ReadCloser, err error) {
-		for attempts := advisorCoreConfig.Retries + 1; attempts > 0; attempts-- {
-			imageBody, err = GetImage(url + payload.toQueryParams())
-			if err != nil {
-				time.Sleep(advisorCoreConfig.Delay)
-				fmt.Println("Waiting, attempts: ", attempts)
-				continue
-			}
-
-			break
-		}
-
-		return imageBody, err
+		return retryGetImage(
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+		)
 	}
 }
 
-func makeGetTmsImageV1(advisorCoreConfig AdvisorCoreConfig) TmsRequest {
+func makeGetTmsImageV1(config AdvisorCoreConfig) TmsRequest {
 	return func(payload TmsPayload) (imageBody io.ReadCloser, err error) {
 		url := fmt.Sprintf(
 			"%s/v1/tms/%s/%s/%s/%s/%d/%d/%d.png?token=%s&istep=%s&fstep=%s",
@@ -215,66 +181,35 @@ func makeGetTmsImageV1(advisorCoreConfig AdvisorCoreConfig) TmsRequest {
 			payload.X,
 			payload.Y,
 			payload.Z,
-			advisorCoreConfig.Token,
+			config.Token,
 			payload.Istep,
 			payload.Fstep,
 		)
 
-		for attempts := advisorCoreConfig.Retries + 1; attempts > 0; attempts-- {
-			imageBody, err = GetImage(url)
-			if err != nil {
-				time.Sleep(advisorCoreConfig.Delay)
-				fmt.Println("Waiting, attempts: ", attempts)
-				continue
-			}
-
-			break
-		}
-
-		return imageBody, err
+		return retryGetImage(config.Retries, config.Delay, url)
 	}
 }
 
-func makePostWithGeometryPayload(route string, advisorCoreConfig AdvisorCoreConfig) RequestWithGeometryPayload {
+func makePostWithGeometryPayload(route string, config AdvisorCoreConfig) RequestWithGeometryPayload {
 	return func(payload GeometryPayload) (response AdvisorResponse, err error) {
-		url := BASE_URL + route + "?token=" + advisorCoreConfig.Token
-		body := payload.toBodyBytes()
-		params := payload.toQueryParams()
-		if params != "" {
-			url += "&" + params
-		}
-
-		for attempts := advisorCoreConfig.Retries + 1; attempts > 0; attempts-- {
-			response, err = PostGeometry(url, body)
-			if err != nil && attempts > 1 {
-				time.Sleep(advisorCoreConfig.Delay)
-				fmt.Println("Waiting, attempts: ", attempts)
-				continue
-			}
-
-			break
-		}
-
-		return response, err
+		return retryRequest(
+			"postGeometry",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			payload.toBodyBytes(),
+		)
 	}
 }
 
-func makePostWithSchemaPayload(route string, advisorCoreConfig AdvisorCoreConfig) RequestWithSchemaPayload {
+func makePostWithSchemaPayload(route string, config AdvisorCoreConfig) RequestWithSchemaPayload {
 	return func(payload SchemaPayload) (response AdvisorResponse, err error) {
-		url := BASE_URL + route + "?token=" + advisorCoreConfig.Token
-		body := payload.toBodyBytes()
-
-		for attempts := advisorCoreConfig.Retries + 1; attempts > 0; attempts-- {
-			response, err = Post(url, body)
-			if err != nil && attempts > 1 {
-				time.Sleep(advisorCoreConfig.Delay)
-				fmt.Println("Waiting, attempts: ", attempts)
-				continue
-			}
-
-			break
-		}
-
-		return response, err
+		return retryRequest(
+			"post",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, ""),
+			payload.toBodyBytes(),
+		)
 	}
 }
