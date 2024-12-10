@@ -6,7 +6,7 @@ import {
   SpecificObservedPayload,
   TMSPayload,
   WeatherPayload
-} from "./payloads.js"
+} from "./payloads"
 
 export interface ChartRoutes {
   getForecastDaily: (payload: WeatherPayload) => Promise<ApiResponse>

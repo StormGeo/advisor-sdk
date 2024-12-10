@@ -4,7 +4,15 @@ import axios, {
 } from "axios"
 import {
   ChartRoutes,
-} from "./interfaces.js"
+  ClimatologyRoutes,
+  CurrentWeatherRoutes,
+  ForecastRoutes,
+  MonitoringRoutes,
+  ObservedRoutes,
+  PlanRoutes,
+  SchemaRoutes,
+  TmsRoutes,
+} from "./interfaces"
 import {
   AdvisorCoreConfig,
   ApiImgResponse,
@@ -15,7 +23,7 @@ import {
   SpecificObservedPayload,
   TMSPayload,
   WeatherPayload,
-} from "./payloads.js"
+} from "./payloads"
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -118,7 +126,7 @@ export class AdvisorCore {
     },
   }
 
-  forecast = {
+  forecast: ForecastRoutes = {
     getDaily: async (payload: WeatherPayload): Promise<ApiResponse> => {
       return this.makeRequest("GET", "forecast/daily", { ...payload, token: this.token })
     },
@@ -130,7 +138,7 @@ export class AdvisorCore {
     },
   }
 
-  observed = {
+  observed: ObservedRoutes = {
     getDaily: async (payload: WeatherPayload): Promise<ApiResponse> => {
       return this.makeRequest("GET", "forecast/daily", { ...payload, token: this.token })
     },
@@ -159,7 +167,7 @@ export class AdvisorCore {
     },
   }
 
-  climatology = {
+  climatology: ClimatologyRoutes = {
     getDaily: async (payload: ClimatologyPayload): Promise<ApiResponse> => {
       return this.makeRequest("GET", "climatology/daily", { ...payload, token: this.token })
     },
@@ -168,25 +176,25 @@ export class AdvisorCore {
     },
   }
 
-  currentWeather = {
+  currentWeather: CurrentWeatherRoutes = {
     get: async (payload: CurrentWeatherPayload): Promise<ApiResponse> => {
       return this.makeRequest("GET", "current-weather", { ...payload, token: this.token })
     },
   }
 
-  monitoring = {
+  monitoring: MonitoringRoutes = {
     getAlerts: async (): Promise<ApiResponse> => {
       return this.makeRequest("GET", "monitoring/alerts", { token: this.token })
     },
   }
 
-  plan = {
+  plan: PlanRoutes = {
     getInfo: async (): Promise<ApiResponse> => {
       return this.makeRequest("GET", `plan/${this.token}`)
     },
   }
 
-  schema = {
+  schema: SchemaRoutes = {
     getDefinition: async (): Promise<ApiResponse> => {
       return this.makeRequest("GET", "schema/definition", { token: this.token })
     },
@@ -198,7 +206,7 @@ export class AdvisorCore {
     },
   }
 
-  tms = {
+  tms: TmsRoutes = {
     get: async (payload: TMSPayload): Promise<ApiImgResponse> => {
       const path = `/tms/${payload.server}/${payload.mode}/${payload.variable}/${payload.aggregation}/${payload.x}/${payload.y}/${payload.z}.png`
       return this.makeRequestImage("GET", path, { istep: payload.istep, fstep: payload.fstep, token: this.token })
