@@ -40,6 +40,6 @@ abstract class BaseRouter
    * @param   array   $payload
    * @return  array
    */
-  protected function makeRequest($method, $route, $payload)
+  protected function makeRequest($method, $route, $payload = [])
   {}
 }
