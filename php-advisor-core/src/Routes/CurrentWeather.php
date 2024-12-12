@@ -2,17 +2,22 @@
 
 namespace StormGeo\AdvisorCore\Routes;
 
+use StormGeo\AdvisorCore\Payloads\CurrentWeatherPayload;
+
 /**
  * @package StormGeo\AdvisorCore
  */
 class CurrentWeather extends BaseRouter
 {
   /**
-   * @param   array $payload
+   * @param   CurrentWeatherPayload $payload
    * @return  array
    */
   public function get($payload)
   {
-    return parent::makeRequest('GET', '/v1/current-weather', $payload);
+    return parent::makeRequest(
+      'GET',
+      '/v1/current-weather' . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 }

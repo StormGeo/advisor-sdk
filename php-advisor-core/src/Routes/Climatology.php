@@ -2,26 +2,34 @@
 
 namespace StormGeo\AdvisorCore\Routes;
 
+use StormGeo\AdvisorCore\Payloads\ClimatologyPayload;
+
 /**
  * @package StormGeo\AdvisorCore
  */
 class Climatology extends BaseRouter
 {
   /**
-   * @param   array $payload
+   * @param   ClimatologyPayload $payload
    * @return  array
    */
   public function getDaily($payload)
   {
-    return parent::makeRequest('GET', '/v1/climatology/daily', $payload);
+    return parent::makeRequest(
+      'GET',
+      '/v1/climatology/daily' . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 
   /**
-   * @param   array $payload
+   * @param   ClimatologyPayload $payload
    * @return  array
    */
   public function getMonthly($payload)
   {
-    return parent::makeRequest('GET', '/v1/climatology/monthly', $payload);
+    return parent::makeRequest(
+      'GET',
+      '/v1/climatology/monthly' . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 }

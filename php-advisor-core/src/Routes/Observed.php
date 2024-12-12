@@ -3,6 +3,8 @@
 namespace StormGeo\AdvisorCore\Routes;
 
 use StormGeo\AdvisorCore\Payloads\BasePayload;
+use StormGeo\AdvisorCore\Payloads\StationPayload;
+use StormGeo\AdvisorCore\Payloads\RadiusPayload;
 
 /**
  * @package StormGeo\AdvisorCore
@@ -46,12 +48,15 @@ class Observed extends BaseRouter
   }
 
   /**
-   * @param   array $payload
+   * @param   RadiusPayload $payload
    * @return  array
    */
   public function getLightning($payload)
   {
-    return parent::makeRequest('GET', '/v1/observed/lightning', $payload);
+    return parent::makeRequest(
+      'GET',
+      '/v1/observed/lightning' . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 
   /**
@@ -64,12 +69,15 @@ class Observed extends BaseRouter
   }
 
   /**
-   * @param   array $payload
+   * @param   RadiusPayload $payload
    * @return  array
    */
   public function getFireFocus($payload)
   {
-    return parent::makeRequest('GET', '/v1/observed/fire-focus', $payload);
+    return parent::makeRequest(
+      'GET',
+      '/v1/observed/fire-focus' . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 
   /**
@@ -82,11 +90,14 @@ class Observed extends BaseRouter
   }
 
   /**
-   * @param   array $payload
+   * @param   StationPayload $payload
    * @return  array
    */
   public function getStationData($payload)
   {
-    return parent::makeRequest('GET', '/v1/station', $payload);
+    return parent::makeRequest(
+      'GET',
+      '/v1/station' . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 }
