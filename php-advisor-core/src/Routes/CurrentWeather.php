@@ -1,11 +1,11 @@
 <?php
 
-namespace StormGeo\AdvisorCore;
+namespace StormGeo\AdvisorCore\Routes;
 
 /**
  * @package StormGeo\AdvisorCore
  */
-class Tms extends BaseRouter
+class CurrentWeather extends BaseRouter
 {
   /**
    * @param   array $payload
@@ -13,6 +13,6 @@ class Tms extends BaseRouter
    */
   public function get($payload)
   {
-    return parent::makeRequest('GET', '/v1/tms');
+    return parent::makeRequest('GET', '/v1/current-weather', $payload);
   }
 }

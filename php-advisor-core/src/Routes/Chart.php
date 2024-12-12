@@ -1,6 +1,6 @@
 <?php
 
-namespace StormGeo\AdvisorCore;
+namespace StormGeo\AdvisorCore\Routes;
 
 /**
  * @package StormGeo\AdvisorCore

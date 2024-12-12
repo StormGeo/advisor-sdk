@@ -2,6 +2,16 @@
 
 namespace StormGeo\AdvisorCore;
 
+use StormGeo\AdvisorCore\Routes\Chart;
+use StormGeo\AdvisorCore\Routes\Climatology;
+use StormGeo\AdvisorCore\Routes\CurrentWeather;
+use StormGeo\AdvisorCore\Routes\Forecast;
+use StormGeo\AdvisorCore\Routes\Monitoring;
+use StormGeo\AdvisorCore\Routes\Observed;
+use StormGeo\AdvisorCore\Routes\Plan;
+use StormGeo\AdvisorCore\Routes\Schema;
+use StormGeo\AdvisorCore\Routes\Tms;
+
 /**
  * @package StormGeo\AdvisorCore
  */

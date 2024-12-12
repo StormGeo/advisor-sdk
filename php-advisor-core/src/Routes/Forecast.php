@@ -1,6 +1,8 @@
 <?php
 
-namespace StormGeo\AdvisorCore;
+namespace StormGeo\AdvisorCore\Routes;
+
+use StormGeo\AdvisorCore\Payloads\BasePayload;
 
 /**
  * @package StormGeo\AdvisorCore
@@ -8,12 +10,12 @@ namespace StormGeo\AdvisorCore;
 class Forecast extends BaseRouter
 {
   /**
-   * @param   array $payload
+   * @param   BasePayload $payload
    * @return  array
    */
   public function getDaily($payload)
   {
-    return parent::makeRequest('GET', '/v1/forecast/daily', $payload);
+    return parent::makeRequest('GET', '/v1/forecast/daily' . $this->formatQueryParams($payload));
   }
 
   /**
