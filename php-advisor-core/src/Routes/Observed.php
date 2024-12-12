@@ -2,36 +2,47 @@
 
 namespace StormGeo\AdvisorCore\Routes;
 
+use StormGeo\AdvisorCore\Payloads\BasePayload;
+
 /**
  * @package StormGeo\AdvisorCore
  */
 class Observed extends BaseRouter
 {
   /**
-   * @param   array $payload
+   * @param   BasePayload $payload
    * @return  array
    */
   public function getDaily($payload)
   {
-    return parent::makeRequest('GET', '/v1/observed/daily', $payload);
+    return parent::makeRequest(
+      'GET',
+      '/v1/observed/daily' . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 
   /**
-   * @param   array $payload
+   * @param   BasePayload $payload
    * @return  array
    */
   public function getHourly($payload)
   {
-    return parent::makeRequest('GET', '/v1/observed/hourly', $payload);
+    return parent::makeRequest(
+      'GET',
+      '/v1/observed/hourly' . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 
   /**
-   * @param   array $payload
+   * @param   BasePayload $payload
    * @return  array
    */
   public function getPeriod($payload)
   {
-    return parent::makeRequest('GET', '/v1/observed/period', $payload);
+    return parent::makeRequest(
+      'GET',
+      '/v1/observed/period' . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 
   /**

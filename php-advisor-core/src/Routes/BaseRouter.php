@@ -37,17 +37,17 @@ abstract class BaseRouter
   }
 
   /**
-   * @param   string      $method
-   * @param   string      $route
-   * @param   array       $body
-   * @return  array|null
+   * @param   string            $method
+   * @param   string            $route
+   * @param   array             $body
+   * @return  array|string|null
    */
   protected function makeRequest($method, $route, $body = [])
   {
-    if ($method === 'GET') {
+    if ($method === 'GET' || $method === 'GET_IMAGE') {
       return $this->retryRequest(
-        function() use ($route) {
-          return $this->makeGetRequest($this::BASE_URL . $route);
+        function() use ($method, $route) {
+          return $this->makeGetRequest($this::BASE_URL . $route, $method === 'GET_IMAGE');
         },
         $this->retries,
         $this->delay
@@ -57,9 +57,10 @@ abstract class BaseRouter
 
   /**
    * @param   string      $url
+   * @param   bool        $binaryReturn
    * @return  array
    */
-  protected function makeGetRequest($url)
+  protected function makeGetRequest($url, $binaryReturn = false)
   {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -71,7 +72,7 @@ abstract class BaseRouter
     if ($response != false) {
       return [
         'statusCode' => $responseInfo,
-        'data' => json_decode($response, true)
+        'data' => ($binaryReturn) ? $response : json_decode($response, true)
       ];
     }
 

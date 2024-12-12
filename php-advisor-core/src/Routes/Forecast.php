@@ -15,24 +15,33 @@ class Forecast extends BaseRouter
    */
   public function getDaily($payload)
   {
-    return parent::makeRequest('GET', '/v1/forecast/daily' . $this->formatQueryParams($payload));
+    return parent::makeRequest(
+      'GET',
+      '/v1/forecast/daily' . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 
   /**
-   * @param   array $payload
+   * @param   BasePayload $payload
    * @return  array
    */
   public function getHourly($payload)
   {
-    return parent::makeRequest('GET', '/v1/forecast/hourly', $payload);
+    return parent::makeRequest(
+      'GET',
+      '/v1/forecast/hourly' . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 
   /**
-   * @param   array $payload
+   * @param   BasePayload $payload
    * @return  array
    */
   public function getPeriod($payload)
   {
-    return parent::makeRequest('GET', '/v1/forecast/period', $payload);
+    return parent::makeRequest(
+      'GET',
+      '/v1/forecast/period' . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 }
