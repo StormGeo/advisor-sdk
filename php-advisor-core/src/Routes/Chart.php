@@ -10,6 +10,8 @@ use StormGeo\AdvisorCore\Payloads\BasePayload;
 class Chart extends BaseRouter
 {
   /**
+   * GET /v1/forecast/daily/chart
+   * 
    * @param   BasePayload $payload
    * @return  string
    */
@@ -22,6 +24,8 @@ class Chart extends BaseRouter
   }
 
   /**
+   * GET /v1/forecast/hourly/chart
+   * 
    * @param   BasePayload $payload
    * @return  string
    */
@@ -34,6 +38,8 @@ class Chart extends BaseRouter
   }
 
   /**
+   * GET /v1/observed/daily/chart
+   * 
    * @param   BasePayload $payload
    * @return  string
    */
@@ -46,6 +52,8 @@ class Chart extends BaseRouter
   }
 
   /**
+   * GET /v1/observed/hourly/chart
+   * 
    * @param   BasePayload $payload
    * @return  string
    */

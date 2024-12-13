@@ -8,6 +8,8 @@ namespace StormGeo\AdvisorCore\Routes;
 class Schema extends BaseRouter
 {
   /**
+   * GET /v1/schema/definition
+   * 
    * @return  array
    */
   public function getDefinition()
@@ -16,6 +18,8 @@ class Schema extends BaseRouter
   }
 
   /**
+   * POST /v1/schema/definition
+   * 
    * @param   array $payload
    * @return  array
    */
@@ -29,6 +33,8 @@ class Schema extends BaseRouter
   }
 
   /**
+   * POST /v1/schema/parameters
+   * 
    * @param   array $payload
    * @return  array
    */

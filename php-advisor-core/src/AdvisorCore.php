@@ -63,20 +63,20 @@ class AdvisorCore
   public $tms;
 
   /**
-   * @param   string  $token
-   * @param   int     $retries
-   * @param   int     $delay
+   * @param   string  $token      API Token
+   * @param   int     $attempts   Number of attempts if an error occurs
+   * @param   int     $delay      Delay between attempts
    */
-  public function __construct($token, $retries = 5, $delay = 5)
+  public function __construct($token, $attempts = 5, $delay = 5)
   {
-    $this->chart = new Chart($token, $retries, $delay);
-    $this->climatology = new Climatology($token, $retries, $delay);
-    $this->currentWeather = new CurrentWeather($token, $retries, $delay);
-    $this->forecast = new Forecast($token, $retries, $delay);
-    $this->monitoring = new Monitoring($token, $retries, $delay);
-    $this->observed = new Observed($token, $retries, $delay);
-    $this->plan = new Plan($token, $retries, $delay);
-    $this->schema = new Schema($token, $retries, $delay);
-    $this->tms = new Tms($token, $retries, $delay);
+    $this->chart = new Chart($token, $attempts, $delay);
+    $this->climatology = new Climatology($token, $attempts, $delay);
+    $this->currentWeather = new CurrentWeather($token, $attempts, $delay);
+    $this->forecast = new Forecast($token, $attempts, $delay);
+    $this->monitoring = new Monitoring($token, $attempts, $delay);
+    $this->observed = new Observed($token, $attempts, $delay);
+    $this->plan = new Plan($token, $attempts, $delay);
+    $this->schema = new Schema($token, $attempts, $delay);
+    $this->tms = new Tms($token, $attempts, $delay);
   }
 }

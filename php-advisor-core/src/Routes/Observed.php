@@ -13,6 +13,8 @@ use StormGeo\AdvisorCore\Payloads\RadiusPayload;
 class Observed extends BaseRouter
 {
   /**
+   * GET /v1/observed/daily
+   * 
    * @param   BasePayload $payload
    * @return  array
    */
@@ -25,6 +27,8 @@ class Observed extends BaseRouter
   }
 
   /**
+   * GET /v1/observed/hourly
+   * 
    * @param   BasePayload $payload
    * @return  array
    */
@@ -37,6 +41,8 @@ class Observed extends BaseRouter
   }
 
   /**
+   * GET /v1/observed/period
+   * 
    * @param   BasePayload $payload
    * @return  array
    */
@@ -49,6 +55,8 @@ class Observed extends BaseRouter
   }
 
   /**
+   * GET /v1/observed/lightning
+   * 
    * @param   RadiusPayload $payload
    * @return  array
    */
@@ -61,6 +69,8 @@ class Observed extends BaseRouter
   }
 
   /**
+   * POST /v1/observed/lightning
+   * 
    * @param   GeometryPayload $payload
    * @return  array
    */
@@ -74,6 +84,8 @@ class Observed extends BaseRouter
   }
 
   /**
+   * GET /v1/observed/fire-focus
+   * 
    * @param   RadiusPayload $payload
    * @return  array
    */
@@ -86,6 +98,8 @@ class Observed extends BaseRouter
   }
 
   /**
+   * POST /v1/observed/fire-focus
+   * 
    * @param   GeometryPayload $payload
    * @return  array
    */
@@ -99,6 +113,8 @@ class Observed extends BaseRouter
   }
 
   /**
+   * GET /v1/station
+   * 
    * @param   StationPayload $payload
    * @return  array
    */

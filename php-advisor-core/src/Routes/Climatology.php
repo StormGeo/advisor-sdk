@@ -10,6 +10,8 @@ use StormGeo\AdvisorCore\Payloads\ClimatologyPayload;
 class Climatology extends BaseRouter
 {
   /**
+   * GET /v1/climatology/daily
+   * 
    * @param   ClimatologyPayload $payload
    * @return  array
    */
@@ -22,6 +24,8 @@ class Climatology extends BaseRouter
   }
 
   /**
+   * GET /v1/climatology/monthly
+   * 
    * @param   ClimatologyPayload $payload
    * @return  array
    */

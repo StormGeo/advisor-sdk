@@ -10,6 +10,8 @@ use StormGeo\AdvisorCore\Payloads\BasePayload;
 class Forecast extends BaseRouter
 {
   /**
+   * GET /v1/forecast/daily
+   * 
    * @param   BasePayload $payload
    * @return  array
    */
@@ -22,6 +24,8 @@ class Forecast extends BaseRouter
   }
 
   /**
+   * GET /v1/forecast/hourly
+   * 
    * @param   BasePayload $payload
    * @return  array
    */
@@ -34,6 +38,8 @@ class Forecast extends BaseRouter
   }
 
   /**
+   * GET /v1/forecast/period
+   * 
    * @param   BasePayload $payload
    * @return  array
    */

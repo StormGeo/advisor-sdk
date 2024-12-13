@@ -8,6 +8,8 @@ namespace StormGeo\AdvisorCore\Routes;
 class Monitoring extends BaseRouter
 {
   /**
+   * GET /v1/monitoring/alerts
+   * 
    * @return  array
    */
   public function getAlerts()

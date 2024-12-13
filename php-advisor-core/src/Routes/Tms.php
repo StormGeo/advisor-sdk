@@ -10,6 +10,8 @@ use StormGeo\AdvisorCore\Payloads\TmsPayload;
 class Tms extends BaseRouter
 {
   /**
+   * GET /v1/tms/{server}/{mode}/{variable}/{aggregation}/{x}/{y}/{z}.png
+   * 
    * @param   TmsPayload $payload
    * @return  string
    */
