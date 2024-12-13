@@ -22,10 +22,16 @@ class RequestHandler:
             else:
                 response = self.session.request(method, full_url, json=json_data)
 
-            if response.status_code != 200:
+            status = response.status_code
+            if status is not None and status < 500 and status != 429 and status != 200:
                 error_message = response.json().get("error", response.text)
-            
+                return {"data": None, "error": error_message}
+
             response.raise_for_status()
+
+            if response.headers.get("Content-Type", "").startswith("image/"):
+                return {"data": response.content, "error": None}
+
             return {"data": response.json(), "error": None}
 
         except requests.exceptions.RequestException as error:

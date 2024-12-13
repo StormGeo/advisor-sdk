@@ -21,7 +21,7 @@ class WeatherPayload:
         self.startDate = startDate
         self.endDate = endDate
 
-    def getDict(self) -> dict:
+    def getParams(self) -> dict:
         return {
             "localeId": self.localeId,
             "stationId": self.stationId,
@@ -50,7 +50,7 @@ class CurrentWeatherPayload:
         self.timezone = timezone
         self.variables = variables
     
-    def getDict(self) -> dict:
+    def getParams(self) -> dict:
         return {
             "localeId": self.localeId,
             "stationId": self.stationId,
@@ -75,7 +75,7 @@ class ClimatologyPayload:
         self.longitude = longitude
         self.variables = variables
 
-    def getDict(self) -> dict:
+    def getParams(self) -> dict:
         return {
             "localeId": self.localeId,
             "stationId": self.stationId,
@@ -103,7 +103,7 @@ class SpecificObservedPayload:
         self.endDate = endDate
         self.radius = radius
 
-    def getDict(self) -> dict:
+    def getParams(self) -> dict:
         return {
             "localeId": self.localeId,
             "stationId": self.stationId,
@@ -112,4 +112,82 @@ class SpecificObservedPayload:
             "startDate": self.startDate,
             "endDate": self.endDate,
             "radius": self.radius,
+        }
+
+class StationPayload:
+    def __init__(
+        self,
+        stationId: str = None,
+        layer: str = None,
+        variables: List[str] = None,
+        startDate: str = None,
+        endDate: str = None,
+    ):
+        self.stationId = stationId 
+        self.layer = layer
+        self.variables = variables
+        self.startDate = startDate
+        self.endDate = endDate
+
+    def getParams(self) -> dict:
+        return {
+            "stationId": self.stationId,
+            "layer": self.layer,
+            "variables": self.variables,
+            "startDate": self.startDate,
+            "endDate": self.endDate,
+        }
+
+class ObservedGeometryPayload:
+    def __init__(
+        self,
+        radius: int = None,
+        startDate: str = None,
+        endDate: str = None,
+        geometry: str = None
+    ):
+        self.radius = radius
+        self.startDate = startDate
+        self.endDate = endDate
+        self.geometry = geometry
+
+    def getParams(self) -> dict:
+        return {
+            "radius": self.radius,
+            "startDate": self.startDate,
+            "endDate": self.endDate,
+        }
+
+    def getBody(self) -> dict:
+        return {
+            "geometry": self.geometry,
+        }
+
+class TmsPayload:
+    def __init__(
+        self,
+        istep: int = None,
+        fstep: str = None,
+        server: str = None,
+        mode: str = None,
+        variable: str = None,
+        aggregation: str = None,
+        x: int = None,
+        y: int = None,
+        z: int = None,
+    ):
+        self.istep = istep
+        self.fstep = fstep
+        self.server = server
+        self.mode = mode
+        self.variable = variable
+        self.aggregation = aggregation
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def getParams(self) -> dict:
+        return {
+            "istep": self.istep,
+            "fstep": self.fstep,
         }
