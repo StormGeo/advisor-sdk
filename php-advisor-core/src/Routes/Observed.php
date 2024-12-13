@@ -3,6 +3,7 @@
 namespace StormGeo\AdvisorCore\Routes;
 
 use StormGeo\AdvisorCore\Payloads\BasePayload;
+use StormGeo\AdvisorCore\Payloads\GeometryPayload;
 use StormGeo\AdvisorCore\Payloads\StationPayload;
 use StormGeo\AdvisorCore\Payloads\RadiusPayload;
 
@@ -60,12 +61,16 @@ class Observed extends BaseRouter
   }
 
   /**
-   * @param   array $payload
+   * @param   GeometryPayload $payload
    * @return  array
    */
   public function postLightning($payload)
   {
-    return parent::makeRequest('POST', '/v1/observed/lightning', $payload);
+    return parent::makeRequest(
+      'POST',
+      '/v1/observed/lightning' . $this->formatQueryParams($payload->getQueryParams()),
+      $payload->getBody()
+    );
   }
 
   /**
@@ -81,12 +86,16 @@ class Observed extends BaseRouter
   }
 
   /**
-   * @param   array $payload
+   * @param   GeometryPayload $payload
    * @return  array
    */
   public function postFireFocus($payload)
   {
-    return parent::makeRequest('POST', '/v1/observed/fire-focus', $payload);
+    return parent::makeRequest(
+      'POST',
+      '/v1/observed/fire-focus' . $this->formatQueryParams($payload->getQueryParams()),
+      $payload->getBody()
+    );
   }
 
   /**

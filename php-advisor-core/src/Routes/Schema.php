@@ -12,7 +12,7 @@ class Schema extends BaseRouter
    */
   public function getDefinition()
   {
-    return parent::makeRequest('GET', '/v1/schema/definition');
+    return parent::makeRequest('GET', '/v1/schema/definition' . $this->formatQueryParams());
   }
 
   /**
@@ -21,7 +21,11 @@ class Schema extends BaseRouter
    */
   public function postDefinition($payload)
   {
-    return parent::makeRequest('POST', '/v1/schema/definition', $payload);
+    return parent::makeRequest(
+      'POST',
+      '/v1/schema/definition' . $this->formatQueryParams(),
+      $payload,
+    );
   }
 
   /**
@@ -30,6 +34,10 @@ class Schema extends BaseRouter
    */
   public function postParameters($payload)
   {
-    return parent::makeRequest('POST', '/v1/schema/parameters', $payload);
+    return parent::makeRequest(
+      'POST',
+      '/v1/schema/parameters' . $this->formatQueryParams(),
+      $payload
+    );
   }
 }

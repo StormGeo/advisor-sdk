@@ -2,7 +2,8 @@
 
 namespace StormGeo\AdvisorCore\Payloads;
 
-class StationPayload {
+class StationPayload
+{
   /**
    * @var string
    */

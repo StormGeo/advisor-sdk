@@ -12,6 +12,6 @@ class Monitoring extends BaseRouter
    */
   public function getAlerts()
   {
-    return parent::makeRequest('GET', '/v1/monitoring/alerts');
+    return parent::makeRequest('GET', '/v1/monitoring/alerts' . $this->formatQueryParams());
   }
 }

@@ -2,7 +2,8 @@
 
 namespace StormGeo\AdvisorCore\Payloads;
 
-class RadiusPayload {
+class RadiusPayload
+{
   /**
    * @var int
    */

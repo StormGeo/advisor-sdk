@@ -2,7 +2,8 @@
 
 namespace StormGeo\AdvisorCore\Payloads;
 
-class ClimatologyPayload {
+class ClimatologyPayload
+{
   /**
    * @var int
    */

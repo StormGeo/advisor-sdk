@@ -2,7 +2,8 @@
 
 namespace StormGeo\AdvisorCore\Payloads;
 
-class CurrentWeatherPayload {
+class CurrentWeatherPayload
+{
   /**
    * @var int
    */

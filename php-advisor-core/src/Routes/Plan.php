@@ -12,6 +12,6 @@ class Plan extends BaseRouter
    */
   public function getInfo()
   {
-    return parent::makeRequest('GET', '/v1/plan/:token');
+    return parent::makeRequest('GET', "/v1/plan/{$this->token}");
   }
 }

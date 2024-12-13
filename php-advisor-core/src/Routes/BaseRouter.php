@@ -53,6 +53,18 @@ abstract class BaseRouter
         $this->delay
       );
     }
+
+    if ($method === 'POST') {
+      return $this->retryRequest(
+        function() use ($route, $body) {
+          return $this->makePostRequest($this::BASE_URL . $route, $body);
+        },
+        $this->retries,
+        $this->delay
+      );
+    }
+
+    return null;
   }
 
   /**
@@ -73,6 +85,39 @@ abstract class BaseRouter
       return [
         'statusCode' => $responseInfo,
         'data' => ($binaryReturn) ? $response : json_decode($response, true)
+      ];
+    }
+
+    return [
+      'statusCode' => null,
+      'data' => null
+    ];
+  }
+
+  /**
+   * @param   string      $url
+   * @param   array       $body
+   * @return  array
+   */
+  protected function makePostRequest($url, $body)
+  {
+    $headers = [
+      'Content-Type: application/json'
+    ];
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $response = curl_exec($ch);
+    $responseInfo = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if ($response != false) {
+      return [
+        'statusCode' => $responseInfo,
+        'data' => json_decode($response, true)
       ];
     }
 
@@ -110,13 +155,13 @@ abstract class BaseRouter
   }
 
   /**
-   * @param   array   $queryParams
+   * @param   array|null   $queryParams
    * @return  string
    */
-  protected function formatQueryParams($queryParams)
+  protected function formatQueryParams($queryParams = null)
   {
     $params = "?token={$this->token}";
-    $formattedParams = http_build_query($queryParams);
+    $formattedParams = is_null($queryParams) ? '' : http_build_query($queryParams);
     if (strlen($formattedParams) > 0) {
       $params .= "&{$formattedParams}";
       $params = preg_replace('/%5B[0-9]+%5D/simU', '[]', $params);
