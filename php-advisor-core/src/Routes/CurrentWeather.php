@@ -13,7 +13,7 @@ class CurrentWeather extends BaseRouter
    * GET /v1/current-weather
    * 
    * @param   CurrentWeatherPayload $payload
-   * @return  array
+   * @return  AdvisorResponse
    */
   public function get($payload)
   {

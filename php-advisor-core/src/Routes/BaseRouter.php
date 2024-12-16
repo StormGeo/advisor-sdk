@@ -40,7 +40,7 @@ abstract class BaseRouter
    * @param   string            $method
    * @param   string            $route
    * @param   array             $body
-   * @return  array|string|null
+   * @return  AdvisorResponse
    */
   protected function makeRequest($method, $route, $body = [])
   {
@@ -131,11 +131,11 @@ abstract class BaseRouter
    * @param   callable(): (array|null)  $request
    * @param   int                       $retries
    * @param   int                       $delay
-   * @return  array|null
+   * @return  AdvisorResponse
    */
   protected function retryRequest($request, $retries, $delay)
   {
-    $data = null;
+    $data = new AdvisorResponse(null);
 
     for ($retryNumber = $retries; $retryNumber >= 0; $retryNumber--) {
       $response = $request();
@@ -143,7 +143,7 @@ abstract class BaseRouter
       $data = $response['data'];
 
       if (!is_null($status) && $status < 500 && $status != 429) {
-        return $data;
+        return new AdvisorResponse($data);
       }
 
       if ($retryNumber > 0) {

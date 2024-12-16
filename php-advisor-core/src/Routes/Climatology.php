@@ -13,7 +13,7 @@ class Climatology extends BaseRouter
    * GET /v1/climatology/daily
    * 
    * @param   ClimatologyPayload $payload
-   * @return  array
+   * @return  AdvisorResponse
    */
   public function getDaily($payload)
   {
@@ -27,7 +27,7 @@ class Climatology extends BaseRouter
    * GET /v1/climatology/monthly
    * 
    * @param   ClimatologyPayload $payload
-   * @return  array
+   * @return  AdvisorResponse
    */
   public function getMonthly($payload)
   {

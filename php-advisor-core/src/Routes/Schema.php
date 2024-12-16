@@ -10,7 +10,7 @@ class Schema extends BaseRouter
   /**
    * GET /v1/schema/definition
    * 
-   * @return  array
+   * @return  AdvisorResponse
    */
   public function getDefinition()
   {
@@ -21,7 +21,7 @@ class Schema extends BaseRouter
    * POST /v1/schema/definition
    * 
    * @param   array $payload
-   * @return  array
+   * @return  AdvisorResponse
    */
   public function postDefinition($payload)
   {
@@ -36,7 +36,7 @@ class Schema extends BaseRouter
    * POST /v1/schema/parameters
    * 
    * @param   array $payload
-   * @return  array
+   * @return  AdvisorResponse
    */
   public function postParameters($payload)
   {

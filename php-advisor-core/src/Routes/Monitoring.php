@@ -10,7 +10,7 @@ class Monitoring extends BaseRouter
   /**
    * GET /v1/monitoring/alerts
    * 
-   * @return  array
+   * @return  AdvisorResponse
    */
   public function getAlerts()
   {

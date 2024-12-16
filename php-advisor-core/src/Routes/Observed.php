@@ -2,7 +2,7 @@
 
 namespace StormGeo\AdvisorCore\Routes;
 
-use StormGeo\AdvisorCore\Payloads\BasePayload;
+use StormGeo\AdvisorCore\Payloads\WeatherPayload;
 use StormGeo\AdvisorCore\Payloads\GeometryPayload;
 use StormGeo\AdvisorCore\Payloads\StationPayload;
 use StormGeo\AdvisorCore\Payloads\RadiusPayload;
@@ -15,8 +15,8 @@ class Observed extends BaseRouter
   /**
    * GET /v1/observed/daily
    * 
-   * @param   BasePayload $payload
-   * @return  array
+   * @param   WeatherPayload $payload
+   * @return  AdvisorResponse
    */
   public function getDaily($payload)
   {
@@ -29,8 +29,8 @@ class Observed extends BaseRouter
   /**
    * GET /v1/observed/hourly
    * 
-   * @param   BasePayload $payload
-   * @return  array
+   * @param   WeatherPayload $payload
+   * @return  AdvisorResponse
    */
   public function getHourly($payload)
   {
@@ -43,8 +43,8 @@ class Observed extends BaseRouter
   /**
    * GET /v1/observed/period
    * 
-   * @param   BasePayload $payload
-   * @return  array
+   * @param   WeatherPayload $payload
+   * @return  AdvisorResponse
    */
   public function getPeriod($payload)
   {
@@ -58,7 +58,7 @@ class Observed extends BaseRouter
    * GET /v1/observed/lightning
    * 
    * @param   RadiusPayload $payload
-   * @return  array
+   * @return  AdvisorResponse
    */
   public function getLightning($payload)
   {
@@ -72,9 +72,9 @@ class Observed extends BaseRouter
    * POST /v1/observed/lightning
    * 
    * @param   GeometryPayload $payload
-   * @return  array
+   * @return  AdvisorResponse
    */
-  public function postLightning($payload)
+  public function getLightningByGeometry($payload)
   {
     return parent::makeRequest(
       'POST',
@@ -87,7 +87,7 @@ class Observed extends BaseRouter
    * GET /v1/observed/fire-focus
    * 
    * @param   RadiusPayload $payload
-   * @return  array
+   * @return  AdvisorResponse
    */
   public function getFireFocus($payload)
   {
@@ -101,9 +101,9 @@ class Observed extends BaseRouter
    * POST /v1/observed/fire-focus
    * 
    * @param   GeometryPayload $payload
-   * @return  array
+   * @return  AdvisorResponse
    */
-  public function postFireFocus($payload)
+  public function getFireFocusByGeometry($payload)
   {
     return parent::makeRequest(
       'POST',
@@ -116,7 +116,7 @@ class Observed extends BaseRouter
    * GET /v1/station
    * 
    * @param   StationPayload $payload
-   * @return  array
+   * @return  AdvisorResponse
    */
   public function getStationData($payload)
   {

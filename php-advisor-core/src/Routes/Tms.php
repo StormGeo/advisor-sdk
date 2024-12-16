@@ -13,7 +13,7 @@ class Tms extends BaseRouter
    * GET /v1/tms/{server}/{mode}/{variable}/{aggregation}/{x}/{y}/{z}.png
    * 
    * @param   TmsPayload $payload
-   * @return  string
+   * @return  AdvisorResponse
    */
   public function get($payload)
   {

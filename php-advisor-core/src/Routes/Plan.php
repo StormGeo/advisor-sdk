@@ -10,7 +10,7 @@ class Plan extends BaseRouter
   /**
    * GET /v1/plan/{token}
    * 
-   * @return  array
+   * @return  AdvisorResponse
    */
   public function getInfo()
   {

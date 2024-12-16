@@ -2,7 +2,7 @@
 
 namespace StormGeo\AdvisorCore\Routes;
 
-use StormGeo\AdvisorCore\Payloads\BasePayload;
+use StormGeo\AdvisorCore\Payloads\WeatherPayload;
 
 /**
  * @package StormGeo\AdvisorCore
@@ -12,8 +12,8 @@ class Chart extends BaseRouter
   /**
    * GET /v1/forecast/daily/chart
    * 
-   * @param   BasePayload $payload
-   * @return  string
+   * @param   WeatherPayload $payload
+   * @return  AdvisorResponse
    */
   public function getForecastDaily($payload)
   {
@@ -26,8 +26,8 @@ class Chart extends BaseRouter
   /**
    * GET /v1/forecast/hourly/chart
    * 
-   * @param   BasePayload $payload
-   * @return  string
+   * @param   WeatherPayload $payload
+   * @return  AdvisorResponse
    */
   public function getForecastHourly($payload)
   {
@@ -40,8 +40,8 @@ class Chart extends BaseRouter
   /**
    * GET /v1/observed/daily/chart
    * 
-   * @param   BasePayload $payload
-   * @return  string
+   * @param   WeatherPayload $payload
+   * @return  AdvisorResponse
    */
   public function getObservedDaily($payload)
   {
@@ -54,8 +54,8 @@ class Chart extends BaseRouter
   /**
    * GET /v1/observed/hourly/chart
    * 
-   * @param   BasePayload $payload
-   * @return  string
+   * @param   WeatherPayload $payload
+   * @return  AdvisorResponse
    */
   public function getObservedHourly($payload)
   {
