@@ -9,116 +9,25 @@ import (
 	"time"
 )
 
-func get(url string) (res AdvisorResponse, err error) {
-	getResp, getErr := http.Get(url)
-	if getErr != nil {
-		return nil, getErr
-	}
-	defer getResp.Body.Close()
-
-	body, bodyErr := io.ReadAll(getResp.Body)
-	if bodyErr != nil {
-		return nil, bodyErr
-	}
-
-	var bodyToJson map[string]interface{}
-	jsonParserErr := json.Unmarshal(body, &bodyToJson)
-	if jsonParserErr != nil {
-		return nil, jsonParserErr
-	}
-
-	_, keyExists := bodyToJson["error"]
-	if keyExists {
-		return nil, fmt.Errorf("%v", bodyToJson)
-	}
-
-	return bodyToJson, nil
-}
-
-func getImage(url string) (imageBody io.ReadCloser, err error) {
-	getResp, getErr := http.Get(url)
-	if getErr != nil {
-		return nil, getErr
-	}
-
-	return getResp.Body, nil
-}
-
-func post(url string, body []byte) (res AdvisorResponse, err error) {
-	postResp, postErr := http.Post(url, "application/json", bytes.NewBuffer(body))
-	if postErr != nil {
-		return nil, postErr
-	}
-	defer postResp.Body.Close()
-
-	body, bodyErr := io.ReadAll(postResp.Body)
-	if bodyErr != nil {
-		return nil, bodyErr
-	}
-
-	var bodyToJson map[string]interface{}
-	jsonParserErr := json.Unmarshal(body, &bodyToJson)
-	if jsonParserErr != nil {
-		return nil, jsonParserErr
-	}
-
-	return bodyToJson, nil
-}
-
-func postGeometry(url string, body []byte) (res AdvisorResponse, err error) {
-	postResp, postErr := http.Post(url, "application/json", bytes.NewBuffer(body))
-	if postErr != nil {
-		return nil, postErr
-	}
-	defer postResp.Body.Close()
-
-	body, bodyErr := io.ReadAll(postResp.Body)
-	if bodyErr != nil {
-		return nil, bodyErr
-	}
-
-	if postResp.StatusCode == 200 {
-		var bodyToJson []interface{}
-
-		jsonParserErr := json.Unmarshal(body, &bodyToJson)
-		if jsonParserErr != nil {
-			return nil, jsonParserErr
-		}
-
-		return bodyToJson, nil
-	}
-
-	var errorToJson map[string]interface{}
-	jsonParserErr := json.Unmarshal(body, &errorToJson)
-	if jsonParserErr != nil {
-		return nil, jsonParserErr
-	}
-
-	return nil, fmt.Errorf("%v", errorToJson)
-}
-
-func retryRequest(
-	funcName string,
+func retryReq(
+	method string,
 	retries uint8,
 	delay time.Duration,
 	url string,
 	body []byte,
-) (res interface{}, err error) {
-	for attempts := retries + 1; attempts > 0; attempts-- {
-		switch funcName {
-		case "get":
-			res, err = get(url)
-		case "post":
-			res, err = post(url, body)
-		case "postGeometry":
-			res, err = postGeometry(url, body)
+) (res *http.Response, err error) {
+	for retryNumber := retries + 1; retryNumber > 0; retryNumber-- {
+		if method == "GET" {
+			res, err = http.Get(url)
+		} else if method == "POST" {
+			res, err = http.Post(url, "application/json", bytes.NewBuffer(body))
 		}
 
-		if err == nil {
-			break
+		if res.StatusCode < 500 && res.StatusCode != 429 {
+			return res, err
 		}
 
-		if attempts > 1 {
+		if retryNumber > 0 {
 			time.Sleep(delay)
 		}
 	}
@@ -126,18 +35,31 @@ func retryRequest(
 	return res, err
 }
 
-func retryGetImage(retries uint8, delay time.Duration, url string) (res io.ReadCloser, err error) {
-	for attempts := retries + 1; attempts > 0; attempts-- {
-		res, err = getImage(url)
+func resToJson(res *http.Response, resError error) (data any, err error) {
+	if resError != nil {
+		return nil, resError
+	}
+	defer res.Body.Close()
 
-		if err == nil {
-			break
-		}
+	body, bodyErr := io.ReadAll(res.Body)
+	if bodyErr != nil {
+		return nil, bodyErr
+	}
 
-		if attempts > 1 {
-			time.Sleep(delay)
+	var destiny any
+
+	jsonParserErr := json.Unmarshal(body, &destiny)
+	if jsonParserErr != nil {
+		return nil, jsonParserErr
+	}
+
+	destinyMap, ok := destiny.(map[string]any)
+	if ok {
+		_, keyExists := destinyMap["error"]
+		if keyExists {
+			return nil, fmt.Errorf("%v", destiny)
 		}
 	}
 
-	return res, err
+	return destiny, nil
 }
