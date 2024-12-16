@@ -52,9 +52,9 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 			Get: makeGetWithCurrentWeatherPayload("/v1/current-weather", config),
 		},
 		Forecast: forecast{
-			GetDaily:  makeGetWithBasePayload("/v1/forecast/daily", config),
-			GetHourly: makeGetWithBasePayload("/v1/forecast/hourly", config),
-			GetPeriod: makeGetWithBasePayload("/v1/forecast/period", config),
+			GetDaily:  makeGetWithWeatherPayload("/v1/forecast/daily", config),
+			GetHourly: makeGetWithWeatherPayload("/v1/forecast/hourly", config),
+			GetPeriod: makeGetWithWeatherPayload("/v1/forecast/period", config),
 		},
 		Monitoring: monitoring{
 			GetAlerts: func() (response AdvisorResponse, err error) {
@@ -62,14 +62,14 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 			},
 		},
 		Observed: observed{
-			GetDaily:       makeGetWithBasePayload("/v1/observed/daily", config),
-			GetHourly:      makeGetWithBasePayload("/v1/observed/hourly", config),
-			GetPeriod:      makeGetWithBasePayload("/v1/observed/period", config),
-			GetLightning:   makeGetWithRadiusPayload("/v1/observed/lightning", config),
-			PostLightning:  makePostWithGeometryPayload("/v1/observed/lightning", config),
-			GetFireFocus:   makeGetWithRadiusPayload("/v1/observed/fire-focus", config),
-			PostFireFocus:  makePostWithGeometryPayload("/v1/observed/fire-focus", config),
-			GetStationData: makeGetWithStationPayload("/v1/station", config),
+			GetDaily:               makeGetWithWeatherPayload("/v1/observed/daily", config),
+			GetHourly:              makeGetWithWeatherPayload("/v1/observed/hourly", config),
+			GetPeriod:              makeGetWithWeatherPayload("/v1/observed/period", config),
+			GetLightning:           makeGetWithRadiusPayload("/v1/observed/lightning", config),
+			GetLightningByGeometry: makePostWithGeometryPayload("/v1/observed/lightning", config),
+			GetFireFocus:           makeGetWithRadiusPayload("/v1/observed/fire-focus", config),
+			GetFireFocusByGeometry: makePostWithGeometryPayload("/v1/observed/fire-focus", config),
+			GetStationData:         makeGetWithStationPayload("/v1/station", config),
 		},
 		Plan: plan{
 			GetInfo: func() (response AdvisorResponse, err error) {
@@ -99,8 +99,8 @@ func formatUrl(route string, token string, params string) string {
 	return url
 }
 
-func makeGetWithBasePayload(route string, config AdvisorCoreConfig) RequestWithBasePayload {
-	return func(payload BasePayload) (response AdvisorResponse, err error) {
+func makeGetWithWeatherPayload(route string, config AdvisorCoreConfig) RequestWithWeatherPayload {
+	return func(payload WeatherPayload) (response AdvisorResponse, err error) {
 		return retryRequest(
 			"get",
 			config.Retries,
@@ -159,8 +159,8 @@ func makeGetWithStationPayload(route string, config AdvisorCoreConfig) RequestWi
 	}
 }
 
-func makeGetImage(route string, config AdvisorCoreConfig) ImageRequestWithBasePayload {
-	return func(payload BasePayload) (imageBody io.ReadCloser, err error) {
+func makeGetImage(route string, config AdvisorCoreConfig) ImageRequestWithWeatherPayload {
+	return func(payload WeatherPayload) (imageBody io.ReadCloser, err error) {
 		return retryGetImage(
 			config.Retries,
 			config.Delay,

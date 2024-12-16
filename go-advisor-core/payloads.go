@@ -6,17 +6,6 @@ import (
 
 type AdvisorResponse interface{}
 
-type BasePayload struct {
-	LocaleId  uint32
-	Latitude  string
-	Longitude string
-	StationId string
-	StartDate string
-	EndDate   string
-	Variables []string
-	Timezone  int8
-}
-
 type ClimatologyPayload struct {
 	LocaleId  uint32
 	Latitude  string
@@ -72,7 +61,18 @@ type TmsPayload struct {
 	Z           uint16
 }
 
-func (b BasePayload) toQueryParams() string {
+type WeatherPayload struct {
+	LocaleId  uint32
+	Latitude  string
+	Longitude string
+	StationId string
+	StartDate string
+	EndDate   string
+	Variables []string
+	Timezone  int8
+}
+
+func (b WeatherPayload) toQueryParams() string {
 	builder := queryParamsBuilder{}
 
 	return builder.

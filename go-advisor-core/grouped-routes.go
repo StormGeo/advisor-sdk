@@ -2,8 +2,8 @@ package advisorsdk
 
 import "io"
 
-type ImageRequestWithBasePayload func(BasePayload) (io.ReadCloser, error)
-type RequestWithBasePayload func(BasePayload) (AdvisorResponse, error)
+type ImageRequestWithWeatherPayload func(WeatherPayload) (io.ReadCloser, error)
+type RequestWithWeatherPayload func(WeatherPayload) (AdvisorResponse, error)
 type RequestWithClimatologyPayload func(ClimatologyPayload) (AdvisorResponse, error)
 type RequestWithCurrentWeatherPayload func(CurrentWeatherPayload) (AdvisorResponse, error)
 type RequestWithGeometryPayload func(GeometryPayload) (AdvisorResponse, error)
@@ -14,10 +14,10 @@ type RequestWithPayload func(RadiusPayload) (AdvisorResponse, error)
 type TmsRequest func(TmsPayload) (io.ReadCloser, error)
 
 type chart struct {
-	GetForecastDaily  ImageRequestWithBasePayload
-	GetForecastHourly ImageRequestWithBasePayload
-	GetObservedDaily  ImageRequestWithBasePayload
-	GetObservedHourly ImageRequestWithBasePayload
+	GetForecastDaily  ImageRequestWithWeatherPayload
+	GetForecastHourly ImageRequestWithWeatherPayload
+	GetObservedDaily  ImageRequestWithWeatherPayload
+	GetObservedHourly ImageRequestWithWeatherPayload
 }
 
 type climatology struct {
@@ -30,9 +30,9 @@ type currentWeather struct {
 }
 
 type forecast struct {
-	GetDaily  RequestWithBasePayload
-	GetHourly RequestWithBasePayload
-	GetPeriod RequestWithBasePayload
+	GetDaily  RequestWithWeatherPayload
+	GetHourly RequestWithWeatherPayload
+	GetPeriod RequestWithWeatherPayload
 }
 
 type monitoring struct {
@@ -44,14 +44,14 @@ type plan struct {
 }
 
 type observed struct {
-	GetDaily       RequestWithBasePayload
-	GetHourly      RequestWithBasePayload
-	GetPeriod      RequestWithBasePayload
-	GetLightning   RequestWithRadiusPayload
-	PostLightning  RequestWithGeometryPayload
-	GetFireFocus   RequestWithRadiusPayload
-	PostFireFocus  RequestWithGeometryPayload
-	GetStationData RequestWithStationPayload
+	GetDaily               RequestWithWeatherPayload
+	GetHourly              RequestWithWeatherPayload
+	GetPeriod              RequestWithWeatherPayload
+	GetLightning           RequestWithRadiusPayload
+	GetLightningByGeometry RequestWithGeometryPayload
+	GetFireFocus           RequestWithRadiusPayload
+	GetFireFocusByGeometry RequestWithGeometryPayload
+	GetStationData         RequestWithStationPayload
 }
 
 type schema struct {
