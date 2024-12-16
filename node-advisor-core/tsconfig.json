@@ -2,7 +2,6 @@
   "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
-    "removeComments": true,
     "outDir": "dist",
     "preserveConstEnums": true,
     "declaration": true,

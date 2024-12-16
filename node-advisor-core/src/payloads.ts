@@ -10,6 +10,14 @@ export interface WeatherPayload {
   endDate?: string
 }
 
+export interface StationPayload {
+  stationId?: string
+  layer?: string
+  variables?: string[]
+  startDate?: string
+  endDate?: string
+}
+
 export interface ClimatologyPayload {
   stationId?: string
   localeId?: number
@@ -26,7 +34,7 @@ export interface CurrentWeatherPayload {
   variables?: string[]
 }
 
-export interface SpecificObservedPayload {
+export interface RadiusPayload {
   localeId?: number
   latitude?: number
   longitude?: number
@@ -35,14 +43,14 @@ export interface SpecificObservedPayload {
   radius?: number
 }
 
-export interface ObservedByGeometryPayload {
+export interface GeometryPayload {
   startDate?: string
   endDate?: string
   radius?: number
   geometry?: string
 }
 
-export interface TMSPayload {
+export interface TmsPayload {
   server?: string
   mode?: string
   variable?: string
