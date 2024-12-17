@@ -143,7 +143,7 @@ export class AdvisorCore {
 
       return { data: response.data, error: null }
     } catch (error: any) {
-      if (retries > 0 && error?.response?.status >= 500 && error?.response?.status == 429) {
+      if (retries > 0 && (error?.response?.status >= 500 || error?.response?.status == 429)) {
         await sleep(this.delay)
         console.log(`Re-trying in ${this.delay}ms... attempts left: ${retries}`)
         return this.makeRequest(method, url, params, data, --retries)
@@ -171,7 +171,7 @@ export class AdvisorCore {
       const byteArray  = new Uint8Array(response.data)
       return { data: byteArray, error: null }
     } catch (error: any) {
-      if (retries > 0 && error?.response?.status >= 500) {
+      if (retries > 0 && (error?.response?.status >= 500 || error?.response?.status == 429)) {
         await sleep(this.delay)
         console.log(`Re-trying in ${this.delay}ms... attempts left: ${retries}`)
 
