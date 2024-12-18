@@ -13,7 +13,7 @@ class ForecastAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -27,7 +27,7 @@ class ForecastAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -41,7 +41,7 @@ class ForecastAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -59,7 +59,7 @@ class ObservedAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -73,7 +73,7 @@ class ObservedAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -87,7 +87,7 @@ class ObservedAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -101,7 +101,7 @@ class ObservedAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -115,7 +115,7 @@ class ObservedAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -129,7 +129,7 @@ class ObservedAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -143,7 +143,7 @@ class ObservedAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -157,7 +157,7 @@ class ObservedAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -175,7 +175,7 @@ class CurrentWeatherAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -193,7 +193,7 @@ class ClimatologyAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -207,7 +207,7 @@ class ClimatologyAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -253,7 +253,7 @@ class ChartAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -267,7 +267,7 @@ class ChartAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -281,7 +281,7 @@ class ChartAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -295,7 +295,7 @@ class ChartAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )
@@ -313,7 +313,7 @@ class TmsAPI:
         builder = QueryParamsBuilder()
         params = (
             builder
-            .add_payload(payload.getParams())
+            .add_payload(payload.get_params())
             .add_token("token", self.request_handler.token)
             .build()
         )

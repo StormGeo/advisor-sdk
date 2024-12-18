@@ -3,69 +3,69 @@ from typing import List
 class WeatherPayload:
     def __init__(
         self,
-        localeId: str = None,
-        stationId: str = None,
+        locale_id: str = None,
+        station_id: str = None,
         latitude: float = None,
         longitude: float = None,
-        timezone: float = None,
+        timezone: int = None,
         variables: List[str] = None,
-        startDate: str = None,
-        endDate: str = None,
+        start_date: str = None,
+        end_date: str = None,
     ):
         """
         Initializes the WeatherPayload object with optional parameters.
         """
-        self.localeId = localeId
-        self.stationId = stationId 
+        self.locale_id = locale_id
+        self.station_id = station_id 
         self.latitude = latitude
         self.longitude = longitude
         self.timezone = timezone
         self.variables = variables
-        self.startDate = startDate
-        self.endDate = endDate
+        self.start_date = start_date
+        self.end_date = end_date
 
-    def getParams(self) -> dict:
+    def get_params(self) -> dict:
         """
         Returns the parameters as a dictionary for API requests.
         """
         return {
-            "localeId": self.localeId,
-            "stationId": self.stationId,
+            "localeId": self.locale_id,
+            "stationId": self.station_id,
             "latitude": self.latitude,
             "longitude": self.longitude,
             "timezone": self.timezone,
             "variables": self.variables,
-            "startDate": self.startDate,
-            "endDate": self.endDate,
+            "startDate": self.start_date,
+            "endDate": self.end_date,
         }
 
 class CurrentWeatherPayload:
     def __init__(
         self,
-        localeId: str = None,
-        stationId: str = None,
+        locale_id: str = None,
+        station_id: str = None,
         latitude: float = None,
         longitude: float = None,
-        timezone: float = None,
+        timezone: int = None,
         variables: List[str] = None,
     ):
         """
         Initializes the CurrentWeatherPayload object with optional parameters.
         """
-        self.localeId = localeId
-        self.stationId = stationId 
+        self.locale_id = locale_id
+        self.station_id = station_id 
         self.latitude = latitude
         self.longitude = longitude
         self.timezone = timezone
         self.variables = variables
     
-    def getParams(self) -> dict:
+    def get_params(self) -> dict:
         """
         Returns the parameters as a dictionary for API requests.
         """
         return {
-            "localeId": self.localeId,
-            "stationId": self.stationId,
+            "localeId": self.locale_id,
+            "stationId": self.station_id,
             "latitude": self.latitude,
             "longitude": self.longitude,
             "timezone": self.timezone,
@@ -75,8 +75,8 @@ class CurrentWeatherPayload:
 class ClimatologyPayload:
     def __init__(
         self,
-        stationId: str = None,
-        localeId: str = None,
+        locale_id: str = None,
+        station_id: str = None,
         latitude: float = None,
         longitude: float = None,
         variables: List[str] = None,
@@ -84,19 +84,19 @@ class ClimatologyPayload:
         """
         Initializes the ClimatologyPayload object with optional parameters.
         """
-        self.stationId = stationId
-        self.localeId = localeId
+        self.locale_id = locale_id
+        self.station_id = station_id
         self.latitude = latitude
         self.longitude = longitude
         self.variables = variables
 
-    def getParams(self) -> dict:
+    def get_params(self) -> dict:
         """
         Returns the parameters as a dictionary for API requests.
         """
         return {
-            "localeId": self.localeId,
-            "stationId": self.stationId,
+            "localeId": self.locale_id,
+            "stationId": self.station_id,
             "latitude": self.latitude,
             "longitude": self.longitude,
             "variables": self.variables,
@@ -105,93 +105,93 @@ class ClimatologyPayload:
 class RadiusPayload:
     def __init__(
         self,
-        localeId: str = None,
-        stationId: str = None,
+        locale_id: str = None,
+        station_id: str = None,
         latitude: float = None,
         longitude: float = None,
-        startDate: str = None,
-        endDate: str = None,
+        start_date: str = None,
+        end_date: str = None,
         radius: int = None,
     ):
         """
         Initializes the RadiusPayload object with optional parameters.
         """
-        self.localeId = localeId
-        self.stationId = stationId 
+        self.locale_id = locale_id
+        self.station_id = station_id 
         self.latitude = latitude
         self.longitude = longitude
-        self.startDate = startDate
-        self.endDate = endDate
+        self.start_date = start_date
+        self.end_date = end_date
         self.radius = radius
 
-    def getParams(self) -> dict:
+    def get_params(self) -> dict:
         """
         Returns the parameters as a dictionary for API requests.
         """
         return {
-            "localeId": self.localeId,
-            "stationId": self.stationId,
+            "localeId": self.locale_id,
+            "stationId": self.station_id,
             "latitude": self.latitude,
             "longitude": self.longitude,
-            "startDate": self.startDate,
-            "endDate": self.endDate,
+            "startDate": self.start_date,
+            "endDate": self.end_date,
             "radius": self.radius,
         }
 
 class StationPayload:
     def __init__(
         self,
-        stationId: str = None,
+        station_id: str = None,
         layer: str = None,
         variables: List[str] = None,
-        startDate: str = None,
-        endDate: str = None,
+        start_date: str = None,
+        end_date: str = None,
     ):
         """
         Initializes the StationPayload object with optional parameters.
         """
-        self.stationId = stationId 
+        self.station_id = station_id 
         self.layer = layer
         self.variables = variables
-        self.startDate = startDate
-        self.endDate = endDate
+        self.start_date = start_date
+        self.end_date = end_date
 
-    def getParams(self) -> dict:
+    def get_params(self) -> dict:
         """
         Returns the parameters as a dictionary for API requests.
         """
         return {
-            "stationId": self.stationId,
+            "stationId": self.station_id,
             "layer": self.layer,
             "variables": self.variables,
-            "startDate": self.startDate,
-            "endDate": self.endDate,
+            "startDate": self.start_date,
+            "endDate": self.end_date,
         }
 
 class GeometryPayload:
     def __init__(
         self,
         radius: int = None,
-        startDate: str = None,
-        endDate: str = None,
+        start_date: str = None,
+        end_date: str = None,
         geometry: str = None
     ):
         """
         Initializes the GeometryPayload object with optional parameters.
         """
         self.radius = radius
-        self.startDate = startDate
-        self.endDate = endDate
+        self.start_date = start_date
+        self.end_date = end_date
         self.geometry = geometry
 
-    def getParams(self) -> dict:
+    def get_params(self) -> dict:
         """
         Returns the parameters as a dictionary for API requests.
         """
         return {
             "radius": self.radius,
-            "startDate": self.startDate,
-            "endDate": self.endDate,
+            "startDate": self.start_date,
+            "endDate": self.end_date,
         }
 
     def getBody(self) -> dict:
@@ -205,7 +205,7 @@ class GeometryPayload:
 class TmsPayload:
     def __init__(
         self,
-        istep: int = None,
+        istep: str = None,
         fstep: str = None,
         server: str = None,
         mode: str = None,
@@ -228,7 +228,7 @@ class TmsPayload:
         self.y = y
         self.z = z
 
-    def getParams(self) -> dict:
+    def get_params(self) -> dict:
         """
         Returns the parameters as a dictionary for API requests.
         """
