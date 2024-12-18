@@ -27,6 +27,10 @@ func retryReq(
 			return res, err
 		}
 
+		if res != nil {
+			defer res.Body.Close()
+		}
+
 		if retryNumber > 0 {
 			time.Sleep(delay)
 		}
@@ -39,25 +43,28 @@ func resToJson(res *http.Response, resError error) (data any, err error) {
 	if resError != nil {
 		return nil, resError
 	}
-	defer res.Body.Close()
-
-	body, bodyErr := io.ReadAll(res.Body)
-	if bodyErr != nil {
-		return nil, bodyErr
-	}
 
 	var destiny any
 
-	jsonParserErr := json.Unmarshal(body, &destiny)
-	if jsonParserErr != nil {
-		return nil, jsonParserErr
-	}
+	if res != nil {
+		defer res.Body.Close()
 
-	destinyMap, ok := destiny.(map[string]any)
-	if ok {
-		_, keyExists := destinyMap["error"]
-		if keyExists {
-			return nil, fmt.Errorf("%v", destiny)
+		body, bodyErr := io.ReadAll(res.Body)
+		if bodyErr != nil {
+			return nil, bodyErr
+		}
+
+		jsonParserErr := json.Unmarshal(body, &destiny)
+		if jsonParserErr != nil {
+			return nil, jsonParserErr
+		}
+
+		destinyMap, ok := destiny.(map[string]any)
+		if ok {
+			_, keyExists := destinyMap["error"]
+			if keyExists {
+				return nil, fmt.Errorf("%v", destiny)
+			}
 		}
 	}
 
