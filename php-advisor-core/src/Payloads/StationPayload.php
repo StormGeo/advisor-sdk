@@ -2,7 +2,7 @@
 
 namespace StormGeo\AdvisorCore\Payloads;
 
-class StationPayload
+class StationPayload extends BasePayload
 {
   /**
    * @var string
@@ -28,6 +28,17 @@ class StationPayload
    * @var string
    */
 	public $layer;
+
+  /**
+   * @param array{stationId:string,startDate:string,endDate:string,variables:array<string>,layer:string} $parameters
+   */
+  public function __construct($parameters = [])
+  {
+    parent::__construct(
+      ['stationId', 'startDate', 'endDate', 'variables', 'layer'],
+      $parameters
+    );
+  }
 
   /**
    * @var array

@@ -2,7 +2,7 @@
 
 namespace StormGeo\AdvisorCore\Payloads;
 
-class TmsPayload
+class TmsPayload extends BasePayload
 {
   /**
    * @var string
@@ -48,6 +48,17 @@ class TmsPayload
    * @var int
    */
 	public $z;
+
+  /**
+   * @param array{istep:string,fstep:string,server:string,mode:string,variable:string,aggregation:string,x:int,y:int,z:int} $parameters
+   */
+  public function __construct($parameters = [])
+  {
+    parent::__construct(
+      ['istep', 'fstep', 'server', 'mode', 'variable', 'aggregation', 'x', 'y', 'z'],
+      $parameters
+    );
+  }
 
   /**
    * @return array

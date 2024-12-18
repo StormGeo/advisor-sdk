@@ -2,7 +2,7 @@
 
 namespace StormGeo\AdvisorCore\Payloads;
 
-class RadiusPayload
+class RadiusPayload extends BasePayload
 {
   /**
    * @var int
@@ -33,6 +33,17 @@ class RadiusPayload
    * @var int
    */
   public $radius;
+
+  /**
+   * @param array{localeId:int,latitude:string,longitude:string,startDate:string,endDate:string,radius:int} $parameters
+   */
+  public function __construct($parameters = [])
+  {
+    parent::__construct(
+      ['localeId', 'latitude', 'longitude', 'startDate', 'endDate', 'radius'],
+      $parameters
+    );
+  }
 
   /**
    * @var array

@@ -2,7 +2,7 @@
 
 namespace StormGeo\AdvisorCore\Payloads;
 
-class WeatherPayload
+class WeatherPayload extends BasePayload
 {
   /**
    * @var int
@@ -43,6 +43,17 @@ class WeatherPayload
    * @var int
    */
 	public $timezone;
+
+  /**
+   * @param array{localeId:int,latitude:string,longitude:string,stationId:string,startDate:string,endDate:string,variables:array<string>,timezone:int} $parameters
+   */
+  public function __construct($parameters = [])
+  {
+    parent::__construct(
+      ['localeId', 'latitude', 'longitude', 'stationId', 'startDate', 'endDate', 'variables', 'timezone'],
+      $parameters
+    );
+  }
 
   /**
    * @var array

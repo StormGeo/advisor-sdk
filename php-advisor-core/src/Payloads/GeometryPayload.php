@@ -2,7 +2,7 @@
 
 namespace StormGeo\AdvisorCore\Payloads;
 
-class GeometryPayload
+class GeometryPayload extends BasePayload
 {
   /**
    * @var string
@@ -23,6 +23,17 @@ class GeometryPayload
    * @var string
    */
   public $geometry;
+
+  /**
+   * @param array{startDate:string,endDate:string,radius:int,geometry:string} $parameters
+   */
+  public function __construct($parameters = [])
+  {
+    parent::__construct(
+      ['startDate', 'endDate', 'radius', 'geometry'],
+      $parameters
+    );
+  }
 
   /**
    * @var array
