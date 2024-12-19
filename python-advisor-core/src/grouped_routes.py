@@ -317,7 +317,7 @@ class TmsAPI:
             .add_token("token", self.request_handler.token)
             .build()
         )
-        path = f"tms/{payload.server}/{payload.mode}/{payload.variable}/{payload.aggregation}/{payload.x}/{payload.y}/{payload.z}.png"
+        path = f"v1/tms/{payload.server}/{payload.mode}/{payload.variable}/{payload.aggregation}/{payload.x}/{payload.y}/{payload.z}.png"
         return self.request_handler.make_request("GET", path, params=params)
 
 class SchemaAPI:

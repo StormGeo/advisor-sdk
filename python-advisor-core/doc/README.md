@@ -25,16 +25,16 @@ Daily Forecast:
 from payloads import WeatherPayload
 
 payload = WeatherPayload(
-    locale_id="1234",
+  locale_id="1234",
 )
 
 daily_forecast = advisor.forecast.get_daily(payload)
 
 if daily_forecast['error']:
-    print('Error trying to get data!')
-    print(daily_forecast['error'])
+  print('Error trying to get data!')
+  print(daily_forecast['error'])
 else:
-    print(daily_forecast['data'])
+  print(daily_forecast['data'])
 ```
 - **[WeatherPayload](#weatherPayload)**: Payload type for getting weather data type.
 - **advisor**: Variable with the instance of the class
@@ -46,16 +46,16 @@ Hourly Observed:
 from payloads import WeatherPayload
 
 payload = WeatherPayload(
-    locale_id="1234",
+  locale_id="1234",
 )
 
 hourly_observed = advisor.observed.get_hourly(payload)
 
 if hourly_observed['error']:
-    print('Error trying to get data!')
-    print(hourly_observed['error'])
+  print('Error trying to get data!')
+  print(hourly_observed['error'])
 else:
-    print(hourly_observed['data'])
+  print(hourly_observed['data'])
 ```
 
 Observed Lightning by Geometry:
@@ -63,43 +63,43 @@ Observed Lightning by Geometry:
 from payloads import GeometryPayload
 
 payload = GeometryPayload(
-    geometry="{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
-    radius=10000
+  geometry="{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
+  radius=10000
 )
 
 lightning_by_geometry = advisor.observed.get_lightning_by_geometry(payload)
 
 if lightning_by_geometry['error']:
-    print('Error trying to get data!')
-    print(lightning_by_geometry['error'])
+  print('Error trying to get data!')
+  print(lightning_by_geometry['error'])
 else:
-    print(lightning_by_geometry['data'])
+  print(lightning_by_geometry['data'])
 ```
 
-Tms *(Tiles Map Server)*:
+Tms (Tiles Map Server):
 ```python
 from payloads import TmsPayload
 
 payload = TmsPayload(
-    istep="2024-12-25 10:00:00",
-    fstep="2024-12-25 12:00:00",
-    server="a",
-    mode="forecast",
-    variable="precipitation",
-    aggregation="sum",
-    x=2,
-    y=3,
-    z=4
+  istep="2024-12-25 10:00:00",
+  fstep="2024-12-25 12:00:00",
+  server="a",
+  mode="forecast",
+  variable="precipitation",
+  aggregation="sum",
+  x=2,
+  y=3,
+  z=4
 )
 
 tms_image = advisor.tms.get(payload)
 
-if lightning_by_geometry['error']:
+if tms_image['error']:
     print('Error trying to get data!')
-    print(lightning_by_geometry['error'])
+    print(tms_image['error'])
 else:
     with open("tms.png", "wb") as f:
-        f.write(get_tms_image["data"])
+        f.write(tms_image["data"])
 ```
 
 Plan Information:
