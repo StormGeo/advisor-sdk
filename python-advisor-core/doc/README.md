@@ -252,7 +252,7 @@ response = advisor.schema.get_definition()
 response = advisor.schema.post_definition(payload_schema_definition)
 
 # requesting to upload data to parameters from schema
-response = advisor.schema.post_definition(payload_schema_parameters)
+response = advisor.schema.post_parameters(payload_schema_parameters)
 
 if response['error']:
   print('Error trying to get data!')
