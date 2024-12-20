@@ -3,14 +3,17 @@
 Advisor Software Development Kit for python.
 
 ## Installation
+
 To install this package, use the following command:`
 
 ```bash
 pip install python-advisor-core
 ```
+
 Make sure you're using python 3.8 or higher.
 
 ## How to use
+
 First you need to import the SDK on your application and instancy the `AdvisorCore` class setting up your access token and needed configurations:
 
 ```python
@@ -20,7 +23,10 @@ advisor = AdvisorCore("<your_token>", retries=5, delay=1000)
 ```
 
 ### Examples for getting data
-Daily Forecast:
+
+<details>
+  <summary>Chart</summary>
+
 ```python
 from payloads import WeatherPayload
 
@@ -28,20 +34,76 @@ payload = WeatherPayload(
   locale_id="1234",
 )
 
-daily_forecast = advisor.forecast.get_daily(payload)
+# requesting daily forecast chart image
+response = advisor.chart.get_forecast_daily(payload)
 
-if daily_forecast['error']:
+# requesting hourly forecast chart image
+response = advisor.chart.get_forecast_hourly(payload)
+
+# requesting daily observed chart image
+response = advisor.chart.get_observed_daily(payload)
+
+# requesting hourly observed chart image
+response = advisor.chart.get_observed_hourly(payload)
+
+if response['error']:
   print('Error trying to get data!')
-  print(daily_forecast['error'])
+  print(response['error'])
 else:
-  print(daily_forecast['data'])
+  print(response['data'])
 ```
-- **[WeatherPayload](#weatherPayload)**: Payload type for getting weather data type.
-- **advisor**: Variable with the instance of the class
-- **forecast**: Class attribute responsible for getting forecast data by different methods
-- **get_daily**: Method to collect daily forecast data
 
-Hourly Observed:
+</details>
+
+<details>
+  <summary>Climatology</summary>
+
+```python
+from payloads import ClimatologyPayload
+
+payload = ClimatologyPayload(
+  locale_id="3477"
+)
+
+# requesting daily climatology data
+response = advisor.climatology.get_daily(payload)
+
+# requesting monthly climatology data
+response = advisor.climatology.get_monthly(payload)
+
+if response['error']:
+  print('Error trying to get data!')
+  print(response['error'])
+else:
+  print(response['data'])
+```
+
+</details>
+
+<details>
+  <summary>Current Weather</summary>
+
+```python
+from payloads import CurrentWeatherPayload
+
+payload = CurrentWeatherPayload(
+  locale_id="3477"
+)
+
+response = advisor.current_weather.get(payload)
+
+if response['error']:
+  print('Error trying to get data!')
+  print(response['error'])
+else:
+  print(response['data'])
+```
+
+</details>
+
+<details>
+  <summary>Forecast</summary>
+
 ```python
 from payloads import WeatherPayload
 
@@ -49,34 +111,161 @@ payload = WeatherPayload(
   locale_id="1234",
 )
 
-hourly_observed = advisor.observed.get_hourly(payload)
+# requesting daily forecast data
+response = advisor.forecast.get_daily(payload)
 
-if hourly_observed['error']:
+# requesting hourly forecast data
+response = advisor.forecast.get_hourly(payload)
+
+# requesting period forecast data
+response = advisor.forecast.get_period(payload)
+
+if response['error']:
   print('Error trying to get data!')
-  print(hourly_observed['error'])
+  print(response['error'])
 else:
-  print(hourly_observed['data'])
+  print(response['data'])
 ```
 
-Observed Lightning by Geometry:
-```python
-from payloads import GeometryPayload
+</details>
 
-payload = GeometryPayload(
+<details>
+  <summary>Monitoring</summary>
+
+```python
+response = advisor.monitoring.get_alerts()
+
+if response['error']:
+  print('Error trying to get data!')
+  print(response['error'])
+else:
+  print(response['data'])
+```
+
+</details>
+
+<details>
+  <summary>Observed</summary>
+
+```python
+from payloads import (WeatherPayload, StationPayload, RadiusPayload, GeometryPayload)
+
+payload = WeatherPayload(
+  locale_id="1234",
+)
+
+payload_for_station = StationPayload(
+  station_id="ABC123abc321CBA"
+)
+
+payload_for_radius = RadiusPayload(
+  locale_id="3477",
+  radius=1000
+)
+
+payload_for_geometry = GeometryPayload(
   geometry="{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
   radius=10000
 )
 
-lightning_by_geometry = advisor.observed.get_lightning_by_geometry(payload)
+# requesting daily observed data
+response = advisor.observed.get_daily(payload)
 
-if lightning_by_geometry['error']:
+# requesting hourly observed data
+response = advisor.observed.get_hourly(payload)
+
+# requesting period observed data
+response = advisor.observed.get_period(payload)
+
+# requesting station observed data
+response = advisor.observed.get_station_data(payload_for_station)
+
+# requesting fire-focus observed data
+response = advisor.observed.get_fire_focus(payload_for_radius)
+
+# requesting lightning observed data
+response = advisor.observed.get_lightning(payload_for_radius)
+
+# requesting fire-focus observed data by geometry
+response = advisor.observed.get_fire_focus_by_geometry(payload_for_geometry)
+
+# requesting lightning observed data by geometry
+response = advisor.observed.get_lightning_by_geometry(payload_for_geometry)
+
+if response['error']:
   print('Error trying to get data!')
-  print(lightning_by_geometry['error'])
+  print(response['error'])
 else:
-  print(lightning_by_geometry['data'])
+  print(response['data'])
 ```
 
-Tms (Tiles Map Server):
+</details>
+
+<details>
+  <summary>Plan Information</summary>
+
+```python
+response = advisor.plan.get_info()
+
+if response['error']:
+    print('Error trying to get data!')
+    print(response['error'])
+else:
+    print(response['data'])
+```
+
+</details>
+
+<details>
+  <summary>Schema/Parameter</summary>
+
+```python
+# Arbitrary example on how to define a schema
+payload_schema_definition = {
+  "identifier": "arbitraryIdentifier",
+  "arbitraryField1": {
+      "type": "boolean",
+      "required": True,
+      "length": 125,
+  },
+  "arbitraryField2": {
+      "type": "number",
+      "required": True,
+  },
+  "arbitraryField3": {
+      "type": "string",
+      "required": False,
+  }
+}
+
+# Arbitrary example on how to upload data to parameters from schema 
+payload_schema_parameters = {
+  "identifier": "arbitraryIdentifier",
+  "arbitraryField1": True,
+  "arbitraryField2": 15
+}
+
+# requesting all schemas from token
+response = advisor.schema.get_definition()
+
+# requesting to upload a new schema
+response = advisor.schema.post_definition(payload_schema_definition)
+
+# requesting to upload data to parameters from schema
+response = advisor.schema.post_definition(payload_schema_parameters)
+
+if response['error']:
+  print('Error trying to get data!')
+  print(response['error'])
+else:
+  print(response['data'])
+```
+
+</details>
+
+<details>
+  <summary>Tms (Tiles Map Server)</summary>
+
 ```python
 from payloads import TmsPayload
 
@@ -92,29 +281,21 @@ payload = TmsPayload(
   z=4
 )
 
-tms_image = advisor.tms.get(payload)
+response = advisor.tms.get(payload)
 
-if tms_image['error']:
+if response['error']:
     print('Error trying to get data!')
-    print(tms_image['error'])
+    print(response['error'])
 else:
-    with open("tms.png", "wb") as f:
-        f.write(tms_image["data"])
+    with open("response.png", "wb") as f:
+        f.write(response["data"])
 ```
 
-Plan Information:
-```python
-plan_info = advisor.plan.get_info(payload)
-
-if plan_info['error']:
-    print('Error trying to get data!')
-    print(plan_info['error'])
-else:
-    print(plan_info['data'])
-```
+</details>
 
 ## Response Format
-All the methods returns the same pattern: 
+
+All the methods returns the same pattern:
 
 ```python
 {
@@ -124,60 +305,68 @@ All the methods returns the same pattern:
 ```
 
 ## Payload Types
-### WeatherPayload
-  - **locale_id**: str
-  - **station_id**: str
-  - **latitude**: float
-  - **longitude**: float
-  - **timezone**: int
-  - **variables**: List[str]
-  - **start_date**: str
-  - **end_date**: str
 
-### StationPayload 
-  - **station_id**: str
-  - **layer**: str
-  - **variables**: List[str]
-  - **start_date**: str
-  - **end_date**: str
+### WeatherPayload
+
+- **locale_id**: str
+- **station_id**: str
+- **latitude**: float
+- **longitude**: float
+- **timezone**: int
+- **variables**: List[str]
+- **start_date**: str
+- **end_date**: str
+
+### StationPayload
+
+- **station_id**: str
+- **layer**: str
+- **variables**: List[str]
+- **start_date**: str
+- **end_date**: str
 
 ### ClimatologyPayload
-  - **locale_id**: str
-  - **station_id**: str
-  - **latitude**: float
-  - **longitude**: float
-  - **variables**: List[str]
+
+- **locale_id**: str
+- **station_id**: str
+- **latitude**: float
+- **longitude**: float
+- **variables**: List[str]
 
 ### CurrentWeatherPayload
-  - **locale_id**: str
-  - **station_id**: str
-  - **latitude**: float
-  - **longitude**: float
-  - **timezone**: int
-  - **variables**: List[str]
+
+- **locale_id**: str
+- **station_id**: str
+- **latitude**: float
+- **longitude**: float
+- **timezone**: int
+- **variables**: List[str]
 
 ### RadiusPayload
-  - **locale_id**: str
-  - **station_id**: str
-  - **latitude**: float
-  - **longitude**: float
-  - **start_date**: str
-  - **end_date**: str
-  - **radius**: int
+
+- **locale_id**: str
+- **station_id**: str
+- **latitude**: float
+- **longitude**: float
+- **start_date**: str
+- **end_date**: str
+- **radius**: int
 
 ### GeometryPayload
-  - **start_date**: str
-  - **end_date**: str
-  - **radius**: int
-  - **geometry**: str
+
+- **start_date**: str
+- **end_date**: str
+- **radius**: int
+- **geometry**: str
 
 ### TmsPayload
-  - **server**: str
-  - **mode**: str
-  - **variable**: str
-  - **aggregation**: str
-  - **x**: int
-  - **y**: int
-  - **z**: int
-  - **istep**: str
-  - **fstep**: str
+
+- **server**: str
+- **mode**: str
+- **variable**: str
+- **aggregation**: str
+- **x**: int
+- **y**: int
+- **z**: int
+- **istep**: str
+- **fstep**: str
