@@ -2,7 +2,30 @@
 
 Advisor Software Development Kit for python.
 
-## Installation
+## Contents
+- [Importing](#importing)
+- [Routes](#routes)
+  - [Examples](#examples)
+    - [Chart](#chart)
+    - [Climatology](#climatology)
+    - [Current Weather](#current-weather)
+    - [Forecast](#forecast)
+    - [Monitoring](#monitoring)
+    - [Observed](#observed)
+    - [Plan Information](#plan-information)
+    - [Schema/Parameter](#schemaparameter)
+    - [Tms (Tiles Map Server)](#tms-tiles-map-server)
+- [Response Format](#response-format)
+- [Payload Types](#payload-types)
+  - [WeatherPayload](#weatherpayload)
+  - [StationPayload](#stationpayload)
+  - [ClimatologyPayload](#climatologypayload)
+  - [CurrentWeatherPayload](#currentweatherpayload)
+  - [RadiusPayload](#radiuspayload)
+  - [GeometryPayload](#geometrypayload)
+  - [TmsPayload](#tmspayload)
+---
+## Importing
 
 To install this package, use the following command:`
 
@@ -12,21 +35,21 @@ pip install python-advisor-core
 
 Make sure you're using python 3.8 or higher.
 
-## How to use
+
+## Routes
 
 First you need to import the SDK on your application and instancy the `AdvisorCore` class setting up your access token and needed configurations:
 
 ```python
 from advisor_core_sdk import AdvisorCore
 
-advisor = AdvisorCore("<your_token>", retries=5, delay=1000)
+advisor = AdvisorCore("<your_token>", retries=5, delay=5)
 ```
 
-### Examples for getting data
+### Examples
+Get data from different routes with theses examples
 
-<details>
-  <summary>Chart</summary>
-
+#### Chart
 ```python
 from payloads import WeatherPayload
 
@@ -53,11 +76,7 @@ else:
   print(response['data'])
 ```
 
-</details>
-
-<details>
-  <summary>Climatology</summary>
-
+#### Climatology
 ```python
 from payloads import ClimatologyPayload
 
@@ -78,11 +97,7 @@ else:
   print(response['data'])
 ```
 
-</details>
-
-<details>
-  <summary>Current Weather</summary>
-
+#### Current Weather
 ```python
 from payloads import CurrentWeatherPayload
 
@@ -99,11 +114,8 @@ else:
   print(response['data'])
 ```
 
-</details>
 
-<details>
-  <summary>Forecast</summary>
-
+#### Forecast
 ```python
 from payloads import WeatherPayload
 
@@ -127,11 +139,7 @@ else:
   print(response['data'])
 ```
 
-</details>
-
-<details>
-  <summary>Monitoring</summary>
-
+#### Monitoring
 ```python
 response = advisor.monitoring.get_alerts()
 
@@ -142,11 +150,7 @@ else:
   print(response['data'])
 ```
 
-</details>
-
-<details>
-  <summary>Observed</summary>
-
+#### Observed
 ```python
 from payloads import (WeatherPayload, StationPayload, RadiusPayload, GeometryPayload)
 
@@ -199,11 +203,7 @@ else:
   print(response['data'])
 ```
 
-</details>
-
-<details>
-  <summary>Plan Information</summary>
-
+#### Plan Information
 ```python
 response = advisor.plan.get_info()
 
@@ -214,11 +214,7 @@ else:
     print(response['data'])
 ```
 
-</details>
-
-<details>
-  <summary>Schema/Parameter</summary>
-
+#### Schema/Parameter
 ```python
 # Arbitrary example on how to define a schema
 payload_schema_definition = {
@@ -252,7 +248,7 @@ response = advisor.schema.get_definition()
 response = advisor.schema.post_definition(payload_schema_definition)
 
 # requesting to upload data to parameters from schema
-response = advisor.schema.post_definition(payload_schema_parameters)
+response = advisor.schema.post_parameters(payload_schema_parameters)
 
 if response['error']:
   print('Error trying to get data!')
@@ -261,11 +257,7 @@ else:
   print(response['data'])
 ```
 
-</details>
-
-<details>
-  <summary>Tms (Tiles Map Server)</summary>
-
+#### Tms (Tiles Map Server)
 ```python
 from payloads import TmsPayload
 
@@ -291,11 +283,10 @@ else:
         f.write(response["data"])
 ```
 
-</details>
-
+---
 ## Response Format
 
-All the methods returns the same pattern:
+All the methods will return the same pattern:
 
 ```python
 {
@@ -370,3 +361,4 @@ All the methods returns the same pattern:
 - **z**: int
 - **istep**: str
 - **fstep**: str
+---
