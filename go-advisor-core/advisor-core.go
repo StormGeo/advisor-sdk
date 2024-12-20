@@ -3,7 +3,6 @@ package advisorsdk
 import (
 	"fmt"
 	"io"
-	"time"
 )
 
 const BASE_URL = "http://advisor-core.climatempo.io/api"
@@ -11,7 +10,7 @@ const BASE_URL = "http://advisor-core.climatempo.io/api"
 type AdvisorCoreConfig struct {
 	Token     string
 	Retries   uint8
-	Delay     time.Duration
+	Delay     uint8
 	NoRetries bool
 	NoDelay   bool
 }
@@ -34,7 +33,7 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 	}
 
 	if config.Delay == 0 && !config.NoDelay {
-		config.Delay = time.Second * 5
+		config.Delay = 5
 	}
 
 	return AdvisorCore{

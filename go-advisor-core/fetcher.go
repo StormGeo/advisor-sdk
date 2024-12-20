@@ -12,7 +12,7 @@ import (
 func retryReq(
 	method string,
 	retries uint8,
-	delay time.Duration,
+	delay uint8,
 	url string,
 	body []byte,
 ) (res *http.Response, err error) {
@@ -32,7 +32,7 @@ func retryReq(
 		}
 
 		if retryNumber > 0 {
-			time.Sleep(delay)
+			time.Sleep(time.Second * time.Duration(delay))
 		}
 	}
 
