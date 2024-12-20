@@ -3,7 +3,7 @@ from typing import List
 class WeatherPayload:
     def __init__(
         self,
-        locale_id: str = None,
+        locale_id: int = None,
         station_id: str = None,
         latitude: float = None,
         longitude: float = None,
@@ -34,7 +34,7 @@ class WeatherPayload:
             "latitude": self.latitude,
             "longitude": self.longitude,
             "timezone": self.timezone,
-            "variables": self.variables,
+            "variables[]": self.variables,
             "startDate": self.start_date,
             "endDate": self.end_date,
         }
@@ -42,7 +42,7 @@ class WeatherPayload:
 class CurrentWeatherPayload:
     def __init__(
         self,
-        locale_id: str = None,
+        locale_id: int = None,
         station_id: str = None,
         latitude: float = None,
         longitude: float = None,
@@ -69,13 +69,13 @@ class CurrentWeatherPayload:
             "latitude": self.latitude,
             "longitude": self.longitude,
             "timezone": self.timezone,
-            "variables": self.variables,
+            "variables[]": self.variables,
         }
 
 class ClimatologyPayload:
     def __init__(
         self,
-        locale_id: str = None,
+        locale_id: int = None,
         station_id: str = None,
         latitude: float = None,
         longitude: float = None,
@@ -99,13 +99,13 @@ class ClimatologyPayload:
             "stationId": self.station_id,
             "latitude": self.latitude,
             "longitude": self.longitude,
-            "variables": self.variables,
+            "variables[]": self.variables,
         }
 
 class RadiusPayload:
     def __init__(
         self,
-        locale_id: str = None,
+        locale_id: int = None,
         station_id: str = None,
         latitude: float = None,
         longitude: float = None,
@@ -163,7 +163,7 @@ class StationPayload:
         return {
             "stationId": self.station_id,
             "layer": self.layer,
-            "variables": self.variables,
+            "variables[]": self.variables,
             "startDate": self.start_date,
             "endDate": self.end_date,
         }

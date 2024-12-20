@@ -5,7 +5,6 @@ Advisor Software Development Kit for python.
 ## Contents
 - [Importing](#importing)
 - [Routes](#routes)
-  - [Examples](#examples)
     - [Chart](#chart)
     - [Climatology](#climatology)
     - [Current Weather](#current-weather)
@@ -54,7 +53,8 @@ Get data from different routes with theses examples
 from payloads import WeatherPayload
 
 payload = WeatherPayload(
-  locale_id="1234",
+  locale_id=1234,
+  variables=["temperature", "precipitation"]
 )
 
 # requesting daily forecast chart image
@@ -73,7 +73,8 @@ if response['error']:
   print('Error trying to get data!')
   print(response['error'])
 else:
-  print(response['data'])
+  with open("response.png", "wb") as f:
+    f.write(response["data"])
 ```
 
 #### Climatology
@@ -81,7 +82,8 @@ else:
 from payloads import ClimatologyPayload
 
 payload = ClimatologyPayload(
-  locale_id="3477"
+  locale_id=1234,
+  variables=["temperature", "precipitation"]
 )
 
 # requesting daily climatology data
@@ -102,7 +104,7 @@ else:
 from payloads import CurrentWeatherPayload
 
 payload = CurrentWeatherPayload(
-  locale_id="3477"
+  locale_id=1234
 )
 
 response = advisor.current_weather.get(payload)
@@ -120,7 +122,8 @@ else:
 from payloads import WeatherPayload
 
 payload = WeatherPayload(
-  locale_id="1234",
+  locale_id=1234,
+  variables=["temperature", "precipitation"]
 )
 
 # requesting daily forecast data
@@ -155,7 +158,7 @@ else:
 from payloads import (WeatherPayload, StationPayload, RadiusPayload, GeometryPayload)
 
 payload = WeatherPayload(
-  locale_id="1234",
+  locale_id=1234,
 )
 
 payload_for_station = StationPayload(
@@ -163,7 +166,7 @@ payload_for_station = StationPayload(
 )
 
 payload_for_radius = RadiusPayload(
-  locale_id="3477",
+  locale_id=1234,
   radius=1000
 )
 
@@ -208,10 +211,10 @@ else:
 response = advisor.plan.get_info()
 
 if response['error']:
-    print('Error trying to get data!')
-    print(response['error'])
+  print('Error trying to get data!')
+  print(response['error'])
 else:
-    print(response['data'])
+  print(response['data'])
 ```
 
 #### Schema/Parameter
@@ -276,11 +279,11 @@ payload = TmsPayload(
 response = advisor.tms.get(payload)
 
 if response['error']:
-    print('Error trying to get data!')
-    print(response['error'])
+  print('Error trying to get data!')
+  print(response['error'])
 else:
-    with open("response.png", "wb") as f:
-        f.write(response["data"])
+  with open("response.png", "wb") as f:
+    f.write(response["data"])
 ```
 
 ---
@@ -299,7 +302,7 @@ All the methods will return the same pattern:
 
 ### WeatherPayload
 
-- **locale_id**: str
+- **locale_id**: int
 - **station_id**: str
 - **latitude**: float
 - **longitude**: float
@@ -318,7 +321,7 @@ All the methods will return the same pattern:
 
 ### ClimatologyPayload
 
-- **locale_id**: str
+- **locale_id**: int
 - **station_id**: str
 - **latitude**: float
 - **longitude**: float
@@ -326,7 +329,7 @@ All the methods will return the same pattern:
 
 ### CurrentWeatherPayload
 
-- **locale_id**: str
+- **locale_id**: int
 - **station_id**: str
 - **latitude**: float
 - **longitude**: float
@@ -335,7 +338,7 @@ All the methods will return the same pattern:
 
 ### RadiusPayload
 
-- **locale_id**: str
+- **locale_id**: int
 - **station_id**: str
 - **latitude**: float
 - **longitude**: float
