@@ -25,15 +25,22 @@ abstract class BaseRouter
   protected $delay;
 
   /**
+   * @var Header
+   */
+  protected $headers;
+
+  /**
    * @param   string  $token
    * @param   int     $retries
    * @param   int     $delay
+   * @param   Header  $headers
    */
-  public function __construct($token, $retries, $delay)
+  public function __construct($token, $retries, $delay, $headers)
   {
     $this->token = $token;
     $this->retries = $retries;
     $this->delay = $delay;
+    $this->headers = $headers;
   }
 
   /**
@@ -75,6 +82,7 @@ abstract class BaseRouter
   protected function makeGetRequest($url, $binaryReturn = false)
   {
     $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers->getFormattedHeaders());
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPGET, true);
 
@@ -82,9 +90,11 @@ abstract class BaseRouter
     $responseInfo = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     if ($response != false) {
+      $transformToJson = $this->headers->get('Accept') === 'application/json' && !$binaryReturn;
+
       return [
         'statusCode' => $responseInfo,
-        'data' => ($binaryReturn) ? $response : json_decode($response, true)
+        'data' => $transformToJson ? json_decode($response, true) : $response
       ];
     }
 
@@ -101,23 +111,23 @@ abstract class BaseRouter
    */
   protected function makePostRequest($url, $body)
   {
-    $headers = [
-      'Content-Type: application/json'
-    ];
+    $this->headers->set('Content-Type', 'application/json');
 
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers->getFormattedHeaders());
 
     $response = curl_exec($ch);
     $responseInfo = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     if ($response != false) {
+      $transformToJson = $this->headers->get('Accept') === 'application/json';
+
       return [
         'statusCode' => $responseInfo,
-        'data' => json_decode($response, true)
+        'data' => $transformToJson ? json_decode($response, true) : $response
       ];
     }
 
@@ -128,7 +138,7 @@ abstract class BaseRouter
   }
 
   /**
-   * @param   callable(): (array|null)  $request
+   * @param   callable():(array|null)  $request
    * @param   int                       $retries
    * @param   int                       $delay
    * @return  AdvisorResponse
