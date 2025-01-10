@@ -15,15 +15,22 @@ func retryReq(
 	delay uint8,
 	url string,
 	body []byte,
+	header http.Header,
 ) (res *http.Response, err error) {
 	for retryNumber := retries + 1; retryNumber > 0; retryNumber-- {
+		var req *http.Request
+
 		if method == "GET" {
-			res, err = http.Get(url)
+			req, err = http.NewRequest("GET", url, nil)
 		} else if method == "POST" {
-			res, err = http.Post(url, "application/json", bytes.NewBuffer(body))
+			req, err = http.NewRequest("POST", url, bytes.NewBuffer(body))
 		}
 
-		if res.StatusCode < 500 && res.StatusCode != 429 {
+		req.Header = header
+		client := &http.Client{}
+
+		res, err = client.Do(req)
+		if (res.StatusCode < 500 && res.StatusCode != 429) || retryNumber == 0 {
 			return res, err
 		}
 
@@ -39,7 +46,7 @@ func retryReq(
 	return res, err
 }
 
-func resToJson(res *http.Response, resError error) (data any, err error) {
+func formatResponse(res *http.Response, resError error) (data any, err error) {
 	if resError != nil {
 		return nil, resError
 	}
@@ -52,6 +59,10 @@ func resToJson(res *http.Response, resError error) (data any, err error) {
 		body, bodyErr := io.ReadAll(res.Body)
 		if bodyErr != nil {
 			return nil, bodyErr
+		}
+
+		if res.Request.Header.Get("Accept") != "application/json" {
+			return string(body), nil
 		}
 
 		jsonParserErr := json.Unmarshal(body, &destiny)

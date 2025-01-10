@@ -3,6 +3,7 @@ package advisorsdk
 import (
 	"fmt"
 	"io"
+	"net/http"
 )
 
 const BASE_URL = "http://advisor-core.climatempo.io/api"
@@ -16,6 +17,7 @@ type AdvisorCoreConfig struct {
 }
 
 type AdvisorCore struct {
+	header         *http.Header
 	Chart          chart
 	Climatology    climatology
 	CurrentWeather currentWeather
@@ -27,6 +29,14 @@ type AdvisorCore struct {
 	Tms            tms
 }
 
+func (a *AdvisorCore) SetHeaderAccept(value string) {
+	a.header.Set("Accept", value)
+}
+
+func (a *AdvisorCore) SetHeaderAcceptLanguage(value string) {
+	a.header.Set("Accept-Language", value)
+}
+
 func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 	if config.Retries == 0 && !config.NoRetries {
 		config.Retries = 5
@@ -36,72 +46,80 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 		config.Delay = 5
 	}
 
+	header := http.Header{}
+	header.Set("Accept", "application/json")
+	header.Set("Content-Type", "application/json")
+
 	return AdvisorCore{
+		header: &header,
 		Chart: chart{
-			GetForecastDaily:  makeGetImage("/v1/forecast/daily/chart", config),
-			GetForecastHourly: makeGetImage("/v1/forecast/hourly/chart", config),
-			GetObservedDaily:  makeGetImage("/v1/observed/daily/chart", config),
-			GetObservedHourly: makeGetImage("/v1/observed/hourly/chart", config),
+			GetForecastDaily:  makeGetImage("/v1/forecast/daily/chart", config, header),
+			GetForecastHourly: makeGetImage("/v1/forecast/hourly/chart", config, header),
+			GetObservedDaily:  makeGetImage("/v1/observed/daily/chart", config, header),
+			GetObservedHourly: makeGetImage("/v1/observed/hourly/chart", config, header),
 		},
 		Climatology: climatology{
-			GetDaily:   makeGetWithClimatologyPayload("/v1/climatology/daily", config),
-			GetMonthly: makeGetWithClimatologyPayload("/v1/climatology/monthly", config),
+			GetDaily:   makeGetWithClimatologyPayload("/v1/climatology/daily", config, header),
+			GetMonthly: makeGetWithClimatologyPayload("/v1/climatology/monthly", config, header),
 		},
 		CurrentWeather: currentWeather{
-			Get: makeGetWithCurrentWeatherPayload("/v1/current-weather", config),
+			Get: makeGetWithCurrentWeatherPayload("/v1/current-weather", config, header),
 		},
 		Forecast: forecast{
-			GetDaily:  makeGetWithWeatherPayload("/v1/forecast/daily", config),
-			GetHourly: makeGetWithWeatherPayload("/v1/forecast/hourly", config),
-			GetPeriod: makeGetWithWeatherPayload("/v1/forecast/period", config),
+			GetDaily:  makeGetWithWeatherPayload("/v1/forecast/daily", config, header),
+			GetHourly: makeGetWithWeatherPayload("/v1/forecast/hourly", config, header),
+			GetPeriod: makeGetWithWeatherPayload("/v1/forecast/period", config, header),
 		},
 		Monitoring: monitoring{
 			GetAlerts: func() (response AdvisorResponse, err error) {
-				return resToJson(retryReq(
+				return formatResponse(retryReq(
 					"GET",
 					config.Retries,
 					config.Delay,
 					BASE_URL+"/v1/monitoring/alerts?token="+config.Token,
 					nil,
+					header,
 				))
 			},
 		},
 		Observed: observed{
-			GetDaily:               makeGetWithWeatherPayload("/v1/observed/daily", config),
-			GetHourly:              makeGetWithWeatherPayload("/v1/observed/hourly", config),
-			GetPeriod:              makeGetWithWeatherPayload("/v1/observed/period", config),
-			GetLightning:           makeGetWithRadiusPayload("/v1/observed/lightning", config),
-			GetLightningByGeometry: makePostWithGeometryPayload("/v1/observed/lightning", config),
-			GetFireFocus:           makeGetWithRadiusPayload("/v1/observed/fire-focus", config),
-			GetFireFocusByGeometry: makePostWithGeometryPayload("/v1/observed/fire-focus", config),
-			GetStationData:         makeGetWithStationPayload("/v1/station", config),
+			GetDaily:               makeGetWithWeatherPayload("/v1/observed/daily", config, header),
+			GetHourly:              makeGetWithWeatherPayload("/v1/observed/hourly", config, header),
+			GetPeriod:              makeGetWithWeatherPayload("/v1/observed/period", config, header),
+			GetLightning:           makeGetWithRadiusPayload("/v1/observed/lightning", config, header),
+			GetLightningByGeometry: makePostWithGeometryPayload("/v1/observed/lightning", config, header),
+			GetFireFocus:           makeGetWithRadiusPayload("/v1/observed/fire-focus", config, header),
+			GetFireFocusByGeometry: makePostWithGeometryPayload("/v1/observed/fire-focus", config, header),
+			GetStationData:         makeGetWithStationPayload("/v1/station", config, header),
 		},
 		Plan: plan{
 			GetInfo: func() (response AdvisorResponse, err error) {
-				return resToJson(retryReq(
+				return formatResponse(retryReq(
 					"GET",
 					config.Retries,
 					config.Delay,
 					BASE_URL+"/v1/plan/"+config.Token,
 					nil,
+					header,
 				))
 			},
 		},
 		Schema: schema{
 			GetDefinition: func() (response AdvisorResponse, err error) {
-				return resToJson(retryReq(
+				return formatResponse(retryReq(
 					"GET",
 					config.Retries,
 					config.Delay,
 					BASE_URL+"/v1/schema/definition?token="+config.Token,
 					nil,
+					header,
 				))
 			},
-			PostDefinition: makePostWithSchemaPayload("/v1/schema/definition", config),
-			PostParameters: makePostWithSchemaPayload("/v1/schema/parameters", config),
+			PostDefinition: makePostWithSchemaPayload("/v1/schema/definition", config, header),
+			PostParameters: makePostWithSchemaPayload("/v1/schema/parameters", config, header),
 		},
 		Tms: tms{
-			Get: makeGetTmsImageV1(config),
+			Get: makeGetTmsImageV1(config, header),
 		},
 	}
 }
@@ -116,67 +134,72 @@ func formatUrl(route string, token string, params string) string {
 	return url
 }
 
-func makeGetWithWeatherPayload(route string, config AdvisorCoreConfig) RequestWithWeatherPayload {
+func makeGetWithWeatherPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithWeatherPayload {
 	return func(payload WeatherPayload) (response AdvisorResponse, err error) {
-		return resToJson(retryReq(
+		return formatResponse(retryReq(
 			"GET",
 			config.Retries,
 			config.Delay,
 			formatUrl(route, config.Token, payload.toQueryParams()),
 			nil,
+			header,
 		))
 	}
 }
 
-func makeGetWithClimatologyPayload(route string, config AdvisorCoreConfig) RequestWithClimatologyPayload {
+func makeGetWithClimatologyPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithClimatologyPayload {
 	return func(payload ClimatologyPayload) (response AdvisorResponse, err error) {
-		return resToJson(retryReq(
+		return formatResponse(retryReq(
 			"GET",
 			config.Retries,
 			config.Delay,
 			formatUrl(route, config.Token, payload.toQueryParams()),
 			nil,
+			header,
 		))
 	}
 }
 
-func makeGetWithCurrentWeatherPayload(route string, config AdvisorCoreConfig) RequestWithCurrentWeatherPayload {
+func makeGetWithCurrentWeatherPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithCurrentWeatherPayload {
 	return func(payload CurrentWeatherPayload) (response AdvisorResponse, err error) {
-		return resToJson(retryReq(
+		return formatResponse(retryReq(
 			"GET",
 			config.Retries,
 			config.Delay,
 			formatUrl(route, config.Token, payload.toQueryParams()),
 			nil,
+			header,
 		))
 	}
 }
 
-func makeGetWithRadiusPayload(route string, config AdvisorCoreConfig) RequestWithRadiusPayload {
+func makeGetWithRadiusPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithRadiusPayload {
 	return func(payload RadiusPayload) (response AdvisorResponse, err error) {
-		return resToJson(retryReq(
+		return formatResponse(retryReq(
 			"GET",
 			config.Retries,
 			config.Delay,
 			formatUrl(route, config.Token, payload.toQueryParams()),
 			nil,
+			header,
 		))
 	}
 }
 
-func makeGetWithStationPayload(route string, config AdvisorCoreConfig) RequestWithStationPayload {
+func makeGetWithStationPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithStationPayload {
 	return func(payload StationPayload) (response AdvisorResponse, err error) {
-		return resToJson(retryReq(
+		return formatResponse(retryReq(
 			"GET",
 			config.Retries,
 			config.Delay,
 			formatUrl(route, config.Token, payload.toQueryParams()),
 			nil,
+			header,
 		))
 	}
 }
 
-func makeGetImage(route string, config AdvisorCoreConfig) ImageRequestWithWeatherPayload {
+func makeGetImage(route string, config AdvisorCoreConfig, header http.Header) ImageRequestWithWeatherPayload {
 	return func(payload WeatherPayload) (imageBody io.ReadCloser, err error) {
 		resp, respErr := retryReq(
 			"GET",
@@ -184,6 +207,7 @@ func makeGetImage(route string, config AdvisorCoreConfig) ImageRequestWithWeathe
 			config.Delay,
 			formatUrl(route, config.Token, payload.toQueryParams()),
 			nil,
+			header,
 		)
 		if respErr != nil {
 			return nil, respErr
@@ -194,7 +218,7 @@ func makeGetImage(route string, config AdvisorCoreConfig) ImageRequestWithWeathe
 	}
 }
 
-func makeGetTmsImageV1(config AdvisorCoreConfig) TmsRequest {
+func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest {
 	return func(payload TmsPayload) (imageBody io.ReadCloser, err error) {
 		url := fmt.Sprintf(
 			"%s/v1/tms/%s/%s/%s/%s/%d/%d/%d.png?token=%s&istep=%s&fstep=%s",
@@ -217,6 +241,7 @@ func makeGetTmsImageV1(config AdvisorCoreConfig) TmsRequest {
 			config.Delay,
 			url,
 			nil,
+			header,
 		)
 		if respErr != nil {
 			return nil, respErr
@@ -227,26 +252,28 @@ func makeGetTmsImageV1(config AdvisorCoreConfig) TmsRequest {
 	}
 }
 
-func makePostWithGeometryPayload(route string, config AdvisorCoreConfig) RequestWithGeometryPayload {
+func makePostWithGeometryPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithGeometryPayload {
 	return func(payload GeometryPayload) (response AdvisorResponse, err error) {
-		return resToJson(retryReq(
+		return formatResponse(retryReq(
 			"POST",
 			config.Retries,
 			config.Delay,
 			formatUrl(route, config.Token, payload.toQueryParams()),
 			payload.toBodyBytes(),
+			header,
 		))
 	}
 }
 
-func makePostWithSchemaPayload(route string, config AdvisorCoreConfig) RequestWithSchemaPayload {
+func makePostWithSchemaPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithSchemaPayload {
 	return func(payload SchemaPayload) (response AdvisorResponse, err error) {
-		return resToJson(retryReq(
+		return formatResponse(retryReq(
 			"POST",
 			config.Retries,
 			config.Delay,
 			formatUrl(route, config.Token, ""),
 			payload.toBodyBytes(),
+			header,
 		))
 	}
 }
