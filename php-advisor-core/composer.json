@@ -1,4 +1,5 @@
 {
+    "version": "0.1.0",
     "name": "stormgeo/advisorcore",
     "description": "The SDK to use Advisor Core API.",
     "type": "library",
