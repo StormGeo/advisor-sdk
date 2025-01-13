@@ -7,7 +7,7 @@ namespace StormGeo\AdvisorCore\Routes;
  */
 abstract class BaseRouter
 {
-  const BASE_URL = 'http://advisor-core.climatempo.io/api';
+  const BASE_URL = 'https://advisor-core.climatempo.io/api';
 
   /**
    * @var string
