@@ -1,0 +1,39 @@
+name: Publish PHP SDK
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'php-advisor-core/**'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+          extensions: mbstring, intl, json
+      
+      - name: Validate composer.json
+        working-directory: php-advisor-core
+        run: composer validate --strict
+      
+      - name: Install dependencies
+        working-directory: php-advisor-core
+        run: composer install --no-dev --prefer-dist --no-interaction --no-progress
+      
+      - name: Notify Packagist
+        env:
+          PACKAGIST_USERNAME: ${{ secrets.SG_PACKAGIST_USERNAME }}
+          PACKAGIST_TOKEN: ${{ secrets.SG_PACKAGIST_MAIN_TOKEN }}
+        run: |
+          curl -X POST -H 'Content-Type:application/json' \
+          "https://packagist.org/api/create-package?username=$PACKAGIST_USERNAME&apiToken=$PACKAGIST_TOKEN" \
+          -d '{"repository":"https://github.com/StormGeo/advisor-sdk/php-advisor-core"}'
