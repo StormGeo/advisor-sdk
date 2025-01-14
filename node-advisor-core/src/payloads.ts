@@ -28,6 +28,7 @@ export interface ClimatologyPayload {
 
 export interface CurrentWeatherPayload {
   localeId?: number
+  stationId?: string
   latitude?: number
   longitude?: number
   timezone?: number
@@ -76,4 +77,5 @@ export interface AdvisorCoreConfig {
   token: string
   retries?: number
   delay?: number
+  headers?: Record<string, string>
 }

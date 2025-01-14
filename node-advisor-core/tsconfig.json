@@ -11,7 +11,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "paths": {
-      "mjolnir": ["."]
+      "AdvisorCore": ["."]
     }
   },
   "include": ["src/**/*"],

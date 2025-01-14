@@ -106,8 +106,9 @@ export class AdvisorCore {
   private readonly retries: number
   private readonly delay: number
   private readonly client: AxiosInstance
+  private headers: Record<string, string>
 
-  constructor({ token, retries = 5, delay = 1000 }: AdvisorCoreConfig) {
+  constructor({ token, retries = 5, delay = 5}: AdvisorCoreConfig) {
     if (!token) {
       throw new Error("Token is required.")
     }
@@ -121,7 +122,11 @@ export class AdvisorCore {
     this.baseURL = "https://advisor-core.climatempo.io/api/"
     this.token = token
     this.retries = retries
-    this.delay = delay
+    this.delay = delay * 1000
+    this.headers = {
+      Accept: "application/json",
+      "Accept-Language": "en-US",
+    }
     this.client = axios.create({
       baseURL: this.baseURL,
     })
@@ -138,6 +143,7 @@ export class AdvisorCore {
       const response = await this.client({
         method,
         url,
+        headers: this.headers,
         ...(method === "GET" ? { params } : { params, data }),
       })
 
@@ -164,6 +170,7 @@ export class AdvisorCore {
       const response = await this.client({
         method,
         url,
+        headers: this.headers,
         ...(method === "GET" ? { params } : { params, data }),
         responseType: 'arraybuffer',
       })
@@ -180,6 +187,14 @@ export class AdvisorCore {
 
       return { data: null, error: error?.response?.data ?? error }
     }
+  }
+
+  setHeaderAccept(value: string): void {
+    this.headers.Accept = value
+  }
+
+  setHeaderAcceptLanguage(value: string): void {
+    this.headers["Accept-Language"] = value
   }
 
   /**
