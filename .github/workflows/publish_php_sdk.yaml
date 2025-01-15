@@ -36,4 +36,4 @@ jobs:
         run: |
           curl -X POST -H "Content-Type: application/json" \
           "https://packagist.org/api/create-package?username=$PACKAGIST_USERNAME&apiToken=$PACKAGIST_TOKEN" \
-          -d '{"repository":"https://github.com/StormGeo/advisor-sdk/php-advisor-core"}'
+          -d '{"repository":"https://github.com/StormGeo/advisor-sdk/tree/main/php-advisor-core"}'
