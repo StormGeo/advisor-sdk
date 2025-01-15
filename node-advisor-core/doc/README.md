@@ -202,7 +202,7 @@ if (response.error) {
 }
 ```
 
-Schema/Parameter: 
+Schema/Parameter:
 ```javascript
 // Arbitrary example on how to define a schema
 const schemaPayload = {
