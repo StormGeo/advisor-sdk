@@ -2,6 +2,33 @@
 
 Advisor Software Development Kit for nodeJS.
 
+## Contents
+- [Node SDK](#node-sdk)
+  - [Contents](#contents)
+  - [Installation](#installation)
+  - [Routes](#routes)
+    - [Examples](#examples)
+      - [Chart:](#chart)
+      - [Climatology:](#climatology)
+      - [Current Weather:](#current-weather)
+      - [Forecast:](#forecast)
+      - [Monitoring:](#monitoring)
+      - [Observed:](#observed)
+      - [Plan Information:](#plan-information)
+      - [Schema/Parameter:](#schemaparameter)
+      - [Tms (Tiles Map Server):](#tms-tiles-map-server)
+  - [Headers Configuration](#headers-configuration)
+  - [Response Format](#response-format)
+  - [Payload Types](#payload-types)
+    - [WeatherPayload](#weatherpayload)
+    - [StationPayload](#stationpayload)
+    - [ClimatologyPayload](#climatologypayload)
+    - [CurrentWeatherPayload](#currentweatherpayload)
+    - [RadiusPayload](#radiuspayload)
+    - [GeometryPayload](#geometrypayload)
+    - [TmsPayload](#tmspayload)
+---
+
 ## Installation
 
 To install this package, use the following command:
@@ -12,7 +39,7 @@ npm install node-advisor-core
 
 Make sure you're using node v18.17 or higher.
 
-## How to use
+## Routes
 
 First you need to import the SDK on your application and instancy the `AdvisorCore` class setting up your access token and needed configurations:
 
@@ -26,9 +53,9 @@ const advisor = new AdvisorCore({
 })
 ```
 
-### Examples for getting data
+### Examples
 
-Chart:
+#### Chart:
 ```javascript
 const payload = {
   variables: ['temperature', 'precipitation'],
@@ -56,7 +83,7 @@ if (response.error) {
 ```
 
 
-Climatology:
+#### Climatology:
 ```javascript
 const payload = {
   variables: ['temperature', 'precipitation'],
@@ -79,7 +106,7 @@ if (response.error) {
 ```
 
 
-Current Weather:
+#### Current Weather:
 ```javascript
 const payload = {
   localeId: 1234,
@@ -96,7 +123,7 @@ if (response.error) {
 ```
 
 
-Forecast:
+#### Forecast:
 ```javascript
 const payload = {
   variables: ['temperature', 'precipitation'],
@@ -121,7 +148,7 @@ if (response.error) {
 ```
 
 
-Monitoring:
+#### Monitoring:
 ```javascript
 let response = await advisor.monitoring.getAlerts()
 
@@ -134,7 +161,7 @@ if (response.error) {
 ```
 
 
-Observed:
+#### Observed:
 ```javascript
 const payload = {
   localeId: 1234,
@@ -190,7 +217,7 @@ if (response.error) {
 ```
 
 
-Plan Information:
+#### Plan Information:
 ```javascript
 let response = await advisor.plan.getInfo()
 
@@ -202,7 +229,7 @@ if (response.error) {
 }
 ```
 
-Schema/Parameter:
+#### Schema/Parameter:
 ```javascript
 // Arbitrary example on how to define a schema
 const schemaPayload = {
@@ -238,7 +265,7 @@ if (response.error) {
 ```
 
 
-Tms (Tiles Map Server):
+#### Tms (Tiles Map Server):
 ```javascript
 const payload = {
   istep: "2024-12-25 10:00:00",
