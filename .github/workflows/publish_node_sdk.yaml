@@ -33,4 +33,4 @@ jobs:
         working-directory: node-advisor-core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.SG_NPMJS_AUTOMATION_TOKEN }}
-        run: npm publish --access public
+        run: npm publish

@@ -14,6 +14,10 @@
     "type": "git",
     "url": "git+https://github.com/StormGeo/advisor-sdk.git"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc"
   },
