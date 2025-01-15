@@ -262,6 +262,43 @@ if (response.error) {
 }
 ```
 
+## Headers Configuration
+
+You can also set headers to translate the error descriptions or to receive the response in a different format type. This functionality is only available for some routes, consult the API documentation to find out which routes have this functionality.
+
+Available languages: 
+- en-US (default)
+- pt-BR
+- es-ES
+
+Available response types:
+- application/json (default)
+- application/xml
+- text/csv
+
+Example:
+
+```javascript
+const advisor = new AdvisorCore({
+  token: 'invalid-token',
+})
+
+advisor.setHeaderAccept('application/xml')
+advisor.setHeaderAcceptLanguage('es-ES')
+
+let response = await advisor.plan.getInfo()
+
+console.log(response.error)
+
+// <response>
+//   <error>
+//     <type>UNAUTHORIZED_ACCESS</type>
+//     <message>UNAUTHORIZED_REQUEST</message>
+//     <description>La solicitud no está autorizada.</description>
+//   </error>
+// </response>
+```
+
 
 ## Response Format
 
