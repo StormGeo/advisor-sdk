@@ -108,7 +108,7 @@ export class AdvisorCore {
   private readonly client: AxiosInstance
   private headers: Record<string, string>
 
-  constructor({ token, retries = 5, delay = 5}: AdvisorCoreConfig) {
+  constructor({ token, retries = 5, delay = 5 }: AdvisorCoreConfig) {
     if (!token) {
       throw new Error("Token is required.")
     }
@@ -124,6 +124,7 @@ export class AdvisorCore {
     this.retries = retries
     this.delay = delay * 1000
     this.headers = {
+      'Content-Type': 'application/json',
       Accept: "application/json",
       "Accept-Language": "en-US",
     }
