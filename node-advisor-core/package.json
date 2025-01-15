@@ -1,0 +1,30 @@
+{
+  "name": "StormGeo/AdvisorCore",
+  "version": "0.1.0",
+  "author": "Climatempo",
+  "license": "MIT",
+  "description": "SDK to access the advisor core API.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StormGeo/advisor-sdk.git"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "@types/node": "^22.10.1",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "node": "^22.12.0"
+  }
+}
