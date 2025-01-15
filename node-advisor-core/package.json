@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/StormGeo/advisor-sdk.git"
+    "url": "git+https://github.com/StormGeo/advisor-sdk.git"
   },
   "scripts": {
     "build": "tsc"
