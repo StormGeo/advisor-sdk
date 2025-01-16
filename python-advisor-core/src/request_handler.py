@@ -2,12 +2,13 @@ import requests
 import time
 
 class RequestHandler:
-    def __init__(self, base_url, token, retries, delay):
+    def __init__(self, base_url, token, retries, delay, headers):
         self.base_url = base_url
         self.token = token
         self.retries = retries
         self.delay = delay
         self.session = requests.Session()
+        self.headers = headers
 
     def make_request(self, method, endpoint, params=None, json_data=None, retries=None):
         retries = retries if retries is not None else self.retries
@@ -15,24 +16,27 @@ class RequestHandler:
         error_message = ''
 
         try:
+            headers = self.headers.getFormattedHeader()
             if method == "GET":
-                response = self.session.get(full_url, params=params)
+                response = self.session.get(full_url, params=params, headers=headers)
             elif method == "POST":
-                response = self.session.post(full_url, params=params, json=json_data)
+                response = self.session.post(full_url, params=params, json=json_data, headers=headers)
             else:
-                response = self.session.request(method, full_url, json=json_data)
+                response = self.session.request(method, full_url, json=json_data, headers=headers)
 
             status = response.status_code
             if status is not None and status < 500 and status != 429 and status != 200:
-                error_message = response.json().get("error", response.text)
+                if self.headers.get("Accept") != "application/json":
+                    error_message = response.text
+                else:
+                    error_message = response.json().get("error", response.text)
                 return {"data": None, "error": error_message}
-
             response.raise_for_status()
 
             if response.headers.get("Content-Type", "").startswith("image/"):
                 return {"data": response.content, "error": None}
 
-            return {"data": response.json(), "error": None}
+            return {"data": response.text if self.headers.get("Accept") != "application/json" else response.json(), "error": None}
 
         except requests.exceptions.RequestException as error:
             if retries > 0:
