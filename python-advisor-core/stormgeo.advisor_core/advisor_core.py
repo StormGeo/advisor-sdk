@@ -1,6 +1,6 @@
-from request_handler import RequestHandler
-from header import Header
-from grouped_routes import (
+from .request_handler import RequestHandler
+from .header import Header
+from .grouped_routes import (
     ForecastAPI,
     ObservedAPI,
     CurrentWeatherAPI,

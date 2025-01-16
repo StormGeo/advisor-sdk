@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = 'stormgeo.advisor_core',
-    version = '0.1.0',
+    name = 'stormgeo.advisor-core',
+    version = '0.1.1',
     author = 'climatempo',
-    packages = find_packages(include=['src']),
+    packages = find_packages(include=['stormgeo.advisor_core']),
     license = 'MIT',
     description = 'SDK to access the advisor core API.',
     long_description = open("README.md", "r", encoding="utf-8").read(),

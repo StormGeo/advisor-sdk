@@ -1,5 +1,5 @@
-from query_builder import QueryParamsBuilder
-from payloads import *
+from .query_builder import QueryParamsBuilder
+from .payloads import *
 
 class ForecastAPI:
     def __init__(self, request_handler):
