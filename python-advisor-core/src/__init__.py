@@ -1,4 +1,5 @@
 from .advisor_core import AdvisorCore
+from .header import Header
 from .request_handler import RequestHandler
 from .query_builder import QueryParamsBuilder
 from .grouped_routes import (
@@ -24,6 +25,7 @@ from .payloads import (
 
 __all__ = [
     "AdvisorCore",
+    "Header",
     "RequestHandler",
     "QueryParamsBuilder",
     "ForecastAPI",

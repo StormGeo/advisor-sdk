@@ -1,4 +1,5 @@
 from request_handler import RequestHandler
+from header import Header
 from grouped_routes import (
     ForecastAPI,
     ObservedAPI,
@@ -17,7 +18,10 @@ class AdvisorCore:
     """
     def __init__(self, token, retries=5, delay=5):
         base_url="https://advisor-core.climatempo.io/api/"
-        request_handler = RequestHandler(base_url, token, retries, delay)
+        self._header = Header()
+        self._header.set('Accept', 'application/json')
+        self._header.set('Content-Type', 'application/json')
+        request_handler = RequestHandler(base_url, token, retries, delay, self._header)
         self.forecast = ForecastAPI(request_handler) 
         """Fetch weather forecast."""
         self.observed = ObservedAPI(request_handler)
@@ -36,3 +40,9 @@ class AdvisorCore:
         """Fetch tiles map service."""
         self.schema = SchemaAPI(request_handler)
         """Get and set schema/parameters."""
+
+    def setHeaderAccept(self, value):
+        self._header.set('Accept', value)
+    
+    def setHeaderAcceptLanguage(self, value):
+        self._header.set('Accept-Language', value)
