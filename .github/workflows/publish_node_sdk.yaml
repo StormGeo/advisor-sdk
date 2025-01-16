@@ -1,0 +1,36 @@
+name: Publish Node SDK
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'node-advisor-core/**'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        working-directory: node-advisor-core
+        run: npm ci
+
+      - name: Build project
+        working-directory: node-advisor-core
+        run: npm run build
+
+      - name: Publish to npm
+        working-directory: node-advisor-core
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.SG_NPMJS_AUTOMATION_TOKEN }}
+        run: npm publish
