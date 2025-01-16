@@ -34,7 +34,7 @@ Advisor Software Development Kit for nodeJS.
 To install this package, use the following command:
 
 ```bash
-npm install node-advisor-core
+npm i @stormgeo/advisor-core
 ```
 
 Make sure you're using node v18.17 or higher.
@@ -44,7 +44,7 @@ Make sure you're using node v18.17 or higher.
 First you need to import the SDK on your application and instancy the `AdvisorCore` class setting up your access token and needed configurations:
 
 ```javascript
-import AdvisorCore from './AdvisorCore.js'
+import { AdvisorCore } from '@stormgeo/advisor-core/'
 
 const advisor = new AdvisorCore({
   token: '<your-token>',
