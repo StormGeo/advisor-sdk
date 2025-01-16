@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = 'stormgeo.advisor-core',
+    name = 'stormgeo.advisor_core',
     version = '0.1.0',
     author = 'climatempo',
     packages = find_packages(include=['src']),
