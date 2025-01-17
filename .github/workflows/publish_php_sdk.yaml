@@ -7,6 +7,10 @@ on:
     paths:
       - 'php-advisor-core/**'
 
+defaults:
+  run:
+    working-directory: ./php-advisor-core
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -22,18 +26,15 @@ jobs:
           extensions: mbstring, intl, json
       
       - name: Validate composer.json
-        working-directory: php-advisor-core
         run: composer validate --strict
       
       - name: Install dependencies
-        working-directory: php-advisor-core
         run: composer install --no-dev --prefer-dist --no-interaction --no-progress
       
       - name: Notify Packagist
-        env:
-          PACKAGIST_USERNAME: ${{ secrets.SG_PACKAGIST_USERNAME }}
-          PACKAGIST_TOKEN: ${{ secrets.SG_PACKAGIST_MAIN_TOKEN }}
-        run: |
-          curl -X POST -H "Content-Type: application/json" \
-          "https://packagist.org/api/create-package?username=$PACKAGIST_USERNAME&apiToken=$PACKAGIST_TOKEN" \
-          -d '{"repository":"https://github.com/StormGeo/advisor-sdk/tree/main/php-advisor-core"}'
+      uses: mnavarrocarter/packagist-update@v1.0.0
+      with:
+        username: ${{ secrets.SG_PACKAGIST_USERNAME }}
+        api_token: ${{ secrets.SG_PACKAGIST_MAIN_TOKEN }}
+        package_name: stormgeo/advisorcore
+        domain: "packagist.org"
