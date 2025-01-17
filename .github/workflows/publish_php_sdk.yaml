@@ -35,5 +35,5 @@ jobs:
         with:
           username: ${{ secrets.SG_PACKAGIST_USERNAME }}
           api_token: ${{ secrets.SG_PACKAGIST_MAIN_TOKEN }}
-          package_name: stormgeo/advisorcore
+          package_name: "stormgeo/advisorcore"
           domain: "packagist.org"
