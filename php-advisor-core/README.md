@@ -1,3 +1,3 @@
 # PHP SDK
 
-test 8
+test 7
