@@ -1,6 +1,6 @@
 {
   "name": "@stormgeo/advisor-core",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": "Climatempo",
   "license": "MIT",
   "description": "SDK to access the advisor core API.",
