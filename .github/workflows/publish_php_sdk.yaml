@@ -7,14 +7,13 @@ on:
     paths:
       - 'php-advisor-core/**'
 
-defaults:
-  run:
-    working-directory: ./php-advisor-core
-
 jobs:
   publish:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./php-advisor-core
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
