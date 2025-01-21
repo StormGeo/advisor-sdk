@@ -1,0 +1,4 @@
+dist
+node_modules/
+php-advisor-core/vendor/
+python-advisor-core/stormgeo.advisor_core/__pycache__
