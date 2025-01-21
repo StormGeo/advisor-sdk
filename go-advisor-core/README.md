@@ -46,7 +46,7 @@ First you need to import the SDK on your application and instancy the `AdvisorCo
   advisorCore := sdk.NewAdvisorCore(config)
 ```
 
-The recommended Go version to use this library is the one specified in the go.mod file or a later version. Using earlier Go versions may result in unexpected behavior or incompatibilities.
+The recommended Go version to use this library is the 1.23.3 or a later version. Using earlier Go versions may result in unexpected behavior or incompatibilities.
 
 ### Examples
 

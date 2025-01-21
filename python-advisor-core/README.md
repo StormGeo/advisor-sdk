@@ -54,8 +54,6 @@ Get data from different routes with theses examples
 
 #### Chart
 ```python
-from payloads import WeatherPayload
-
 payload = WeatherPayload(
   locale_id=1234,
   variables=["temperature", "precipitation"]
@@ -83,8 +81,6 @@ else:
 
 #### Climatology
 ```python
-from payloads import ClimatologyPayload
-
 payload = ClimatologyPayload(
   locale_id=1234,
   variables=["temperature", "precipitation"]
@@ -105,8 +101,6 @@ else:
 
 #### Current Weather
 ```python
-from payloads import CurrentWeatherPayload
-
 payload = CurrentWeatherPayload(
   locale_id=1234
 )
@@ -123,8 +117,6 @@ else:
 
 #### Forecast
 ```python
-from payloads import WeatherPayload
-
 payload = WeatherPayload(
   locale_id=1234,
   variables=["temperature", "precipitation"]
@@ -159,8 +151,6 @@ else:
 
 #### Observed
 ```python
-from payloads import (WeatherPayload, StationPayload, RadiusPayload, GeometryPayload)
-
 payload = WeatherPayload(
   locale_id=1234,
 )
@@ -266,8 +256,6 @@ else:
 
 #### Tms (Tiles Map Server)
 ```python
-from payloads import TmsPayload
-
 payload = TmsPayload(
   istep="2024-12-25 10:00:00",
   fstep="2024-12-25 12:00:00",
