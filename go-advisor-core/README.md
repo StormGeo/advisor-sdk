@@ -40,11 +40,13 @@ First you need to import the SDK on your application and instancy the `AdvisorCo
   )
 
   config := sdk.AdvisorCoreConfig{
-		Token: "<your-token>",
-		Retries: 2,
-	}
-	advisorCore := sdk.NewAdvisorCore(config)
+    Token: "<your-token>",
+    Retries: 2,
+  }
+  advisorCore := sdk.NewAdvisorCore(config)
 ```
+
+The recommended Go version to use this library is the one specified in the go.mod file or a later version. Using earlier Go versions may result in unexpected behavior or incompatibilities.
 
 ### Examples
 
