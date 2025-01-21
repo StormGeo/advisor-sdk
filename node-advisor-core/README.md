@@ -122,7 +122,6 @@ if (response.error) {
 }
 ```
 
-
 #### Forecast:
 ```javascript
 const payload = {
@@ -176,14 +175,12 @@ let response = await advisor.observed.getHourly(payload)
 // requesting period observed data
 let response = await advisor.observed.getPeriod(payload)
 
-
 const stationPayload = {
   stationId: "ABC123abc321CBA",
 }
 
 // requesting station observed data
 let response = await advisor.observed.getStationData(stationPayload)
-
 
 const radiusPayload = {
   localeId: 1234,
@@ -196,9 +193,8 @@ let response = await advisor.observed.getFireFocus(radiusPayload)
 // requesting lightning observed data
 let response = await advisor.observed.getLightning(radiusPayload)
 
-
 const geometryPayload = {
-  geometry: "{\"type\": \"MultiPonumber\", \"coordinates\": [[-41.88, -22.74]]}",
+  geometry: "{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
   radius: 10000
 }
 
