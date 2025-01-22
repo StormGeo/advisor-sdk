@@ -4,6 +4,7 @@ Advisor Software Development Kit for Go.
 
 ## Contents
 - [Go SDK](#go-sdk)
+  - [Installation](#installation)
   - [Contents](#contents)
   - [Routes](#routes)
     - [Examples](#examples)
@@ -28,22 +29,26 @@ Advisor Software Development Kit for Go.
     - [TmsPayload](#tmspayload)
 ---
 
+## Installation
+
+To install this package, use the following command:
+```bash
+go get github.com/StormGeo/advisor-sdk/go-advisor-core
+```
+
 ## Routes
 
 First you need to import the SDK on your application and instancy the `AdvisorCore` class setting up your access token and needed configurations:
 
 ```go
   import (
-    "fmt"
-
     sdk "github.com/StormGeo/advisor-sdk/go-advisor-core"
   )
 
   config := sdk.AdvisorCoreConfig{
     Token: "<your-token>",
-    Retries: 2,
   }
-  advisorCore := sdk.NewAdvisorCore(config)
+  advisor := sdk.NewAdvisorCore(config)
 ```
 
 The recommended Go version to use this library is the 1.23.3 or a later version. Using earlier Go versions may result in unexpected behavior or incompatibilities.
@@ -94,7 +99,7 @@ fmt.Println("Chart saved with success!")
 
 #### Climatology:
 ```go
-payload := advisorsdk.ClimatologyPayload{
+payload := sdk.ClimatologyPayload{
   LocaleId:  3477,
   Variables: []string{"precipitation"},
 }
@@ -116,7 +121,7 @@ if respErr != nil {
 
 #### Current Weather:
 ```go
-payload := sdk.WeatherPayload{
+payload := sdk.CurrentWeatherPayload{
   LocaleId: 3477,
   Variables: []string{"temperature"},
 }
@@ -187,7 +192,7 @@ resp, respErr := advisor.Observed.GetHourly(payload)
 resp, respErr := advisor.Observed.GetPeriod(payload)
 
 stationPayload := sdk.StationPayload{
-  stationId: "ABC123abc321CBA",
+  StationId: "ABC123abc321CBA",
 }
 
 // requesting station observed data
@@ -205,7 +210,7 @@ resp, respErr := advisor.Observed.GetFireFocus(radiusPayload)
 resp, respErr := advisor.Observed.GetLightning(radiusPayload)
 
 
-payload := advisorsdk.GeometryPayload{
+geometryPayload := sdk.GeometryPayload{
   StartDate: "2024-11-28 00:00:00",
   EndDate:   "2024-11-28 23:59:59",
   Geometry:  "{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
@@ -250,7 +255,7 @@ schemaPayload := sdk.SchemaPayload{
 }
 
 // Arbitrary example on how to upload data to parameters from schema
-parametersPayload := advisorsdk.SchemaPayload{
+parametersPayload := sdk.SchemaPayload{
   "identifier": "arbitraryIdentifier",
   "arbitraryField1": true,
 }
@@ -259,10 +264,10 @@ parametersPayload := advisorsdk.SchemaPayload{
 resp, respErr := advisor.Schema.GetDefinition()
 
 // requesting to upload a new schema
-resp, respErr := advisor.Schema.postDefinition(schemaPayload)
+resp, respErr := advisor.Schema.PostDefinition(schemaPayload)
 
 // requesting to upload data to parameters from schema
-resp, respErr := advisor.Schema.postParameters(parametersPayload)
+resp, respErr := advisor.Schema.PostParameters(parametersPayload)
 
 if respErr != nil {
   fmt.Println(respErr)
@@ -275,16 +280,16 @@ if respErr != nil {
 
 #### Tms (Tiles Map Server):
 ```go
-payload := advisorsdk.TmsPayload{
-  "istep": "2024-12-25 10:00:00",
-  "fstep": "2024-12-25 12:00:00",
-  "server": "a",
-  "mode": "forecast",
-  "variable": "precipitation",
-  "aggregation": "sum",
-  "x": 2,
-  "y": 3,
-  "z": 4,
+payload := sdk.TmsPayload{
+  Istep: "2024-12-25 10:00:00",
+  Fstep: "2024-12-25 12:00:00",
+  Server: "a",
+  Mode: "forecast",
+  Variable: "precipitation",
+  Aggregation: "sum",
+  X: 2,
+  Y: 3,
+  Z: 4,
 }
 
 resp, respErr := advisor.Tms.Get(payload)
@@ -295,7 +300,7 @@ if respErr != nil {
 }
 defer resp.Close()
 
-file, fileErr := os.Create("./chart.png")
+file, fileErr := os.Create("./tile.png")
 if fileErr != nil {
   fmt.Println(fileErr)
   return
@@ -308,7 +313,7 @@ if err != nil {
   return
 }
 
-fmt.Println("Chart saved with success!")
+fmt.Println("Tile saved with success!")
 ```
 
 ## Headers Configuration

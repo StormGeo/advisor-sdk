@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 const BASE_URL = "http://advisor-core.climatempo.io/api"
@@ -230,8 +231,8 @@ func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest 
 			payload.Y,
 			payload.Z,
 			config.Token,
-			payload.Istep,
-			payload.Fstep,
+			url.QueryEscape(payload.Istep),
+			url.QueryEscape(payload.Fstep),
 		)
 
 		resp, respErr := retryReq(
