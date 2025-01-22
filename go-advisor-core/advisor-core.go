@@ -212,7 +212,6 @@ func makeGetImage(route string, config AdvisorCoreConfig, header http.Header) Im
 		if respErr != nil {
 			return nil, respErr
 		}
-		defer resp.Body.Close()
 
 		return resp.Body, nil
 	}
@@ -246,7 +245,6 @@ func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest 
 		if respErr != nil {
 			return nil, respErr
 		}
-		defer resp.Body.Close()
 
 		return resp.Body, nil
 	}
