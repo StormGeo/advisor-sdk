@@ -62,6 +62,10 @@ func formatResponse(res *http.Response, resError error) (data any, err error) {
 		}
 
 		if res.Request.Header.Get("Accept") != "application/json" {
+			if res.StatusCode > 400 {
+				return nil, fmt.Errorf("%s", string(body))
+			}
+
 			return string(body), nil
 		}
 

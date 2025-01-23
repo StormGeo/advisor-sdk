@@ -334,21 +334,23 @@ Example:
 
 ```go
 config := sdk.AdvisorCoreConfig{Token: "invalid-token"}
-advisorCore := sdk.NewAdvisorCore(config)
+advisor := sdk.NewAdvisorCore(config)
 
-advisorCore.SetHeaderAccept("application/xml")
-advisorCore.SetHeaderAcceptLanguage("es-ES")
+advisor.SetHeaderAccept("application/xml")
+advisor.SetHeaderAcceptLanguage("es-ES")
 
-resp, respErr := advisor.Plan.GetInfo()
+_, respErr := advisor.Plan.GetInfo()
 
 fmt.Println(respErr)
 
 // <response>
-//   <error>
-//     <type>UNAUTHORIZED_ACCESS</type>
-//     <message>UNAUTHORIZED_REQUEST</message>
-//     <description>La solicitud no está autorizada.</description>
-//   </error>
+//
+//	<error>
+//	  <type>UNAUTHORIZED_ACCESS</type>
+//	  <message>UNAUTHORIZED_REQUEST</message>
+//	  <description>La solicitud no está autorizada.</description>
+//	</error>
+//
 // </response>
 ```
 
