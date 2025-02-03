@@ -4,6 +4,7 @@ Advisor Software Development Kit for python.
 
 ## Contents
 - [Python SDK](#python-sdk)
+  - [How to get your token](https://www.climatempoconsultoria.com.br/contato/)
   - [Contents](#contents)
   - [Importing](#importing)
   - [Routes](#routes)
@@ -17,6 +18,7 @@ Advisor Software Development Kit for python.
       - [Plan Information](#plan-information)
       - [Schema/Parameter](#schemaparameter)
       - [Tms (Tiles Map Server)](#tms-tiles-map-server)
+  - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
   - [Payload Types](#payload-types)
     - [WeatherPayload](#weatherpayload)
@@ -32,7 +34,7 @@ Advisor Software Development Kit for python.
 To install this package, use the following command:`
 
 ```bash
-pip install python-advisor-core
+pip install stormgeo.advisor-core
 ```
 
 Make sure you're using python 3.8 or higher.
@@ -43,7 +45,7 @@ Make sure you're using python 3.8 or higher.
 First you need to import the SDK on your application and instancy the `AdvisorCore` class setting up your access token and needed configurations:
 
 ```python
-from advisor_core_sdk import AdvisorCore
+from advisor_core import *
 
 advisor = AdvisorCore("<your_token>", retries=5, delay=5)
 ```
@@ -53,8 +55,6 @@ Get data from different routes with theses examples
 
 #### Chart
 ```python
-from payloads import WeatherPayload
-
 payload = WeatherPayload(
   locale_id=1234,
   variables=["temperature", "precipitation"]
@@ -82,8 +82,6 @@ else:
 
 #### Climatology
 ```python
-from payloads import ClimatologyPayload
-
 payload = ClimatologyPayload(
   locale_id=1234,
   variables=["temperature", "precipitation"]
@@ -104,8 +102,6 @@ else:
 
 #### Current Weather
 ```python
-from payloads import CurrentWeatherPayload
-
 payload = CurrentWeatherPayload(
   locale_id=1234
 )
@@ -122,8 +118,6 @@ else:
 
 #### Forecast
 ```python
-from payloads import WeatherPayload
-
 payload = WeatherPayload(
   locale_id=1234,
   variables=["temperature", "precipitation"]
@@ -158,8 +152,6 @@ else:
 
 #### Observed
 ```python
-from payloads import (WeatherPayload, StationPayload, RadiusPayload, GeometryPayload)
-
 payload = WeatherPayload(
   locale_id=1234,
 )
@@ -265,8 +257,6 @@ else:
 
 #### Tms (Tiles Map Server)
 ```python
-from payloads import TmsPayload
-
 payload = TmsPayload(
   istep="2024-12-25 10:00:00",
   fstep="2024-12-25 12:00:00",
@@ -290,6 +280,42 @@ else:
 ```
 
 ---
+
+## Headers Configuration
+
+You can also set headers to translate the error descriptions or to receive the response in a different format type. This functionality is only available for some routes, consult the API documentation to find out which routes have this functionality.
+
+Available languages: 
+- en-US (default)
+- pt-BR
+- es-ES
+
+Available response types:
+- application/json (default)
+- application/xml
+- text/csv
+
+Example:
+
+```javascript
+advisor = AdvisorCore("invalid-token")
+
+advisor.setHeaderAccept("application/xml")
+advisor.setHeaderAcceptLanguage("es-ES")
+
+response = advisor.plan.get_info()
+
+print(response["error"])
+
+// <response>
+//   <error>
+//     <type>UNAUTHORIZED_ACCESS</type>
+//     <message>UNAUTHORIZED_REQUEST</message>
+//     <description>La solicitud no está autorizada.</description>
+//   </error>
+// </response>
+```
+
 ## Response Format
 
 All the methods will return the same pattern:
