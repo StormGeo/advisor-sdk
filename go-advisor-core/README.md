@@ -4,7 +4,7 @@ Advisor Software Development Kit for Go.
 
 ## Contents
 - [Go SDK](#go-sdk)
-  - [If you do not have a token, please contact us](https://www.climatempoconsultoria.com.br/contato/)
+  - [How to get your token](https://www.climatempoconsultoria.com.br/contato/)
   - [Installation](#installation)
   - [Contents](#contents)
   - [Routes](#routes)
