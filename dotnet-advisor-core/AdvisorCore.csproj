@@ -1,10 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>StormGeo.AdvisorCore</RootNamespace>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Version>0.1.0</Version>
+        <Title>Advisor Core SDK</Title>
+        <Description>SDK to access the advisor core API.</Description>
+        <TargetFramework>net8.0</TargetFramework>
+        <RootNamespace>StormGeo.AdvisorCore</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageId>AdvisorCore</PackageId>
+        <Authors>Climatempo</Authors>
+        <Company>StormGeo</Company>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/StormGeo/advisor-sdk</RepositoryUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
 </Project>
