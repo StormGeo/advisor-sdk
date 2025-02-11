@@ -4,7 +4,7 @@ namespace StormGeo.AdvisorCore.Routes;
 
 public class TmsRouter(AdvisorCoreConfig config) : BaseRouter(config)
 {
-    public Task<AdvisorResponse<Stream>> Get(TmsPayload payload)
+    public async Task<AdvisorResponse<Stream>> Get(TmsPayload payload)
     {
         var path = String.Format(
             "/v1/tms/{0}/{1}/{2}/{3}/{4:D}/{5:D}/{6:D}.png",
@@ -17,6 +17,6 @@ public class TmsRouter(AdvisorCoreConfig config) : BaseRouter(config)
             payload.Z
         );
 
-        return base.GetImageAsync(path + base.FormatQueryParams(payload.GetQueryParams()));
+        return await base.GetImageAsync(path + base.FormatQueryParams(payload.GetQueryParams()));
     }
 }

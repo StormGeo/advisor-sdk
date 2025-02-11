@@ -4,8 +4,9 @@ namespace StormGeo.AdvisorCore.Routes;
 
 public abstract class BaseRouter(AdvisorCoreConfig config)
 {
-    private readonly string _baseUrl = "https://advisor-core.climatempo.io/api";
     protected readonly AdvisorCoreConfig _config = config;
+    private readonly string _baseUrl = "https://advisor-core.climatempo.io/api";
+    private static readonly HttpClient _httpClient = new();
 
     protected string FormatQueryParams(string parameters)
     {
@@ -18,34 +19,30 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
         return queryParams;
     }
 
-    protected Task<AdvisorResponse<string>> GetAsync(string route)
+    protected async Task<AdvisorResponse<string>> GetAsync(string route)
     {
-        return GetDefaultAdvisorResponseAsync(
-            RetryRequestAsync(() => MakeRequestAsync(HttpMethod.Get, _baseUrl + route))
+        return await GetDefaultAdvisorResponseAsync(
+            await RetryRequestAsync(() => MakeRequestAsync(HttpMethod.Get, _baseUrl + route))
         );
     }
 
-    protected Task<AdvisorResponse<Stream>> GetImageAsync(string route)
+    protected async Task<AdvisorResponse<Stream>> GetImageAsync(string route)
     {
-        return GetAdvisorResponseStreamAsync(
-            RetryRequestAsync(() => MakeRequestAsync(HttpMethod.Get, _baseUrl + route))
+        return await GetAdvisorResponseStreamAsync(
+            await RetryRequestAsync(() => MakeRequestAsync(HttpMethod.Get, _baseUrl + route))
         );
     }
 
-    protected Task<AdvisorResponse<string>> PostAsync(string route, HttpContent body)
+    protected async Task<AdvisorResponse<string>> PostAsync(string route, HttpContent body)
     {
-        return GetDefaultAdvisorResponseAsync(
-            RetryRequestAsync(() => MakeRequestAsync(HttpMethod.Post, _baseUrl + route, body))
+        return await GetDefaultAdvisorResponseAsync(
+            await RetryRequestAsync(() => MakeRequestAsync(HttpMethod.Post, _baseUrl + route, body))
         );
     }
 
-    private Task<HttpResponseMessage> MakeRequestAsync(HttpMethod method, string uri, HttpContent? body = null)
+    private async Task<HttpResponseMessage> MakeRequestAsync(HttpMethod method, string uri, HttpContent? body = null)
     {
-        var request = new HttpRequestMessage()
-        {
-            Method = method,
-            RequestUri = new Uri(uri)
-        };
+        using var request = new HttpRequestMessage(method, new Uri(uri));
 
         request.Headers.Add("User-Agent", "Csharp-AdvisorCore-SDK");
         foreach (var header in _config.Headers.Keys)
@@ -58,8 +55,7 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
             request.Content = body;
         }
 
-        using var client = new HttpClient();
-        return client.SendAsync(request);
+        return await _httpClient.SendAsync(request);
     }
 
     private async Task<HttpResponseMessage?> RetryRequestAsync(Func<Task<HttpResponseMessage>> request)
@@ -68,28 +64,39 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
 
         for (int retryNumber = _config.Attempts; retryNumber >= 0; retryNumber--)
         {
-            response = await request();
-            if (response != null)
+            try
             {
-                var statusCode = (int) response.StatusCode;
-
-                if (retryNumber == 0 || (statusCode < 500 && statusCode != 429))
+                response = await request();
+                if (response != null)
                 {
-                    return response;
-                }
+                    var statusCode = (int) response.StatusCode;
 
-                response.Dispose();
+                    if (retryNumber == 0 || (statusCode < 500 && statusCode != 429))
+                    {
+                        return response;
+                    }
+
+                    response.Dispose();
+                }
+            } catch
+            {
+                if (retryNumber == 0)
+                {
+                    throw;
+                }
             }
 
-            Thread.Sleep(_config.Delay);
+            if (retryNumber > 0)
+            {
+                await Task.Delay(_config.Delay);
+            }
         }
 
         return response;
     }
 
-    private static async Task<AdvisorResponse<string>> GetDefaultAdvisorResponseAsync(Task<HttpResponseMessage?> request)
+    private static async Task<AdvisorResponse<string>> GetDefaultAdvisorResponseAsync(HttpResponseMessage? response)
     {
-        using var response = await request;
         if (response == null)
         {
             return new(null, null);
@@ -105,9 +112,8 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
         return new(contentText, null);
     }
 
-    private static async Task<AdvisorResponse<Stream>> GetAdvisorResponseStreamAsync(Task<HttpResponseMessage?> request)
+    private static async Task<AdvisorResponse<Stream>> GetAdvisorResponseStreamAsync(HttpResponseMessage? response)
     {
-        using var response = await request;
         if (response == null)
         {
             return new(null, null);

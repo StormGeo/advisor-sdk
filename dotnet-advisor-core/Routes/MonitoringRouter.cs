@@ -4,8 +4,8 @@ namespace StormGeo.AdvisorCore.Routes;
 
 public class MonitoringRouter(AdvisorCoreConfig config) : BaseRouter(config)
 {
-    public Task<AdvisorResponse<string>> GetAlertsAsync()
+    public async Task<AdvisorResponse<string>> GetAlertsAsync()
     {
-        return base.GetAsync("/v1/monitoring/alerts" + base.FormatQueryParams(""));
+        return await base.GetAsync("/v1/monitoring/alerts" + base.FormatQueryParams(""));
     }
 }
