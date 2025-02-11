@@ -6,12 +6,12 @@ namespace StormGeo.AdvisorCore.Routes;
 
 public class SchemaRouter(AdvisorCoreConfig config) : BaseRouter(config)
 {
-    public Task<AdvisorResponse<string>> GetDefinition()
+    public Task<AdvisorResponse<string>> GetDefinitionAsync()
     {
-        return base.Get("/v1/schema/definition" + base.FormatQueryParams(""));
+        return base.GetAsync("/v1/schema/definition" + base.FormatQueryParams(""));
     }
 
-    public Task<AdvisorResponse<string>> PostDefinition(
+    public Task<AdvisorResponse<string>> PostDefinitionAsync(
         string identifier,
         Dictionary<string, SchameDefinitionField> fields
     ) {
@@ -25,20 +25,20 @@ public class SchemaRouter(AdvisorCoreConfig config) : BaseRouter(config)
             payload.Add(field, fields[field].ToDictionary());
         }
 
-        return base.Post(
+        return base.PostAsync(
             "/v1/schema/definition" + base.FormatQueryParams(""),
             new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
         );
     }
 
-    public Task<AdvisorResponse<string>> PostParameters(string identifier, Dictionary<string, object> parameters)
+    public Task<AdvisorResponse<string>> PostParametersAsync(string identifier, Dictionary<string, object> parameters)
     {
         var payload = new Dictionary<string, object>(parameters)
         {
             { "identifier", identifier }
         };
 
-        return base.Post(
+        return base.PostAsync(
             "/v1/schema/parameters" + base.FormatQueryParams(""),
             new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
         );

@@ -1,4 +1,4 @@
-namespace StormGeo.AdvisorCore;
+namespace StormGeo.AdvisorCore.Payloads;
 
 public class AdvisorCoreConfig(string token, int attempts, int delay, Dictionary<string, string> headers)
 {

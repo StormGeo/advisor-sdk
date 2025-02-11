@@ -4,13 +4,13 @@ namespace StormGeo.AdvisorCore.Routes;
 
 public class ClimatologyRouter(AdvisorCoreConfig config) : BaseRouter(config)
 {
-    public Task<AdvisorResponse<string>> GetDaily(ClimatologyPayload payload)
+    public Task<AdvisorResponse<string>> GetDailyAsync(ClimatologyPayload payload)
     {
-        return base.Get("/v1/climatology/daily" + base.FormatQueryParams(payload.GetQueryParams()));
+        return base.GetAsync("/v1/climatology/daily" + base.FormatQueryParams(payload.GetQueryParams()));
     }
 
-    public Task<AdvisorResponse<string>> GetMonthly(ClimatologyPayload payload)
+    public Task<AdvisorResponse<string>> GetMonthlyAsync(ClimatologyPayload payload)
     {
-        return base.Get("/v1/climatology/monthly" + base.FormatQueryParams(payload.GetQueryParams()));
+        return base.GetAsync("/v1/climatology/monthly" + base.FormatQueryParams(payload.GetQueryParams()));
     }
 }

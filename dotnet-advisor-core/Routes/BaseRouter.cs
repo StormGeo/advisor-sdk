@@ -4,12 +4,12 @@ namespace StormGeo.AdvisorCore.Routes;
 
 public abstract class BaseRouter(AdvisorCoreConfig config)
 {
-    private readonly string BaseUrl = "https://advisor-core.climatempo.io/api";
-    protected readonly AdvisorCoreConfig _Config = config;
+    private readonly string _baseUrl = "https://advisor-core.climatempo.io/api";
+    protected readonly AdvisorCoreConfig _config = config;
 
     protected string FormatQueryParams(string parameters)
     {
-        string queryParams = $"?token={_Config.Token}";
+        string queryParams = $"?token={_config.Token}";
         if (parameters.Length > 0)
         {
             queryParams += "&" + parameters;
@@ -18,28 +18,28 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
         return queryParams;
     }
 
-    protected Task<AdvisorResponse<string>> Get(string route)
+    protected Task<AdvisorResponse<string>> GetAsync(string route)
     {
         return GetDefaultAdvisorResponseAsync(
-            RetryRequestAsync(() => MakeRequest(HttpMethod.Get, BaseUrl + route))
+            RetryRequestAsync(() => MakeRequestAsync(HttpMethod.Get, _baseUrl + route))
         );
     }
 
-    protected Task<AdvisorResponse<Stream>> GetImage(string route)
+    protected Task<AdvisorResponse<Stream>> GetImageAsync(string route)
     {
         return GetAdvisorResponseStreamAsync(
-            RetryRequestAsync(() => MakeRequest(HttpMethod.Get, BaseUrl + route))
+            RetryRequestAsync(() => MakeRequestAsync(HttpMethod.Get, _baseUrl + route))
         );
     }
 
-    protected Task<AdvisorResponse<string>> Post(string route, HttpContent body)
+    protected Task<AdvisorResponse<string>> PostAsync(string route, HttpContent body)
     {
         return GetDefaultAdvisorResponseAsync(
-            RetryRequestAsync(() => MakeRequest(HttpMethod.Post, BaseUrl + route, body))
+            RetryRequestAsync(() => MakeRequestAsync(HttpMethod.Post, _baseUrl + route, body))
         );
     }
 
-    private Task<HttpResponseMessage> MakeRequest(HttpMethod method, string uri, HttpContent? body = null)
+    private Task<HttpResponseMessage> MakeRequestAsync(HttpMethod method, string uri, HttpContent? body = null)
     {
         var request = new HttpRequestMessage()
         {
@@ -48,9 +48,9 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
         };
 
         request.Headers.Add("User-Agent", "Csharp-AdvisorCore-SDK");
-        foreach (var header in _Config.Headers.Keys)
+        foreach (var header in _config.Headers.Keys)
         {
-            request.Headers.Add(header, _Config.Headers[header]);
+            request.Headers.Add(header, _config.Headers[header]);
         }
 
         if (body != null)
@@ -66,7 +66,7 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
     {
         HttpResponseMessage? response = null;
 
-        for (int retryNumber = _Config.Attempts; retryNumber >= 0; retryNumber--)
+        for (int retryNumber = _config.Attempts; retryNumber >= 0; retryNumber--)
         {
             response = await request();
             if (response != null)
@@ -81,7 +81,7 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
                 response.Dispose();
             }
 
-            Thread.Sleep(_Config.Delay);
+            Thread.Sleep(_config.Delay);
         }
 
         return response;

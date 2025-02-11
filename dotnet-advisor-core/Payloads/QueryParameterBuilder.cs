@@ -4,7 +4,7 @@ namespace StormGeo.AdvisorCore.Payloads;
 
 public class QueryParameterBuilder
 {
-    private readonly List<string> _Params = new();
+    private readonly List<string> _params = new();
 
     public QueryParameterBuilder AddLocaleId(int? localeId)
     {
@@ -68,14 +68,14 @@ public class QueryParameterBuilder
 
     public string Build()
     {
-        return string.Join('&', _Params) ?? "";
+        return string.Join('&', _params) ?? "";
     }
 
     public QueryParameterBuilder AddParamIfValueIsNotNull(string param, string? value)
     {
         if (value != null)
         {
-            _Params.Add($"{param}={HttpUtility.UrlEncode(value)}");
+            _params.Add($"{param}={HttpUtility.UrlEncode(value)}");
         }
         return this;
     }

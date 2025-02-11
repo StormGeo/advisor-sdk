@@ -4,13 +4,13 @@ namespace StormGeo.AdvisorCore.Routes;
 
 public class PlanRouter(AdvisorCoreConfig config) : BaseRouter(config)
 {
-    public Task<AdvisorResponse<string>> GetInfo()
+    public Task<AdvisorResponse<string>> GetInfoAsync()
     {
-        return base.Get($"/v1/plan/{base._Config.Token}");
+        return base.GetAsync($"/v1/plan/{base._config.Token}");
     }
 
-    public Task<AdvisorResponse<string>> GetRequestDetails(RequestDetailsPayload payload)
+    public Task<AdvisorResponse<string>> GetRequestDetailsAsync(RequestDetailsPayload payload)
     {
-        return base.Get("/v1/plan/request-details" + base.FormatQueryParams(payload.GetQueryParams()));
+        return base.GetAsync("/v1/plan/request-details" + base.FormatQueryParams(payload.GetQueryParams()));
     }
 }
