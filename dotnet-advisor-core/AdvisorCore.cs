@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using StormGeo.AdvisorCore.Payloads;
 using StormGeo.AdvisorCore.Routes;
 
@@ -17,13 +18,13 @@ public class AdvisorCore
     public SchemaRouter Schema { get; set; }
     public TmsRouter Tms { get; set; }
 
-    public AdvisorCore(string token, int attempts = 5, int delayInSeconds = 5)
+    public AdvisorCore(string token, int attempts = 5, int delayInSeconds = 5, ILogger? logger = null)
     {
         var headers = new Dictionary<string,string>() {
             { "Accept", "application/json" },
             { "Accept-Language", "en-US" }
         };
-        _config = new AdvisorCoreConfig(token, attempts, delayInSeconds * 1000, headers);
+        _config = new AdvisorCoreConfig(token, attempts, delayInSeconds * 1000, headers, logger);
 
         Chart = new ChartRouter(_config);
         Climatology = new ClimatologyRouter(_config);

@@ -6,6 +6,6 @@ public class MonitoringRouter(AdvisorCoreConfig config) : BaseRouter(config)
 {
     public async Task<AdvisorResponse<string>> GetAlertsAsync()
     {
-        return await base.GetAsync("/v1/monitoring/alerts" + base.FormatQueryParams(""));
+        return await base.GetAsync("/v1/monitoring/alerts");
     }
 }

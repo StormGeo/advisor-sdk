@@ -6,6 +6,6 @@ public class CurrentWeatherRouter(AdvisorCoreConfig config) : BaseRouter(config)
 {
     public async Task<AdvisorResponse<string>> GetAsync(CurrentWeatherPayload payload)
     {
-        return await base.GetAsync("/v1/current-weather" + base.FormatQueryParams(payload.GetQueryParams()));
+        return await base.GetAsync("/v1/current-weather" + payload.GetQueryParams());
     }
 }

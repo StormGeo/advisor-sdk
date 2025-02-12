@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using StormGeo.AdvisorCore.Payloads;
 
 namespace StormGeo.AdvisorCore.Routes;
@@ -7,17 +8,6 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
     protected readonly AdvisorCoreConfig _config = config;
     private readonly string _baseUrl = "https://advisor-core.climatempo.io/api";
     private static readonly HttpClient _httpClient = new();
-
-    protected string FormatQueryParams(string parameters)
-    {
-        string queryParams = $"?token={_config.Token}";
-        if (parameters.Length > 0)
-        {
-            queryParams += "&" + parameters;
-        }
-
-        return queryParams;
-    }
 
     protected async Task<AdvisorResponse<string>> GetAsync(string route)
     {
@@ -45,6 +35,7 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
         using var request = new HttpRequestMessage(method, new Uri(uri));
 
         request.Headers.Add("User-Agent", "Csharp-AdvisorCore-SDK");
+        request.Headers.Add("x-advisor-token", _config.Token);
         foreach (var header in _config.Headers.Keys)
         {
             request.Headers.Add(header, _config.Headers[header]);
@@ -78,12 +69,9 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
 
                     response.Dispose();
                 }
-            } catch
+            } catch (Exception error)
             {
-                if (retryNumber == 0)
-                {
-                    throw;
-                }
+                _config.Logger?.LogWarning("AdvisorCore request failed with message: {errorMessage}", error.Message);
             }
 
             if (retryNumber > 0)

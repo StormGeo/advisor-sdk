@@ -8,7 +8,7 @@ public class SchemaRouter(AdvisorCoreConfig config) : BaseRouter(config)
 {
     public async Task<AdvisorResponse<string>> GetDefinitionAsync()
     {
-        return await base.GetAsync("/v1/schema/definition" + base.FormatQueryParams(""));
+        return await base.GetAsync("/v1/schema/definition");
     }
 
     public async Task<AdvisorResponse<string>> PostDefinitionAsync(
@@ -26,7 +26,7 @@ public class SchemaRouter(AdvisorCoreConfig config) : BaseRouter(config)
         }
 
         return await base.PostAsync(
-            "/v1/schema/definition" + base.FormatQueryParams(""),
+            "/v1/schema/definition",
             new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
         );
     }
@@ -39,7 +39,7 @@ public class SchemaRouter(AdvisorCoreConfig config) : BaseRouter(config)
         };
 
         return await base.PostAsync(
-            "/v1/schema/parameters" + base.FormatQueryParams(""),
+            "/v1/schema/parameters",
             new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
         );
     }

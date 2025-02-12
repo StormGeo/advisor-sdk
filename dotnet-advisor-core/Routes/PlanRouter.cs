@@ -11,6 +11,6 @@ public class PlanRouter(AdvisorCoreConfig config) : BaseRouter(config)
 
     public async Task<AdvisorResponse<string>> GetRequestDetailsAsync(RequestDetailsPayload payload)
     {
-        return await base.GetAsync("/v1/plan/request-details" + base.FormatQueryParams(payload.GetQueryParams()));
+        return await base.GetAsync("/v1/plan/request-details" + payload.GetQueryParams());
     }
 }

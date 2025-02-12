@@ -68,7 +68,7 @@ public class QueryParameterBuilder
 
     public string Build()
     {
-        return string.Join('&', _params) ?? "";
+        return "?" + string.Join('&', _params);
     }
 
     public QueryParameterBuilder AddParamIfValueIsNotNull(string param, string? value)
