@@ -18,7 +18,7 @@ public class AdvisorCore
     public SchemaRouter Schema { get; set; }
     public TmsRouter Tms { get; set; }
 
-    public AdvisorCore(string token, int attempts = 5, int delayInSeconds = 5, ILogger? logger = null)
+    public AdvisorCore(string token, int attempts = 5, double delayInSeconds = 5, ILogger? logger = null)
     {
         var headers = new Dictionary<string,string>() {
             { "Accept", "application/json" },

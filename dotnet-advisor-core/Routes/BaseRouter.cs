@@ -76,7 +76,7 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
 
             if (retryNumber > 0)
             {
-                await Task.Delay(_config.Delay);
+                await Task.Delay((int) _config.Delay);
             }
         }
 
