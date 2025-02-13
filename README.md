@@ -13,6 +13,7 @@ Software Development Kits for Climatempo's API Advisor
 
 ## Available SDKs
 
+- [.NET SDK](dotnet-advisor-core/README.md)
 - [Node.js SDK](node-advisor-core/README.md)
 - [Python SDK](python-advisor-core/README.md)
 - [GO SDK](go-advisor-core/README.md)
