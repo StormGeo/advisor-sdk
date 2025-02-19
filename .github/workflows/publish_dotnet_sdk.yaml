@@ -30,6 +30,6 @@ jobs:
       - name: Publish NuGet package
         working-directory: dotnet-advisor-core
         env:
-          NUGET_SOURCE: ${{ env.SG_PUBLIC_NUGET_FEED_URL }}
+          NUGET_SOURCE: ${{ vars.SG_PUBLIC_NUGET_FEED_URL }}
           NUGET_API_KEY: ${{ secrets.SG_PUBLIC_NUGET_FEED_API_KEY }}
         run: dotnet nuget push $PACKAGE_DIR/*.nupkg --api-key $NUGET_API_KEY --source $NUGET_SOURCE
