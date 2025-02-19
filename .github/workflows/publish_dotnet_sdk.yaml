@@ -23,6 +23,10 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Build project
+        working-directory: dotnet-advisor-core
+        run: dotnet build
+
       - name: Generate NuGet package
         working-directory: dotnet-advisor-core
         run: dotnet pack --configuration Release -o $PACKAGE_DIR
