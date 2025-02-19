@@ -1,4 +1,12 @@
+# node
 dist
 node_modules/
-php-advisor-core/vendor/
+
+# python
 python-advisor-core/stormgeo.advisor_core/__pycache__
+
+# .NET
+advisor-sdk.sln
+dotnet-advisor-core/obj/
+dotnet-advisor-core/bin/
+dotnet-advisor-core/*.json
