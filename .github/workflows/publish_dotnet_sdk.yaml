@@ -32,4 +32,4 @@ jobs:
         env:
           NUGET_SOURCE: ${{ vars.SG_PUBLIC_NUGET_FEED_URL }}
           NUGET_API_KEY: ${{ secrets.SG_PUBLIC_NUGET_FEED_API_KEY }}
-        run: dotnet nuget push $PACKAGE_DIR/*.nupkg --api-key $NUGET_API_KEY --source $NUGET_SOURCE
+        run: dotnet nuget push $PACKAGE_DIR/*.nupkg -k $NUGET_API_KEY -s $NUGET_SOURCE
