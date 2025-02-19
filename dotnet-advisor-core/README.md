@@ -1,6 +1,6 @@
 # .NET SDK
 
-Advisor Software Development Kit for .NET. 
+Advisor Software Development Kit for .NET.
 
 ## Contents
 - [.NET SDK](#net-sdk)
