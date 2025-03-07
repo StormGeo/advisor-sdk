@@ -27,9 +27,9 @@ jobs:
           dotnet-version: '8.0.x'
           source-url: ${{ env.GITHUB_NUGET_SOURCE }}
 
-      - name: Generate NuGet package
+      - name: Build project
         working-directory: dotnet-advisor-core
-        run: dotnet build --configuration Release -o $PACKAGE_DIR
+        run: dotnet build --configuration Release
 
       - name: Pack NuGet package
         working-directory: dotnet-advisor-core
