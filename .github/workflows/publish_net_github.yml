@@ -11,6 +11,7 @@ on:
 env:
   PACKAGE_DIR: packages
   GITHUB_NUGET_SOURCE: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+  NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
 jobs:
   publish:
