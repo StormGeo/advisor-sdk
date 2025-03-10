@@ -59,7 +59,7 @@ ILogger loggerInstance = ...;
 var sdk = new AdvisorCore("<your-token>", logger: loggerInstance);
 ```
 
-The recommended .NET version to use this library is the 8.0 or a later version. Using earlier .NET versions may result in unexpected behavior or incompatibilities.
+The recommended .NET version to use this library is the net7, net8, net9 or a later version. Using earlier .NET versions may result in unexpected behavior or incompatibilities.
 
 ### Routes
 
