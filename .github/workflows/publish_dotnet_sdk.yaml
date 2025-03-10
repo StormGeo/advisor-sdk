@@ -1,6 +1,7 @@
-name: Publish .NET SDK
+name: Publish .NET SDK to GitHub Packages
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -9,6 +10,8 @@ on:
 
 env:
   PACKAGE_DIR: packages
+  GITHUB_NUGET_SOURCE: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+  NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
 jobs:
   publish:
@@ -22,14 +25,18 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+          source-url: ${{ env.GITHUB_NUGET_SOURCE }}
 
-      - name: Generate NuGet package
+      - name: Build project
         working-directory: dotnet-advisor-core
-        run: dotnet build --configuration Release -o $PACKAGE_DIR
+        run: dotnet build --configuration Release
 
-      - name: Publish NuGet package
+      - name: Pack NuGet package
+        working-directory: dotnet-advisor-core
+        run: dotnet pack --configuration Release --output $PACKAGE_DIR
+
+      - name: Publish NuGet package to GitHub Packages
         working-directory: dotnet-advisor-core
         env:
-          NUGET_SOURCE: ${{ vars.SG_PUBLIC_NUGET_FEED_URL }}
-          NUGET_API_KEY: ${{ secrets.SG_PUBLIC_NUGET_FEED_API_KEY }}
-        run: dotnet nuget push $PACKAGE_DIR/*.nupkg -k $NUGET_API_KEY -s $NUGET_SOURCE
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet nuget push $PACKAGE_DIR/*.nupkg --source ${{ env.GITHUB_NUGET_SOURCE }} --api-key $GITHUB_TOKEN --skip-duplicate

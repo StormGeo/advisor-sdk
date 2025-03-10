@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>0.1.0</Version>
+        <Version>0.1.1</Version>
         <Title>Advisor Core SDK</Title>
         <Description>SDK to access the advisor core API.</Description>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFrameworks>net7.0;net8.0;net9.0</TargetFrameworks>
         <RootNamespace>StormGeo.AdvisorCore</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
