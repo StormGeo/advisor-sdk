@@ -6,7 +6,8 @@ import {
   StationPayload,
   RadiusPayload,
   TmsPayload,
-  WeatherPayload
+  WeatherPayload,
+  RequestDetailsPayload
 } from "./payloads"
 /**
  * @typedef {Object} WeatherPayload
@@ -235,6 +236,13 @@ export interface PlanRoutes {
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
   getInfo: () => Promise<ApiResponse>
+  /**
+   * Get request history of a plan
+   * GET /v1/plan/request-details
+   * @param {RequestDetailsPayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  getRequestDetails: (payload: RequestDetailsPayload) => Promise<ApiResponse>
 }
 
 export interface SchemaRoutes {

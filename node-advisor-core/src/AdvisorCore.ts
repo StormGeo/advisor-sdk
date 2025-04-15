@@ -24,6 +24,7 @@ import {
   RadiusPayload,
   TmsPayload,
   WeatherPayload,
+  RequestDetailsPayload,
 } from "./payloads"
 
 function sleep(ms: number): Promise<void> {
@@ -418,6 +419,15 @@ export class AdvisorCore {
     getInfo: async (): Promise<ApiResponse> => {
       return this.makeRequest("GET", `v1/plan/${this.token}`)
     },
+    /**
+     * Get request history of a plan
+     * GET /v1/plan/request-details
+     * @param {RequestDetailsPayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    getRequestDetails: async (payload: RequestDetailsPayload): Promise<ApiResponse> => {
+      return this.makeRequest("GET", 'v1/plan/request-details', { token: this.token, ...payload })
+    }
   }
 
   /**

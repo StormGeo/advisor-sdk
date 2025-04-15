@@ -63,6 +63,16 @@ export interface TmsPayload {
   fstep?: string
 }
 
+export interface RequestDetailsPayload {
+  token?: string
+  page?: number
+  pageSize?: number
+  path?: string
+  status?: number
+  startDate?: string | Date
+  endDate?: string | Date
+}
+
 export interface ApiResponse {
   data?: any
   error?: any
