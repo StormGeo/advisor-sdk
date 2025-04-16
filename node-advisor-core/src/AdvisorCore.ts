@@ -1,3 +1,4 @@
+import { Readable } from "stream"
 import axios, {
   AxiosInstance,
   AxiosRequestConfig,
@@ -11,11 +12,12 @@ import {
   ObservedRoutes,
   PlanRoutes,
   SchemaRoutes,
+  StorageRoutes,
   TmsRoutes,
 } from "./interfaces"
 import {
   AdvisorCoreConfig,
-  ApiImgResponse,
+  ApiFileResponse,
   ApiResponse,
   ClimatologyPayload,
   CurrentWeatherPayload,
@@ -25,6 +27,9 @@ import {
   TmsPayload,
   WeatherPayload,
   RequestDetailsPayload,
+  StorageListPayload,
+  StorageDownloadPayload,
+  ApiStreamResponse,
 } from "./payloads"
 
 function sleep(ms: number): Promise<void> {
@@ -89,6 +94,32 @@ function sleep(ms: number): Promise<void> {
  */
 
 /**
+ * @typedef {Object} RequestDetailsPayload
+ * @property {number} page
+ * @property {number} pageSize
+ * @property {string} path
+ * @property {number} status
+ * @property {string} startDate
+ * @property {string} endDate
+*/
+
+/**
+ * @typedef {Object} StorageListPayload
+ * @property {number} page
+ * @property {number} pageSize
+ * @property {string} startDate
+ * @property {string} endDate
+ * @property {string} fileName
+ * @property {string} fileExtension
+*/
+
+/**
+ * @typedef {Object} StorageDownloadPayload
+ * @property {string} fileName
+ * @property {string} accessKey
+*/
+
+/**
  * @typedef {Object} TmsPayload
  * @property {string} server
  * @property {string} mode
@@ -128,6 +159,7 @@ export class AdvisorCore {
       'Content-Type': 'application/json',
       Accept: "application/json",
       "Accept-Language": "en-US",
+      "x-advisor-token": this.token
     }
     this.client = axios.create({
       baseURL: this.baseURL,
@@ -153,7 +185,6 @@ export class AdvisorCore {
     } catch (error: any) {
       if (retries > 0 && (error?.response?.status >= 500 || error?.response?.status == 429)) {
         await sleep(this.delay)
-        console.log(`Re-trying in ${this.delay}ms... attempts left: ${retries}`)
         return this.makeRequest(method, url, params, data, --retries)
       }
 
@@ -161,13 +192,13 @@ export class AdvisorCore {
     }
   }
 
-  private async makeRequestImage(
+  private async makeRequestFile(
     method: AxiosRequestConfig["method"],
     url: string,
     params: Record<string, any> = {},
     data: any = null,
     retries: number = this.retries
-  ): Promise<ApiImgResponse> {
+  ): Promise<ApiFileResponse> {
     try {
       const response = await this.client({
         method,
@@ -177,18 +208,58 @@ export class AdvisorCore {
         responseType: 'arraybuffer',
       })
 
-      const byteArray  = new Uint8Array(response.data)
+      const byteArray  = Buffer.from(response.data)
       return { data: byteArray, error: null }
     } catch (error: any) {
       if (retries > 0 && (error?.response?.status >= 500 || error?.response?.status == 429)) {
         await sleep(this.delay)
-        console.log(`Re-trying in ${this.delay}ms... attempts left: ${retries}`)
 
-        return this.makeRequestImage(method, url, params, data, --retries)
+        return this.makeRequestFile(method, url, params, data, --retries)
       }
 
       return { data: null, error: error?.response?.data ?? error }
     }
+  }
+
+  private async makeRequestFileByStream(
+    method: AxiosRequestConfig["method"],
+    url: string,
+    params: Record<string, any> = {},
+    data: any = null,
+    retries: number = this.retries
+  ): Promise<ApiStreamResponse> {
+    try {
+      const response = await this.client({
+        method,
+        url,
+        headers: this.headers,
+        ...(method === "GET" ? { params } : { params, data }),
+        responseType: 'stream',
+      })
+
+      return { data: response.data, error: null }
+    } catch (error: any) {
+      if (retries > 0 && (error?.response?.status >= 500 || error?.response?.status == 429)) {
+        await sleep(this.delay)
+
+        return this.makeRequestFileByStream(method, url, params, data, --retries)
+      }
+
+      return {
+        data: null,
+        error: error?.response?.data ? await this.getAllStreamContent(error.response.data) : error?.message,
+      }
+    }
+  }
+
+  private async getAllStreamContent(stream: Readable): Promise<string> {
+    let content = ''
+
+    for await (const chunk of stream) {
+      content += chunk.toString('utf8')
+    }
+
+    return content
   }
 
   setHeaderAccept(value: string): void {
@@ -209,8 +280,8 @@ export class AdvisorCore {
      * @param {WeatherPayload} payload
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
-    getForecastDaily: async (payload: WeatherPayload): Promise<ApiImgResponse> => {
-      return this.makeRequestImage("GET", "v1/forecast/daily/chart", { ...payload, token: this.token })
+    getForecastDaily: async (payload: WeatherPayload): Promise<ApiFileResponse> => {
+      return this.makeRequestFile("GET", "v1/forecast/daily/chart", payload)
     },
     /**
      * Fetch hourly weather forecast chart.
@@ -218,8 +289,8 @@ export class AdvisorCore {
      * @param {WeatherPayload} payload
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
-    getForecastHourly: async (payload: WeatherPayload): Promise<ApiImgResponse> => {
-      return this.makeRequestImage("GET", "v1/forecast/hourly/chart", { ...payload, token: this.token })
+    getForecastHourly: async (payload: WeatherPayload): Promise<ApiFileResponse> => {
+      return this.makeRequestFile("GET", "v1/forecast/hourly/chart", payload)
     },
     /**
      * Fetch daily observed weather chart.
@@ -227,8 +298,8 @@ export class AdvisorCore {
      * @param {WeatherPayload} payload
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
-    getObservedDaily: async (payload: WeatherPayload): Promise<ApiImgResponse> => {
-      return this.makeRequestImage("GET", "v1/forecast/daily/chart", { ...payload, token: this.token })
+    getObservedDaily: async (payload: WeatherPayload): Promise<ApiFileResponse> => {
+      return this.makeRequestFile("GET", "v1/forecast/daily/chart", payload)
     },
     /**
      * Fetch hourly observed weather chart.
@@ -236,8 +307,8 @@ export class AdvisorCore {
      * @param {WeatherPayload} payload
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
-    getObservedHourly: async (payload: WeatherPayload): Promise<ApiImgResponse> => {
-      return this.makeRequestImage("GET", "v1/forecast/hourly/chart", { ...payload, token: this.token })
+    getObservedHourly: async (payload: WeatherPayload): Promise<ApiFileResponse> => {
+      return this.makeRequestFile("GET", "v1/forecast/hourly/chart", payload)
     },
   }
 
@@ -252,7 +323,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getDaily: async (payload: WeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/forecast/daily", { ...payload, token: this.token })
+      return this.makeRequest("GET", "v1/forecast/daily", payload)
     },
     /**
      * Fetch hourly weather forecast.
@@ -261,7 +332,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getHourly: async (payload: WeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/forecast/hourly", { ...payload, token: this.token })
+      return this.makeRequest("GET", "v1/forecast/hourly", payload)
     },
     /**
      * Fetch period weather forecast.
@@ -270,7 +341,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getPeriod: async (payload: WeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/forecast/period", { ...payload, token: this.token })
+      return this.makeRequest("GET", "v1/forecast/period", payload)
     },
   }
 
@@ -285,7 +356,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getDaily: async (payload: WeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/forecast/daily", { ...payload, token: this.token })
+      return this.makeRequest("GET", "v1/forecast/daily", payload)
     },
     /**
      * Fetch hourly observed weather.
@@ -294,7 +365,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getHourly: async (payload: WeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/forecast/hourly", { ...payload, token: this.token })
+      return this.makeRequest("GET", "v1/forecast/hourly", payload)
     },
     /**
      * Fetch period observed weather.
@@ -303,7 +374,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getPeriod: async (payload: WeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/forecast/period", { ...payload, token: this.token })
+      return this.makeRequest("GET", "v1/forecast/period", payload)
     },
     /**
      * Fetch station observed data.
@@ -312,7 +383,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getStationData: async (payload: StationPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/station", { ...payload, token: this.token })
+      return this.makeRequest("GET", "v1/station", payload)
     },
     /**
      * Fetch observed lightning.
@@ -321,7 +392,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getLightning: async (payload: RadiusPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/observed/lightning", { ...payload, token: this.token })
+      return this.makeRequest("GET", "v1/observed/lightning", payload)
     },
     /**
      * Fetch observed lightning by geometry.
@@ -331,7 +402,7 @@ export class AdvisorCore {
      */
     getLightningByGeometry: async (payload: GeometryPayload): Promise<ApiResponse> => {
       const { geometry, ...restData } = payload
-      return this.makeRequest("POST", "v1/observed/lightning", { ...restData, token: this.token }, { geometry })
+      return this.makeRequest("POST", "v1/observed/lightning", restData, { geometry })
     },
     /**
      * Fetch observed fire focus bu geometry.
@@ -340,7 +411,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getFireFocus: async (payload: RadiusPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/observed/fire-focus", { ...payload, token: this.token })
+      return this.makeRequest("GET", "v1/observed/fire-focus", payload)
     },
     /**
      * Fetch observed fire focus bu geometry.
@@ -350,7 +421,7 @@ export class AdvisorCore {
      */
     getFireFocusByGeometry: async (payload: GeometryPayload): Promise<ApiResponse> => {
       const { geometry, ...restData } = payload
-      return this.makeRequest("POST", "v1/observed/fire-focus", { ...restData, token: this.token }, { geometry })
+      return this.makeRequest("POST", "v1/observed/fire-focus", restData, { geometry })
     },
   }
 
@@ -365,7 +436,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getDaily: async (payload: ClimatologyPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/climatology/daily", { ...payload, token: this.token })
+      return this.makeRequest("GET", "v1/climatology/daily", payload)
     },
     /**
      * Fetch monthly climatology weather.
@@ -374,7 +445,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getMonthly: async (payload: ClimatologyPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/climatology/monthly", { ...payload, token: this.token })
+      return this.makeRequest("GET", "v1/climatology/monthly", payload)
     },
   }
 
@@ -389,7 +460,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     get: async (payload: CurrentWeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/current-weather", { ...payload, token: this.token })
+      return this.makeRequest("GET", "v1/current-weather", payload)
     },
   }
 
@@ -403,7 +474,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getAlerts: async (): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/monitoring/alerts", { token: this.token })
+      return this.makeRequest("GET", "v1/monitoring/alerts")
     },
   }
 
@@ -426,7 +497,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getRequestDetails: async (payload: RequestDetailsPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", 'v1/plan/request-details', { token: this.token, ...payload })
+      return this.makeRequest("GET", 'v1/plan/request-details', payload)
     }
   }
 
@@ -440,7 +511,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getDefinition: async (): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/schema/definition", { token: this.token })
+      return this.makeRequest("GET", "v1/schema/definition")
     },
     /**
      * Set schema definition.
@@ -449,7 +520,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     postDefinition: async (payload: any): Promise<ApiResponse> => {
-      return this.makeRequest("POST", "v1/schema/definition", { ...payload, token: this.token }, payload)
+      return this.makeRequest("POST", "v1/schema/definition", payload, payload)
     },
     /**
      * Post schema parameters.
@@ -458,7 +529,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     postParameters: async (payload: any): Promise<ApiResponse> => {
-      return this.makeRequest("POST", "v1/schema/parameters", { ...payload, token: this.token }, payload)
+      return this.makeRequest("POST", "v1/schema/parameters", payload, payload)
     },
   }
 
@@ -472,9 +543,42 @@ export class AdvisorCore {
      * @param {TmsPayload} payload
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
-    get: async (payload: TmsPayload): Promise<ApiImgResponse> => {
+    get: async (payload: TmsPayload): Promise<ApiFileResponse> => {
       const path = `v1/tms/${payload.server}/${payload.mode}/${payload.variable}/${payload.aggregation}/${payload.x}/${payload.y}/${payload.z}.png`
-      return this.makeRequestImage("GET", path, { istep: payload.istep, fstep: payload.fstep, token: this.token })
+      return this.makeRequestFile("GET", path, { istep: payload.istep, fstep: payload.fstep })
+    },
+  }
+
+  /**
+   * List and Download bucket files.
+   */
+  storage: StorageRoutes = {
+    /**
+     * List bucket files.
+     * GET /v1/storage/list
+     * @param {StorageListPayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    listFiles: async (payload: StorageListPayload): Promise<ApiResponse> => {
+      return this.makeRequest("GET", '/v1/storage/list', payload)
+    },
+    /**
+     * Download a file.
+     * GET /v1/storage/download/{fileName}
+     * @param {StorageDownloadPayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    downloadFile: async ({ fileName, ...rest }: StorageDownloadPayload): Promise<ApiFileResponse> => {
+      return this.makeRequestFile("GET", `/v1/storage/download/${fileName}`, rest)
+    },
+    /**
+     * Download a file by stream.
+     * GET /v1/storage/download/{fileName}
+     * @param {StorageDownloadPayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    downloadFileByStream: async ({ fileName, ...rest }: StorageDownloadPayload): Promise<ApiStreamResponse> => {
+      return this.makeRequestFileByStream("GET", `/v1/storage/download/${fileName}`, rest)
     },
   }
 }

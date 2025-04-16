@@ -1,3 +1,4 @@
+import { Readable } from "stream"
 
 export interface WeatherPayload {
   stationId?: string
@@ -69,8 +70,24 @@ export interface RequestDetailsPayload {
   pageSize?: number
   path?: string
   status?: number
-  startDate?: string | Date
-  endDate?: string | Date
+  startDate?: string
+  endDate?: string
+}
+
+export interface StorageListPayload {
+  token?: string
+  page?: number
+  pageSize?: number
+  startDate?: string
+  endDate?: string
+  fileName?: string
+  fileExtension?: string
+}
+
+export interface StorageDownloadPayload {
+  token?: string
+  fileName?: string
+  accessKey?: string
 }
 
 export interface ApiResponse {
@@ -78,8 +95,13 @@ export interface ApiResponse {
   error?: any
 }
 
-export interface ApiImgResponse {
-  data?: ArrayBuffer | null
+export interface ApiFileResponse {
+  data?: Buffer | null
+  error?: any
+}
+
+export interface ApiStreamResponse {
+  data?: Readable | null
   error?: any
 }
 

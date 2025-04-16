@@ -7,7 +7,11 @@ import {
   RadiusPayload,
   TmsPayload,
   WeatherPayload,
-  RequestDetailsPayload
+  RequestDetailsPayload,
+  StorageListPayload,
+  StorageDownloadPayload,
+  ApiFileResponse,
+  ApiStreamResponse
 } from "./payloads"
 /**
  * @typedef {Object} WeatherPayload
@@ -65,6 +69,32 @@ import {
  * @property {number} radius
  * @property {string} geometry
  */
+
+/**
+ * @typedef {Object} RequestDetailsPayload
+ * @property {number} page
+ * @property {number} pageSize
+ * @property {string} path
+ * @property {number} status
+ * @property {string} startDate
+ * @property {string} endDate
+*/
+
+/**
+ * @typedef {Object} StorageListPayload
+ * @property {number} page
+ * @property {number} pageSize
+ * @property {string} startDate
+ * @property {string} endDate
+ * @property {string} fileName
+ * @property {string} fileExtension
+*/
+
+/**
+ * @typedef {Object} StorageDownloadPayload
+ * @property {string} fileName
+ * @property {string} accessKey
+*/
 
 /**
  * @typedef {Object} TmsPayload
@@ -276,4 +306,28 @@ export interface TmsRoutes {
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
   get: (payload: TmsPayload) => Promise<ApiResponse>
+}
+
+export interface StorageRoutes {
+  /**
+   * List bucket files.
+   * GET /v1/storage/list
+   * @param {StorageListPayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  listFiles: (payload: StorageListPayload) => Promise<ApiResponse>
+  /**
+   * Download a file.
+   * GET /v1/storage/download/{fileName}
+   * @param {StorageDownloadPayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  downloadFile: (payload: StorageDownloadPayload) => Promise<ApiFileResponse>
+  /**
+   * Download a file by stream.
+   * GET /v1/storage/download/{fileName}
+   * @param {StorageDownloadPayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  downloadFileByStream: (payload: StorageDownloadPayload) => Promise<ApiStreamResponse>
 }

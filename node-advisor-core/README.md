@@ -4,7 +4,6 @@ Advisor Software Development Kit for nodeJS.
 
 ## Contents
 - [Node SDK](#node-sdk)
-  - [How to get your token](https://www.climatempoconsultoria.com.br/contato/)
   - [Contents](#contents)
   - [Installation](#installation)
   - [Routes](#routes)
@@ -15,6 +14,7 @@ Advisor Software Development Kit for nodeJS.
       - [Forecast:](#forecast)
       - [Monitoring:](#monitoring)
       - [Observed:](#observed)
+      - [Storage:](#storage)
       - [Plan Information:](#plan-information)
       - [Schema/Parameter:](#schemaparameter)
       - [Tms (Tiles Map Server):](#tms-tiles-map-server)
@@ -213,6 +213,35 @@ if (response.error) {
 }
 ```
 
+#### Storage:
+```javascript
+  const payload = {
+    page: 1,
+    pageSize: 2,
+  }
+
+  // Requesting the files list
+  let response = await connection.storage.listFiles(payload)
+
+  const fileName = 'Example.pdf'
+  const payload = {
+    fileName,
+    accessKey: 'a1b2c3d4-0010',
+  }
+
+  // Download de file as a Buffer
+  let response = await connection.storage.downloadFile(payload)
+  
+  // Downloading the file by stream
+  let response = await connection.storage.downloadFileByStream(payload)
+  
+  if (!response.error && response.data) {
+    response.data.pipe(createWriteStream(fileName))
+  } else {
+    console.log(response.error)
+    console.log('Error trying to get data!')
+  }
+```
 
 #### Plan Information:
 ```javascript
