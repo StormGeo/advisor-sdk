@@ -4,6 +4,7 @@ Advisor Software Development Kit for nodeJS.
 
 ## Contents
 - [Node SDK](#node-sdk)
+  - [How to get your token](https://www.climatempoconsultoria.com.br/contato/)
   - [Contents](#contents)
   - [Installation](#installation)
   - [Routes](#routes)
@@ -221,8 +222,17 @@ if (response.error) {
   }
 
   // Requesting the files list
-  let response = await connection.storage.listFiles(payload)
+  let response = await advisor.storage.listFiles(payload)
 
+  if (response.error) {
+    console.log(response.error)
+    console.log('Error trying to list files!')
+  } else {
+    console.log(response.data)
+  }
+```
+
+```javascript
   const fileName = 'Example.pdf'
   const payload = {
     fileName,
@@ -230,10 +240,17 @@ if (response.error) {
   }
 
   // Download de file as a Buffer
-  let response = await connection.storage.downloadFile(payload)
+  let response = await advisor.storage.downloadFile(payload)
+
+  if (!response.error && response.data) {
+    writeFileSync(fileName, Buffer.from(response.data))
+  } else {
+    console.log(response.error)
+    console.log('Error trying to get data!')
+  }
   
   // Downloading the file by stream
-  let response = await connection.storage.downloadFileByStream(payload)
+  let response = await advisor.storage.downloadFileByStream(payload)
   
   if (!response.error && response.data) {
     response.data.pipe(createWriteStream(fileName))
@@ -245,7 +262,15 @@ if (response.error) {
 
 #### Plan Information:
 ```javascript
+//Requesting plan information
 let response = await advisor.plan.getInfo()
+
+const payload = {
+  page: 1,
+  pageSize: 10,
+}
+// Requesting access history
+let response = await advisor.plan.getRequestDetails(payload)
 
 if (response.error) {
   console.log(response.error)

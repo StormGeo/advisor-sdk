@@ -65,7 +65,6 @@ export interface TmsPayload {
 }
 
 export interface RequestDetailsPayload {
-  token?: string
   page?: number
   pageSize?: number
   path?: string
@@ -75,7 +74,6 @@ export interface RequestDetailsPayload {
 }
 
 export interface StorageListPayload {
-  token?: string
   page?: number
   pageSize?: number
   startDate?: string
@@ -85,7 +83,6 @@ export interface StorageListPayload {
 }
 
 export interface StorageDownloadPayload {
-  token?: string
   fileName?: string
   accessKey?: string
 }

@@ -248,7 +248,7 @@ export class AdvisorCore {
 
       return {
         data: null,
-        error: error?.response?.data ? await this.getAllStreamContent(error.response.data) : error?.message,
+        error: error?.response?.data ? await this.getAllStreamContent(error.response.data) : error,
       }
     }
   }
@@ -260,7 +260,7 @@ export class AdvisorCore {
       content += chunk.toString('utf8')
     }
 
-    return content
+    return JSON.parse(content)
   }
 
   setHeaderAccept(value: string): void {
