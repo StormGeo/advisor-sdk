@@ -159,7 +159,8 @@ export class AdvisorCore {
       'Content-Type': 'application/json',
       Accept: "application/json",
       "Accept-Language": "en-US",
-      "x-advisor-token": this.token
+      "x-advisor-token": this.token,
+      "User-Agent": "Nodejs-AdvisorCore-SDK",
     }
     this.client = axios.create({
       baseURL: this.baseURL,
