@@ -521,7 +521,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     postDefinition: async (payload: any): Promise<ApiResponse> => {
-      return this.makeRequest("POST", "v1/schema/definition", payload, payload)
+      return this.makeRequest("POST", "v1/schema/definition", {}, payload)
     },
     /**
      * Post schema parameters.
@@ -530,7 +530,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     postParameters: async (payload: any): Promise<ApiResponse> => {
-      return this.makeRequest("POST", "v1/schema/parameters", payload, payload)
+      return this.makeRequest("POST", "v1/schema/parameters", {}, payload)
     },
   }
 

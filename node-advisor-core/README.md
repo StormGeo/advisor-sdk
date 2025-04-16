@@ -80,7 +80,7 @@ if (response.error) {
   console.log(response.error)
   console.log('Error trying to get data!')
 } else {
-  writeFileSync('test.png', Buffer.from(response.data))
+  writeFileSync('test.png', response.data)
 }
 ```
 
@@ -242,8 +242,8 @@ if (response.error) {
   // Download de file as a Buffer
   let response = await advisor.storage.downloadFile(payload)
 
-  if (!response.error && response.data) {
-    writeFileSync(fileName, Buffer.from(response.data))
+  if (response.data) {
+    writeFileSync(fileName, response.data)
   } else {
     console.log(response.error)
     console.log('Error trying to get data!')
@@ -287,7 +287,7 @@ const schemaPayload = {
   "identifier": "arbitraryIdentifier",
   "arbitraryField1": {
       "type": "boolean",
-      "required": True,
+      "required": true,
       "length": 125,
   },
 }
@@ -295,7 +295,7 @@ const schemaPayload = {
 // Arbitrary example on how to upload data to parameters from schema 
 parametersPayload = {
   "identifier": "arbitraryIdentifier",
-  "arbitraryField1": True,
+  "arbitraryField1": true,
 }
 
 // requesting all schemas from token
@@ -336,7 +336,7 @@ if (response.error) {
   console.log(response.error)
   console.log('Error trying to get data!')
 } else {
-  writeFileSync('test.png', Buffer.from(response.data))
+  writeFileSync('test.png', response.data)
 }
 ```
 
