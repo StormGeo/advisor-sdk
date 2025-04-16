@@ -15,6 +15,7 @@ Advisor Software Development Kit for nodeJS.
       - [Forecast:](#forecast)
       - [Monitoring:](#monitoring)
       - [Observed:](#observed)
+      - [Storage:](#storage)
       - [Plan Information:](#plan-information)
       - [Schema/Parameter:](#schemaparameter)
       - [Tms (Tiles Map Server):](#tms-tiles-map-server)
@@ -79,7 +80,7 @@ if (response.error) {
   console.log(response.error)
   console.log('Error trying to get data!')
 } else {
-  writeFileSync('test.png', Buffer.from(response.data))
+  writeFileSync('test.png', response.data)
 }
 ```
 
@@ -213,10 +214,63 @@ if (response.error) {
 }
 ```
 
+#### Storage:
+```javascript
+  const payload = {
+    page: 1,
+    pageSize: 2,
+  }
+
+  // Requesting the files list
+  let response = await advisor.storage.listFiles(payload)
+
+  if (response.error) {
+    console.log(response.error)
+    console.log('Error trying to list files!')
+  } else {
+    console.log(response.data)
+  }
+```
+
+```javascript
+  const fileName = 'Example.pdf'
+  const payload = {
+    fileName,
+    accessKey: 'a1b2c3d4-0010',
+  }
+
+  // Download de file as a Buffer
+  let response = await advisor.storage.downloadFile(payload)
+
+  if (response.data) {
+    writeFileSync(fileName, response.data)
+  } else {
+    console.log(response.error)
+    console.log('Error trying to get data!')
+  }
+  
+  // Downloading the file by stream
+  let response = await advisor.storage.downloadFileByStream(payload)
+  
+  if (!response.error && response.data) {
+    response.data.pipe(createWriteStream(fileName))
+  } else {
+    console.log(response.error)
+    console.log('Error trying to get data!')
+  }
+```
 
 #### Plan Information:
 ```javascript
+//Requesting plan information
 let response = await advisor.plan.getInfo()
+
+const payload = {
+  page: 1,
+  pageSize: 10,
+}
+// Requesting access history
+let response = await advisor.plan.getRequestDetails(payload)
 
 if (response.error) {
   console.log(response.error)
@@ -233,7 +287,7 @@ const schemaPayload = {
   "identifier": "arbitraryIdentifier",
   "arbitraryField1": {
       "type": "boolean",
-      "required": True,
+      "required": true,
       "length": 125,
   },
 }
@@ -241,7 +295,7 @@ const schemaPayload = {
 // Arbitrary example on how to upload data to parameters from schema 
 parametersPayload = {
   "identifier": "arbitraryIdentifier",
-  "arbitraryField1": True,
+  "arbitraryField1": true,
 }
 
 // requesting all schemas from token
@@ -282,7 +336,7 @@ if (response.error) {
   console.log(response.error)
   console.log('Error trying to get data!')
 } else {
-  writeFileSync('test.png', Buffer.from(response.data))
+  writeFileSync('test.png', response.data)
 }
 ```
 
