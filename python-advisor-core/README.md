@@ -28,6 +28,7 @@ Advisor Software Development Kit for python.
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
     - [TmsPayload](#tmspayload)
+    - [RequestDetailsPayload](#requestdetailspayload)
 ---
 ## Importing
 
@@ -203,7 +204,16 @@ else:
 
 #### Plan Information
 ```python
+#requesting plan information
 response = advisor.plan.get_info()
+
+payload = RequestDetailsPayload(
+  page=1,
+  page_size=10
+)
+
+#requesting access history
+response = advisor.plan.get_request_details(payload)
 
 if response['error']:
   print('Error trying to get data!')
@@ -393,4 +403,14 @@ All the methods will return the same pattern:
 - **z**: int
 - **istep**: str
 - **fstep**: str
+
+### RequestDetailsPayload
+
+- **page**: int
+- **page_size**: int
+- **path**: str
+- **status**: int
+- **start_date**: str
+- **end_date**: str
+
 ---

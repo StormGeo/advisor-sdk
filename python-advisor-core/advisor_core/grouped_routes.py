@@ -241,6 +241,20 @@ class PlanAPI:
         """
         return self.request_handler.make_request("GET", f"v1/plan/{self.request_handler.token}")
 
+    def get_request_details(self, payload: RequestDetailsPayload):
+        """
+        Fetch request details.
+        GET /v1/plan/request-details
+        """
+        builder = QueryParamsBuilder()
+        params = (
+            builder
+            .add_payload(payload.get_params())
+            .add_token("token", self.request_handler.token)
+            .build()
+        )
+        return self.request_handler.make_request("GET", "v1/plan/request-details", params=params)
+
 class ChartAPI:
     def __init__(self, request_handler):
         self.request_handler = request_handler

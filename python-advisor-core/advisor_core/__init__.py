@@ -21,6 +21,7 @@ from .payloads import (
     CurrentWeatherPayload,
     GeometryPayload,
     RadiusPayload,
+    RequestDetailsPayload,
 )
 
 __all__ = [
@@ -43,5 +44,6 @@ __all__ = [
     "RadiusPayload",
     "StationPayload",
     "GeometryPayload",
-    "TmsPayload"
+    "TmsPayload",
+    "RequestDetailsPayload",
 ]

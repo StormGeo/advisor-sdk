@@ -236,3 +236,36 @@ class TmsPayload:
             "istep": self.istep,
             "fstep": self.fstep,
         }
+
+class RequestDetailsPayload:
+    def __init__(
+        self,
+        page: int = None,
+        page_size: int = None,
+        path: str = None,
+        status: int = None,
+        start_date: str = None,
+        end_date: str = None,
+    ):
+        """
+        Initializes the RequestDetailsPayload with optional parameters.
+        """
+        self.page = page
+        self.page_size = page_size
+        self.path = path
+        self.status = status
+        self.start_date = start_date
+        self.end_date = end_date
+
+    def get_params(self) -> dict:
+        """
+        Returns the parameters as a dictionary for API requests.
+        """
+        return {
+            "page": self.page,
+            "pageSize": self.page_size,
+            "path": self.path,
+            "status": self.status,
+            "startDate": self.start_date,
+            "endDate": self.end_date,
+        }
