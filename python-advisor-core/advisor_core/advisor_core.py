@@ -9,7 +9,8 @@ from .grouped_routes import (
     PlanAPI,
     ChartAPI,
     TmsAPI,
-    SchemaAPI
+    SchemaAPI,
+    StorageAPI,
 )
 
 class AdvisorCore:
@@ -32,6 +33,8 @@ class AdvisorCore:
         """Fetch climatology weather."""
         self.monitoring = MonitoringAlertsAPI(request_handler)
         """Fetch alerts."""
+        self.storage = StorageAPI(request_handler)
+        """Fetch bucket files."""
         self.plan = PlanAPI(request_handler)
         """Fetch plan information."""
         self.chart = ChartAPI(request_handler)

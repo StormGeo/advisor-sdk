@@ -269,3 +269,36 @@ class RequestDetailsPayload:
             "startDate": self.start_date,
             "endDate": self.end_date,
         }
+
+class StorageListPayload:
+    def __init__(
+        self,
+        page: int = None,
+        page_size: int = None,
+        start_date: str = None,
+        end_date: str = None,
+        file_name: str = None,
+        file_extension: str = None,
+    ):
+        """
+        Initializes the StorageListPayload with optional parameters.
+        """
+        self.page = page
+        self.page_size = page_size
+        self.start_date = start_date
+        self.end_date = end_date
+        self.file_name = file_name
+        self.file_extension = file_extension
+
+    def get_params(self) -> dict:
+        """
+        Returns the parameters as a dictionary for API requests.
+        """
+        return {
+            "page": self.page,
+            "pageSize": self.page_size,
+            "startDate": self.start_date,
+            "endDate": self.end_date,
+            "fileName": self.file_name,
+            "fileExtension": self.file_extension,
+        }

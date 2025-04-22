@@ -7,6 +7,7 @@ from .grouped_routes import (
     PlanAPI,
     ChartAPI,
     SchemaAPI,
+    StorageAPI,
     ForecastAPI,
     ObservedAPI,
     ClimatologyAPI,
@@ -22,6 +23,7 @@ from .payloads import (
     GeometryPayload,
     RadiusPayload,
     RequestDetailsPayload,
+    StorageListPayload,
 )
 
 __all__ = [
@@ -38,6 +40,7 @@ __all__ = [
     "ChartAPI",
     "TmsAPI",
     "SchemaAPI",
+    "StorageAPI",
     "WeatherPayload",
     "ClimatologyPayload",
     "CurrentWeatherPayload",
@@ -46,4 +49,5 @@ __all__ = [
     "GeometryPayload",
     "TmsPayload",
     "RequestDetailsPayload",
+    "StorageListPayload",
 ]

@@ -16,6 +16,7 @@ Advisor Software Development Kit for python.
       - [Monitoring](#monitoring)
       - [Observed](#observed)
       - [Plan Information](#plan-information)
+      - [Storage](#storage)
       - [Schema/Parameter](#schemaparameter)
       - [Tms (Tiles Map Server)](#tms-tiles-map-server)
   - [Headers Configuration](#headers-configuration)
@@ -194,6 +195,23 @@ response = advisor.observed.get_fire_focus_by_geometry(payload_for_geometry)
 
 # requesting lightning observed data by geometry
 response = advisor.observed.get_lightning_by_geometry(payload_for_geometry)
+
+if response['error']:
+  print('Error trying to get data!')
+  print(response['error'])
+else:
+  print(response['data'])
+```
+
+#### Storage
+```python
+payload = StorageListPayload(
+  page=1,
+  page_size=10
+)
+
+#requesting the files list
+response = advisor.storage.list_files(payload)
 
 if response['error']:
   print('Error trying to get data!')
@@ -412,5 +430,14 @@ All the methods will return the same pattern:
 - **status**: int
 - **start_date**: str
 - **end_date**: str
+
+### StorageListPayload
+
+- **page**: int
+- **page_size**: int
+- **start_date**: str
+- **end_date**: str
+- **file_name**: str
+- **file_extension**: str
 
 ---

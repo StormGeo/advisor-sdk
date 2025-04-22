@@ -255,6 +255,24 @@ class PlanAPI:
         )
         return self.request_handler.make_request("GET", "v1/plan/request-details", params=params)
 
+class StorageAPI:
+    def __init__(self, request_handler):
+        self.request_handler = request_handler
+
+    def list_files(self, payload: StorageListPayload):
+        """
+        Fetch bucket files.
+        GET /v1/storage/list
+        """
+        builder = QueryParamsBuilder()
+        params = (
+            builder
+            .add_payload(payload.get_params())
+            .add_token("token", self.request_handler.token)
+            .build()
+        )
+        return self.request_handler.make_request("GET", "v1/storage/list", params=params)
+
 class ChartAPI:
     def __init__(self, request_handler):
         self.request_handler = request_handler
