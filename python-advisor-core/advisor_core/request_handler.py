@@ -10,7 +10,7 @@ class RequestHandler:
         self.session = requests.Session()
         self.headers = headers
 
-    def make_request(self, method, endpoint, params=None, json_data=None, retries=None):
+    def make_request(self, method, endpoint, params=None, json_data=None, retries=None, stream=False):
         retries = retries if retries is not None else self.retries
         full_url = f"{self.base_url}{endpoint}"
         error_message = ''
@@ -18,7 +18,7 @@ class RequestHandler:
         try:
             headers = self.headers.getFormattedHeader()
             if method == "GET":
-                response = self.session.get(full_url, params=params, headers=headers)
+                response = self.session.get(full_url, params=params, headers=headers, stream=stream)
             elif method == "POST":
                 response = self.session.post(full_url, params=params, json=json_data, headers=headers)
             else:
@@ -37,6 +37,13 @@ class RequestHandler:
 
             response.raise_for_status()
 
+            if stream:
+                return {
+                    "data": response.iter_content(chunk_size=8192),
+                    "response": response,
+                    "error": None
+                }
+
             content_type = response.headers.get("Content-Type", "")
             if not content_type.startswith("application/json"):
                 return {"data": response.content, "error": None}
@@ -50,7 +57,7 @@ class RequestHandler:
             if retries > 0:
                 time.sleep(self.delay)
                 print(f"Re-trying in {self.delay}s... attempts left: {retries}")
-                return self.make_request(method, endpoint, params, json_data, retries - 1)
+                return self.make_request(method, endpoint, params, json_data, retries - 1, stream=stream)
 
             return {
                 "data": None,
