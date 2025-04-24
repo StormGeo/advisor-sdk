@@ -302,3 +302,24 @@ class StorageListPayload:
             "fileName": self.file_name,
             "fileExtension": self.file_extension,
         }
+
+class StorageDownloadPayload:
+    def __init__(
+        self,
+        file_name: str = None,
+        access_key: str = None,
+    ):
+        """
+        Initializes the StorageDownloadPayload with optional parameters.
+        """
+        self.file_name = file_name
+        self.access_key = access_key
+
+    def get_params(self) -> dict:
+        """
+        Returns the parameters as a dictionary for API requests.
+        """
+        return {
+            "fileName": self.file_name,
+            "accessKey": self.access_key,
+        }

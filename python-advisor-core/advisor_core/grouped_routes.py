@@ -273,6 +273,21 @@ class StorageAPI:
         )
         return self.request_handler.make_request("GET", "v1/storage/list", params=params)
 
+    def download_file(self, payload: StorageDownloadPayload):
+        """
+        Download a file.
+        GET /v1/storage/download/{fileName}
+        """
+        builder = QueryParamsBuilder()
+        params = (
+            builder
+            .add_payload(payload.get_params())
+            .add_token("token", self.request_handler.token)
+            .build()
+        )
+        path = f"v1/storage/download/{payload.file_name}"
+        return self.request_handler.make_request("GET", path, params=params)
+
 class ChartAPI:
     def __init__(self, request_handler):
         self.request_handler = request_handler
