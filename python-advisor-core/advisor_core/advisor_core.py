@@ -22,6 +22,7 @@ class AdvisorCore:
         self._header = Header()
         self._header.set('Accept', 'application/json')
         self._header.set('Content-Type', 'application/json')
+        self._header.set('x-advisor-token', token)
         request_handler = RequestHandler(base_url, token, retries, delay, self._header)
         self.forecast = ForecastAPI(request_handler) 
         """Fetch weather forecast."""
@@ -46,6 +47,9 @@ class AdvisorCore:
 
     def setHeaderAccept(self, value):
         self._header.set('Accept', value)
+
+    def setHeaderToken(self, value):
+        self._header.set('x-advisor-token', value)
     
     def setHeaderAcceptLanguage(self, value):
         self._header.set('Accept-Language', value)

@@ -14,7 +14,6 @@ class ForecastAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/forecast/daily", params=params)
@@ -28,7 +27,6 @@ class ForecastAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/forecast/hourly", params=params)
@@ -42,7 +40,6 @@ class ForecastAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/forecast/period", params=params)
@@ -60,7 +57,6 @@ class ObservedAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/observed/daily", params=params)
@@ -74,7 +70,6 @@ class ObservedAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/observed/hourly", params=params)
@@ -88,7 +83,6 @@ class ObservedAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/observed/period", params=params)
@@ -102,7 +96,6 @@ class ObservedAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/station", params=params)
@@ -116,7 +109,6 @@ class ObservedAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/observed/fire-focus", params=params)
@@ -130,7 +122,6 @@ class ObservedAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/observed/lightning", params=params)
@@ -144,7 +135,6 @@ class ObservedAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("POST", "v1/observed/fire-focus", params=params, json_data=payload.getBody())
@@ -158,7 +148,6 @@ class ObservedAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("POST", "v1/observed/lightning", params=params, json_data=payload.getBody())
@@ -176,10 +165,9 @@ class CurrentWeatherAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
-        return self.request_handler.make_request("GET", "v1/forecast/daily", params=params)
+        return self.request_handler.make_request("GET", "v1/current-weather", params=params)
 
 class ClimatologyAPI:
     def __init__(self, request_handler):
@@ -194,7 +182,6 @@ class ClimatologyAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/climatology/daily", params=params)
@@ -208,7 +195,6 @@ class ClimatologyAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/climatology/monthly", params=params)
@@ -222,13 +208,7 @@ class MonitoringAlertsAPI:
         Fetch alerts.
         GET /v1/monitoring/alerts
         """
-        builder = QueryParamsBuilder()
-        params = (
-            builder
-            .add_token("token", self.request_handler.token)
-            .build()
-        )
-        return self.request_handler.make_request("GET", "v1/monitoring/alerts", params=params)
+        return self.request_handler.make_request("GET", "v1/monitoring/alerts")
 
 class PlanAPI:
     def __init__(self, request_handler):
@@ -250,7 +230,6 @@ class PlanAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/plan/request-details", params=params)
@@ -268,7 +247,6 @@ class StorageAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/storage/list", params=params)
@@ -282,7 +260,6 @@ class StorageAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         path = f"v1/storage/download/{payload.file_name}"
@@ -297,7 +274,6 @@ class StorageAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         path = f"v1/storage/download/{payload.file_name}"
@@ -316,7 +292,6 @@ class ChartAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/forecast/daily/chart", params=params)
@@ -330,7 +305,6 @@ class ChartAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/forecast/hourly/chart", params=params)
@@ -344,7 +318,6 @@ class ChartAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/observed/daily/chart", params=params)
@@ -358,7 +331,6 @@ class ChartAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         return self.request_handler.make_request("GET", "v1/observed/hourly/chart", params=params)
@@ -376,7 +348,6 @@ class TmsAPI:
         params = (
             builder
             .add_payload(payload.get_params())
-            .add_token("token", self.request_handler.token)
             .build()
         )
         path = f"v1/tms/{payload.server}/{payload.mode}/{payload.variable}/{payload.aggregation}/{payload.x}/{payload.y}/{payload.z}.png"
@@ -391,36 +362,18 @@ class SchemaAPI:
         Fetch schema definition.
         GET /v1/schema/definition
         """
-        builder = QueryParamsBuilder()
-        params = (
-            builder
-            .add_token("token", self.request_handler.token)
-            .build()
-        )
-        return self.request_handler.make_request("GET", "v1/schema/definition", params=params)
+        return self.request_handler.make_request("GET", "v1/schema/definition")
     
     def post_definition(self, payload):
         """
         Set schema definition.
         POST /v1/schema/definition
         """
-        builder = QueryParamsBuilder()
-        params = (
-            builder
-            .add_token("token", self.request_handler.token)
-            .build()
-        )
-        return self.request_handler.make_request("POST", "v1/schema/definition", params=params, json_data=payload)
-    
+        return self.request_handler.make_request("POST", "v1/schema/definition", params=None, json_data=payload)
+
     def post_parameters(self, payload):
         """
         Post schema parameters.
         POST /v1/schema/parameters
         """
-        builder = QueryParamsBuilder()
-        params = (
-            builder
-            .add_token("token", self.request_handler.token)
-            .build()
-        )
-        return self.request_handler.make_request("POST", "v1/schema/parameters", params=params, json_data=payload)
+        return self.request_handler.make_request("POST", "v1/schema/parameters", params=None, json_data=payload)
