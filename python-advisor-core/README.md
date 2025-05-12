@@ -16,6 +16,7 @@ Advisor Software Development Kit for python.
       - [Monitoring](#monitoring)
       - [Observed](#observed)
       - [Plan Information](#plan-information)
+      - [Storage](#storage)
       - [Schema/Parameter](#schemaparameter)
       - [Tms (Tiles Map Server)](#tms-tiles-map-server)
   - [Headers Configuration](#headers-configuration)
@@ -28,6 +29,7 @@ Advisor Software Development Kit for python.
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
     - [TmsPayload](#tmspayload)
+    - [RequestDetailsPayload](#requestdetailspayload)
 ---
 ## Importing
 
@@ -201,9 +203,62 @@ else:
   print(response['data'])
 ```
 
+#### Storage
+```python
+payload = StorageListPayload(
+  page=1,
+  page_size=10
+)
+
+payload_for_download = StorageDownloadPayload(
+  file_name="Example.pdf",
+  access_key="a1b2c3d4-0010"
+)
+
+#requesting the files list
+response = advisor.storage.list_files(payload)
+
+if response['error']:
+  print('Error trying to get data!')
+  print(response['error'])
+else:
+  print(response['data'])
+
+#downloading a file from the list
+response = advisor.storage.download_file(payload_for_download)
+
+if response['error']:
+    print('Error trying to get data')
+    print(response['error'])
+else:
+    with open(payload_for_download.file_name, "wb") as f:
+        f.write(response["data"])
+
+#downloading a file by stream
+response = advisor.storage.download_file_by_stream(payload_for_download)
+
+if response['error']:
+    print('Error trying to get data')
+    print(response['error'])
+else:
+    with open(payload_for_download.file_name, "wb") as f:
+        for chunk in response['data']:
+            if chunk:
+                f.write(chunk)
+```
+
 #### Plan Information
 ```python
+#requesting plan information
 response = advisor.plan.get_info()
+
+payload = RequestDetailsPayload(
+  page=1,
+  page_size=10
+)
+
+#requesting access history
+response = advisor.plan.get_request_details(payload)
 
 if response['error']:
   print('Error trying to get data!')
@@ -393,4 +448,28 @@ All the methods will return the same pattern:
 - **z**: int
 - **istep**: str
 - **fstep**: str
+
+### RequestDetailsPayload
+
+- **page**: int
+- **page_size**: int
+- **path**: str
+- **status**: int
+- **start_date**: str
+- **end_date**: str
+
+### StorageListPayload
+
+- **page**: int
+- **page_size**: int
+- **start_date**: str
+- **end_date**: str
+- **file_name**: str
+- **file_extension**: str
+
+### StorageDownloadPayload
+
+- **file_name**: str
+- **access_key**: str
+
 ---
