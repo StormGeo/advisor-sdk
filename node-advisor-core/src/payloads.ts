@@ -60,8 +60,13 @@ export interface TmsPayload {
   x?: string
   y?: string
   z?: string
+  timezone?: string
   istep?: string
   fstep?: string
+}
+
+export interface PlanInfoPayload {
+  timezone?: string
 }
 
 export interface RequestDetailsPayload {

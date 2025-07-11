@@ -11,7 +11,8 @@ import {
   StorageListPayload,
   StorageDownloadPayload,
   ApiFileResponse,
-  ApiStreamResponse
+  ApiStreamResponse,
+  PlanInfoPayload
 } from "./payloads"
 /**
  * @typedef {Object} WeatherPayload
@@ -71,6 +72,11 @@ import {
  */
 
 /**
+ * @typedef {Object} PlanInfoPayload
+ * @property {string} timezone
+ */
+
+/**
  * @typedef {Object} RequestDetailsPayload
  * @property {number} page
  * @property {number} pageSize
@@ -102,6 +108,7 @@ import {
  * @property {string} mode
  * @property {string} variable
  * @property {string} aggregation
+ * @property {string} timezone
  * @property {string} x
  * @property {string} y
  * @property {string} z
@@ -263,9 +270,10 @@ export interface PlanRoutes {
   /**
    * Fetch plan information.
    * GET /v1/plan/{token}
+   * @param {PlanInfoPayload} payload
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
-  getInfo: () => Promise<ApiResponse>
+  getInfo: (payload: PlanInfoPayload) => Promise<ApiResponse>
   /**
    * Get request history of a plan
    * GET /v1/plan/request-details

@@ -30,6 +30,7 @@ import {
   StorageListPayload,
   StorageDownloadPayload,
   ApiStreamResponse,
+  PlanInfoPayload,
 } from "./payloads"
 
 function sleep(ms: number): Promise<void> {
@@ -91,6 +92,11 @@ function sleep(ms: number): Promise<void> {
  * @property {string} endDate
  * @property {number} radius
  * @property {string} geometry
+ */
+
+/**
+ * @typedef {Object} PlanInfoPayload
+ * @property {string} timezone
  */
 
 /**
@@ -486,10 +492,11 @@ export class AdvisorCore {
     /**
      * Fetch plan information.
      * GET /v1/plan/{token}
+     * @param {PlanInfoPayload} payload
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
-    getInfo: async (): Promise<ApiResponse> => {
-      return this.makeRequest("GET", `v1/plan/${this.token}`)
+    getInfo: async (payload: PlanInfoPayload): Promise<ApiResponse> => {
+      return this.makeRequest("GET", `v1/plan/${this.token}`, payload)
     },
     /**
      * Get request history of a plan
@@ -546,7 +553,7 @@ export class AdvisorCore {
      */
     get: async (payload: TmsPayload): Promise<ApiFileResponse> => {
       const path = `v1/tms/${payload.server}/${payload.mode}/${payload.variable}/${payload.aggregation}/${payload.x}/${payload.y}/${payload.z}.png`
-      return this.makeRequestFile("GET", path, { istep: payload.istep, fstep: payload.fstep })
+      return this.makeRequestFile("GET", path, { timezone: payload.timezone, istep: payload.istep, fstep: payload.fstep })
     },
   }
 
