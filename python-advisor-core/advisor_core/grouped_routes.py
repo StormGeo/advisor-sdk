@@ -343,6 +343,24 @@ class ChartAPI:
         )
         return self.request_handler.make_request("GET", "v1/observed/hourly/chart", params=params)
 
+class StaticMapAPI:
+    def __init__(self, request_handler):
+        self.request_handler = request_handler
+
+    def get_static_map(self, payload: StaticMapPayload):
+        """
+        Fetch static map image.
+        GET /v1/map/{type}/{category}/{variable}
+        """
+        builder = QueryParamsBuilder()
+        params = (
+            builder
+            .add_payload(payload.get_params())
+            .build()
+        )
+        path = f"v1/map/{payload.type}/{payload.category}/{payload.variable}"
+        return self.request_handler.make_request("GET", path, params=params)
+
 class TmsAPI:
     def __init__(self, request_handler):
         self.request_handler = request_handler

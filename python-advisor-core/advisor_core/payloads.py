@@ -344,3 +344,60 @@ class StorageDownloadPayload:
             "fileName": self.file_name,
             "accessKey": self.access_key,
         }
+
+class StaticMapPayload:
+    def __init__(
+        self,
+        start_date: str = None,
+        end_date: str = None,
+        aggregation: str = None,
+        model: str = None,
+        lonmin: float = None,
+        latmin: float = None,
+        lonmax: float = None,
+        latmax: float = None,
+        dpi: int = None,
+        title: bool = None,
+        titlevariable: str = None,
+        hours: int = None,
+        type: str = None,
+        category: str = None,
+        variable: str = None,
+    ):
+        """
+        Initializes the StaticMapPayload object with optional parameters.
+        """
+        self.start_date = start_date
+        self.end_date = end_date
+        self.aggregation = aggregation
+        self.model = model
+        self.lonmin = lonmin
+        self.latmin = latmin
+        self.lonmax = lonmax
+        self.latmax = latmax
+        self.dpi = dpi
+        self.title = title
+        self.titlevariable = titlevariable
+        self.hours = hours
+        self.type = type
+        self.category = category
+        self.variable = variable
+
+    def get_params(self) -> dict:
+        """
+        Returns the parameters as a dictionary for API requests.
+        """
+        return {
+            "startDate": self.start_date,
+            "endDate": self.end_date,
+            "aggregation": self.aggregation,
+            "model": self.model,
+            "lonmin": self.lonmin,
+            "latmin": self.latmin,
+            "lonmax": self.lonmax,
+            "latmax": self.latmax,
+            "dpi": self.dpi,
+            "title": self.title,
+            "titlevariable": self.titlevariable,
+            "hours": self.hours,
+        }
