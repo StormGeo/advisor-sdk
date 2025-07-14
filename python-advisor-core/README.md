@@ -249,16 +249,20 @@ else:
 
 #### Plan Information
 ```python
-#requesting plan information
-response = advisor.plan.get_info()
+payload = PlanInfoPayload(
+  timezone=-3
+)
 
-payload = RequestDetailsPayload(
+payload_for_details = RequestDetailsPayload(
   page=1,
   page_size=10
 )
 
+#requesting plan information
+response = advisor.plan.get_info(payload)
+
 #requesting access history
-response = advisor.plan.get_request_details(payload)
+response = advisor.plan.get_request_details(payload_for_details)
 
 if response['error']:
   print('Error trying to get data!')
@@ -448,6 +452,10 @@ All the methods will return the same pattern:
 - **z**: int
 - **istep**: str
 - **fstep**: str
+- **timezone**: int
+
+### PlanInfoPayload
+- **timezone**: int
 
 ### RequestDetailsPayload
 

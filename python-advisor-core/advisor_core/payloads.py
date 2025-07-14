@@ -207,6 +207,7 @@ class TmsPayload:
         self,
         istep: str = None,
         fstep: str = None,
+        timezone: int = None,
         server: str = None,
         mode: str = None,
         variable: str = None,
@@ -220,6 +221,7 @@ class TmsPayload:
         """
         self.istep = istep
         self.fstep = fstep
+        self.timezone = timezone
         self.server = server
         self.mode = mode
         self.variable = variable
@@ -235,6 +237,25 @@ class TmsPayload:
         return {
             "istep": self.istep,
             "fstep": self.fstep,
+            "timezone": self.timezone,
+        }
+
+class PlanInfoPayload:
+    def __init__(
+        self,
+        timezone: int = None,
+    ):
+        """
+        Initializes the PlanInfoPayload object with optional parameters.
+        """
+        self.timezone = timezone
+
+    def get_params(self) -> dict:
+        """
+        Returns the parameters as a dictionary for API requests.
+        """
+        return {
+            "timezone": self.timezone,
         }
 
 class RequestDetailsPayload:

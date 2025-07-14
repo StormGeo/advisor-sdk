@@ -214,12 +214,20 @@ class PlanAPI:
     def __init__(self, request_handler):
         self.request_handler = request_handler
 
-    def get_info(self):
+    def get_info(self, payload=None):
         """
         Fetch plan information.
         GET /v1/plan/{token}
         """
-        return self.request_handler.make_request("GET", f"v1/plan/{self.request_handler.token}")
+        params = {}
+        if payload is not None:
+            builder = QueryParamsBuilder()
+            params = (
+                builder
+                .add_payload(payload.get_params())
+                .build()
+            )
+        return self.request_handler.make_request("GET", f"v1/plan/{self.request_handler.token}", params=params)
 
     def get_request_details(self, payload: RequestDetailsPayload):
         """
