@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'stormgeo.advisor-core',
-    version = '1.1.0',
+    version = '1.2.0',
     author = 'climatempo',
     packages = find_packages(include=['advisor_core']),
     license = 'MIT',
