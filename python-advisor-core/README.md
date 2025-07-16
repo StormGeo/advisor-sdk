@@ -16,6 +16,7 @@ Advisor Software Development Kit for python.
       - [Monitoring](#monitoring)
       - [Observed](#observed)
       - [Plan Information](#plan-information)
+      - [Static Map](#static-map)
       - [Storage](#storage)
       - [Schema/Parameter](#schemaparameter)
       - [Tms (Tiles Map Server)](#tms-tiles-map-server)
@@ -215,7 +216,7 @@ payload_for_download = StorageDownloadPayload(
   access_key="a1b2c3d4-0010"
 )
 
-#requesting the files list
+# requesting the files list
 response = advisor.storage.list_files(payload)
 
 if response['error']:
@@ -224,7 +225,7 @@ if response['error']:
 else:
   print(response['data'])
 
-#downloading a file from the list
+# downloading a file from the list
 response = advisor.storage.download_file(payload_for_download)
 
 if response['error']:
@@ -234,7 +235,7 @@ else:
     with open(payload_for_download.file_name, "wb") as f:
         f.write(response["data"])
 
-#downloading a file by stream
+# downloading a file by stream
 response = advisor.storage.download_file_by_stream(payload_for_download)
 
 if response['error']:
@@ -249,22 +250,50 @@ else:
 
 #### Plan Information
 ```python
-#requesting plan information
-response = advisor.plan.get_info()
+payload = PlanInfoPayload(
+  timezone=-3
+)
 
-payload = RequestDetailsPayload(
+payload_for_details = RequestDetailsPayload(
   page=1,
   page_size=10
 )
 
-#requesting access history
-response = advisor.plan.get_request_details(payload)
+# requesting plan information
+response = advisor.plan.get_info(payload)
+
+# requesting access history
+response = advisor.plan.get_request_details(payload_for_details)
 
 if response['error']:
   print('Error trying to get data!')
   print(response['error'])
 else:
   print(response['data'])
+```
+
+#### Static Map
+```python
+payload = StaticMapPayload(
+    type="periods",
+    category="observed",
+    variable="temperature",
+    aggregation="max",
+    start_date="2025-07-01 00:00:00",
+    end_date="2025-07-05 23:59:59",
+    dpi=50,
+    title=True,
+    titlevariable="Static Map",
+)
+
+response = advisor.static_map.get_static_map(payload)
+
+if response['error']:
+    print('Error trying to get data!')
+    print(response['error'])
+else:
+    with open("response.png", "wb") as f:
+        f.write(response["data"])
 ```
 
 #### Schema/Parameter
@@ -448,6 +477,10 @@ All the methods will return the same pattern:
 - **z**: int
 - **istep**: str
 - **fstep**: str
+- **timezone**: int
+
+### PlanInfoPayload
+- **timezone**: int
 
 ### RequestDetailsPayload
 
@@ -471,5 +504,23 @@ All the methods will return the same pattern:
 
 - **file_name**: str
 - **access_key**: str
+
+### StaticMapPayload
+
+- **start_date**: str  
+- **end_date**: str  
+- **aggregation**: str  
+- **model**: str  
+- **lonmin**: float  
+- **latmin**: float  
+- **lonmax**: float  
+- **latmax**: float  
+- **dpi**: int  
+- **title**: bool  
+- **titlevariable**: str  
+- **hours**: int  
+- **type**: str
+- **category**: str
+- **variable**: str
 
 ---

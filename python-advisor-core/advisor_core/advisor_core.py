@@ -11,6 +11,7 @@ from .grouped_routes import (
     TmsAPI,
     SchemaAPI,
     StorageAPI,
+    StaticMapAPI,
 )
 
 class AdvisorCore:
@@ -40,6 +41,8 @@ class AdvisorCore:
         """Fetch plan information."""
         self.chart = ChartAPI(request_handler)
         """Fetch weather data charts"""
+        self.static_map = StaticMapAPI(request_handler)
+        """Fetch static map images."""
         self.tms = TmsAPI(request_handler)
         """Fetch tiles map service."""
         self.schema = SchemaAPI(request_handler)
