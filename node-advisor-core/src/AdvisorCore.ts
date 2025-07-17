@@ -12,6 +12,7 @@ import {
   ObservedRoutes,
   PlanRoutes,
   SchemaRoutes,
+  StaticMapRoutes,
   StorageRoutes,
   TmsRoutes,
 } from "./interfaces"
@@ -31,6 +32,7 @@ import {
   StorageDownloadPayload,
   ApiStreamResponse,
   PlanInfoPayload,
+  StaticMapPayload,
 } from "./payloads"
 
 function sleep(ms: number): Promise<void> {
@@ -538,6 +540,22 @@ export class AdvisorCore {
      */
     postParameters: async (payload: any): Promise<ApiResponse> => {
       return this.makeRequest("POST", "v1/schema/parameters", {}, payload)
+    },
+  }
+
+  /**
+   * Fetch static map images.
+   */
+  staticMap: StaticMapRoutes = {
+    /**
+     * Fetch static map images.
+     * GET /v1/map
+     * @param {StaticMapPayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    get: async (payload: StaticMapPayload): Promise<ApiResponse> => {
+      const {type, category, variable, ...rest} = payload
+      return this.makeRequestFile("GET", `v1/map/${type}/${category}/${variable}`, rest)
     },
   }
 

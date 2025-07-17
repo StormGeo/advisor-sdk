@@ -12,7 +12,8 @@ import {
   StorageDownloadPayload,
   ApiFileResponse,
   ApiStreamResponse,
-  PlanInfoPayload
+  PlanInfoPayload,
+  StaticMapPayload
 } from "./payloads"
 /**
  * @typedef {Object} WeatherPayload
@@ -73,7 +74,7 @@ import {
 
 /**
  * @typedef {Object} PlanInfoPayload
- * @property {string} timezone
+ * @property {number} timezone
  */
 
 /**
@@ -103,12 +104,31 @@ import {
 */
 
 /**
+ * @typedef {Object} StaticMapPayload
+ * @property {string} startDate
+ * @property {string} endDate
+ * @property {string} aggregation
+ * @property {string} model
+ * @property {number} lonmin
+ * @property {number} lonmax
+ * @property {number} latmin
+ * @property {number} latmax
+ * @property {number} dpi
+ * @property {boolean} title
+ * @property {string} titlevariable
+ * @property {number} hours
+ * @property {string} type
+ * @property {string} category
+ * @property {string} variable
+ */
+
+/**
  * @typedef {Object} TmsPayload
  * @property {string} server
  * @property {string} mode
  * @property {string} variable
  * @property {string} aggregation
- * @property {string} timezone
+ * @property {number} timezone
  * @property {string} x
  * @property {string} y
  * @property {string} z
@@ -304,6 +324,16 @@ export interface SchemaRoutes {
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
   postParameters: (payload: any) => Promise<ApiResponse>
+}
+
+export interface StaticMapRoutes {
+  /**
+   * Fetch static map images.
+   * GET /v1/static-map
+   * @param {StaticMapPayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  get: (payload: StaticMapPayload) => Promise<ApiResponse>
 }
 
 export interface TmsRoutes {
