@@ -11,7 +11,9 @@ import {
   StorageListPayload,
   StorageDownloadPayload,
   ApiFileResponse,
-  ApiStreamResponse
+  ApiStreamResponse,
+  PlanInfoPayload,
+  StaticMapPayload
 } from "./payloads"
 /**
  * @typedef {Object} WeatherPayload
@@ -71,6 +73,11 @@ import {
  */
 
 /**
+ * @typedef {Object} PlanInfoPayload
+ * @property {number} timezone
+ */
+
+/**
  * @typedef {Object} RequestDetailsPayload
  * @property {number} page
  * @property {number} pageSize
@@ -97,11 +104,31 @@ import {
 */
 
 /**
+ * @typedef {Object} StaticMapPayload
+ * @property {string} startDate
+ * @property {string} endDate
+ * @property {string} aggregation
+ * @property {string} model
+ * @property {number} lonmin
+ * @property {number} lonmax
+ * @property {number} latmin
+ * @property {number} latmax
+ * @property {number} dpi
+ * @property {boolean} title
+ * @property {string} titlevariable
+ * @property {number} hours
+ * @property {string} type
+ * @property {string} category
+ * @property {string} variable
+ */
+
+/**
  * @typedef {Object} TmsPayload
  * @property {string} server
  * @property {string} mode
  * @property {string} variable
  * @property {string} aggregation
+ * @property {number} timezone
  * @property {string} x
  * @property {string} y
  * @property {string} z
@@ -263,9 +290,10 @@ export interface PlanRoutes {
   /**
    * Fetch plan information.
    * GET /v1/plan/{token}
+   * @param {PlanInfoPayload} payload
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
-  getInfo: () => Promise<ApiResponse>
+  getInfo: (payload: PlanInfoPayload) => Promise<ApiResponse>
   /**
    * Get request history of a plan
    * GET /v1/plan/request-details
@@ -296,6 +324,16 @@ export interface SchemaRoutes {
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
   postParameters: (payload: any) => Promise<ApiResponse>
+}
+
+export interface StaticMapRoutes {
+  /**
+   * Fetch static map images.
+   * GET /v1/static-map
+   * @param {StaticMapPayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  get: (payload: StaticMapPayload) => Promise<ApiResponse>
 }
 
 export interface TmsRoutes {
