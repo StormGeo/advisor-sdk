@@ -17,6 +17,7 @@ public class AdvisorCore
     public PlanRouter Plan { get; }
     public SchemaRouter Schema { get; set; }
     public TmsRouter Tms { get; set; }
+    public StorageRouter Storage { get; set; }
 
     public AdvisorCore(string token, int attempts = 5, double delayInSeconds = 5, ILogger? logger = null)
     {
@@ -35,6 +36,7 @@ public class AdvisorCore
         Plan = new PlanRouter(_config);
         Schema = new SchemaRouter(_config);
         Tms = new TmsRouter(_config);
+        Storage = new StorageRouter(_config);
     }
 
     public void SetHeaderAccept(string value)

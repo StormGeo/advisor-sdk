@@ -17,6 +17,6 @@ public class TmsRouter(AdvisorCoreConfig config) : BaseRouter(config)
             payload.Z
         );
 
-        return await base.GetImageAsync(path + payload.GetQueryParams());
+        return await base.GetFileAsync(path + payload.GetQueryParams());
     }
 }
