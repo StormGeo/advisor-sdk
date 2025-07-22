@@ -52,6 +52,24 @@ export interface GeometryPayload {
   geometry?: string
 }
 
+export interface StaticMapPayload {
+  startDate?: string
+  endDate?: string
+  aggregation?: string
+  model?: string
+  lonmin?: number
+  lonmax?: number
+  latmin?: number
+  latmax?: number
+  dpi?: number
+  title?: boolean
+  titlevariable?: string
+  hours?: number
+  type?: string
+  category?: string
+  variable?: string
+}
+
 export interface TmsPayload {
   server?: string
   mode?: string
@@ -60,8 +78,13 @@ export interface TmsPayload {
   x?: string
   y?: string
   z?: string
+  timezone?: number
   istep?: string
   fstep?: string
+}
+
+export interface PlanInfoPayload {
+  timezone?: number
 }
 
 export interface RequestDetailsPayload {

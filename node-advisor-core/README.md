@@ -18,6 +18,7 @@ Advisor Software Development Kit for nodeJS.
       - [Storage:](#storage)
       - [Plan Information:](#plan-information)
       - [Schema/Parameter:](#schemaparameter)
+      - [Static Map:](#static-map)
       - [Tms (Tiles Map Server):](#tms-tiles-map-server)
   - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
@@ -263,7 +264,7 @@ if (response.error) {
 #### Plan Information:
 ```javascript
 //Requesting plan information
-let response = await advisor.plan.getInfo()
+let response = await advisor.plan.getInfo({ timezone: -3 })
 
 const payload = {
   page: 1,
@@ -315,6 +316,29 @@ if (response.error) {
 }
 ```
 
+#### Static Map:
+```javascript
+const payload = {
+    type: 'periods',
+    category: 'observed',
+    variable: 'temperature',
+    aggregation: 'max',
+    startDate: '2025-07-01 00:00:00',
+    endDate: '2025-07-05 23:59:59',
+    dpi: 50,
+    title: true,
+    titlevariable: 'temperature',
+  }
+
+let response = await advisor.staticMap.get(payload)
+
+if (response.error) {
+  console.log(response.error)
+  console.log('Error trying to get data!')
+} else {
+  writeFileSync('test.png', response.data)
+}
+```
 
 #### Tms (Tiles Map Server):
 ```javascript
@@ -418,6 +442,19 @@ All the methods returns the same pattern:
 - **longitude**: number
 - **variables**: string[]
 
+### RequestDetailsPayload
+
+- **page**: number
+- **pageSize**: number
+- **path**: string
+- **status**: string
+- **startDate**: string
+- **endDate**: string
+
+### PlanInfoPayload
+
+- **timezone**: number
+
 ### CurrentWeatherPayload
 
 - **localeId**: string
@@ -444,6 +481,24 @@ All the methods returns the same pattern:
 - **radius**: number
 - **geometry**: string
 
+### StaticMapPayload
+
+- **startDate**: string
+- **endDate**: string
+- **aggregation**: string
+- **model**: string
+- **lonmin**: number
+- **lonmax**: number
+- **latmin**: number
+- **latmax**: number
+- **dpi**: number
+- **title**: boolean
+- **titlevariable**: string
+- **hours**: number
+- **type**: string
+- **category**: string
+- **variable**: string
+
 ### TmsPayload
 
 - **server**: string
@@ -455,3 +510,18 @@ All the methods returns the same pattern:
 - **z**: number
 - **istep**: string
 - **fstep**: string
+- **timezone**: number
+
+### StorageListPayload
+
+- **page**: number
+- **pageSize**: number
+- **startDate**: string
+- **endDate**: string
+- **fileName**: string
+- **fileExtension**: string
+
+### StorageDownloadPayload
+
+- **fileName**: string
+- **accessKey**: string

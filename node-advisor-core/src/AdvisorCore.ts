@@ -12,6 +12,7 @@ import {
   ObservedRoutes,
   PlanRoutes,
   SchemaRoutes,
+  StaticMapRoutes,
   StorageRoutes,
   TmsRoutes,
 } from "./interfaces"
@@ -30,6 +31,8 @@ import {
   StorageListPayload,
   StorageDownloadPayload,
   ApiStreamResponse,
+  PlanInfoPayload,
+  StaticMapPayload,
 } from "./payloads"
 
 function sleep(ms: number): Promise<void> {
@@ -91,6 +94,11 @@ function sleep(ms: number): Promise<void> {
  * @property {string} endDate
  * @property {number} radius
  * @property {string} geometry
+ */
+
+/**
+ * @typedef {Object} PlanInfoPayload
+ * @property {number} timezone
  */
 
 /**
@@ -486,10 +494,11 @@ export class AdvisorCore {
     /**
      * Fetch plan information.
      * GET /v1/plan/{token}
+     * @param {PlanInfoPayload} payload
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
-    getInfo: async (): Promise<ApiResponse> => {
-      return this.makeRequest("GET", `v1/plan/${this.token}`)
+    getInfo: async (payload: PlanInfoPayload): Promise<ApiResponse> => {
+      return this.makeRequest("GET", `v1/plan/${this.token}`, payload)
     },
     /**
      * Get request history of a plan
@@ -535,6 +544,22 @@ export class AdvisorCore {
   }
 
   /**
+   * Fetch static map images.
+   */
+  staticMap: StaticMapRoutes = {
+    /**
+     * Fetch static map images.
+     * GET /v1/map
+     * @param {StaticMapPayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    get: async (payload: StaticMapPayload): Promise<ApiResponse> => {
+      const {type, category, variable, ...rest} = payload
+      return this.makeRequestFile("GET", `v1/map/${type}/${category}/${variable}`, rest)
+    },
+  }
+
+  /**
    * Fetch tiles map service.
    */
   tms: TmsRoutes = {
@@ -546,7 +571,7 @@ export class AdvisorCore {
      */
     get: async (payload: TmsPayload): Promise<ApiFileResponse> => {
       const path = `v1/tms/${payload.server}/${payload.mode}/${payload.variable}/${payload.aggregation}/${payload.x}/${payload.y}/${payload.z}.png`
-      return this.makeRequestFile("GET", path, { istep: payload.istep, fstep: payload.fstep })
+      return this.makeRequestFile("GET", path, { timezone: payload.timezone, istep: payload.istep, fstep: payload.fstep })
     },
   }
 
