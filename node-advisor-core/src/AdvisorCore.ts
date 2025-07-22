@@ -98,7 +98,7 @@ function sleep(ms: number): Promise<void> {
 
 /**
  * @typedef {Object} PlanInfoPayload
- * @property {string} timezone
+ * @property {number} timezone
  */
 
 /**

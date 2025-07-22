@@ -18,6 +18,7 @@ Advisor Software Development Kit for nodeJS.
       - [Storage:](#storage)
       - [Plan Information:](#plan-information)
       - [Schema/Parameter:](#schemaparameter)
+      - [Static Map:](#static-map)
       - [Tms (Tiles Map Server):](#tms-tiles-map-server)
   - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
