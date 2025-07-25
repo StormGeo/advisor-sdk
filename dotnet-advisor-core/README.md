@@ -16,6 +16,7 @@ Advisor Software Development Kit for .NET.
       - [Observed:](#observed)
       - [Plan Information:](#plan-information)
       - [Schema/Parameter:](#schemaparameter)
+      - [Static Map:](#static-map)
       - [Tms (Tiles Map Server):](#tms-tiles-map-server)
   - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
@@ -26,7 +27,12 @@ Advisor Software Development Kit for .NET.
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
+    - [PlanInfoPayload](#planinfopayload)
+    - [RequestDetailsPayload](#requestdetailspayload)
+    - [StaticMapPayload](#staticmappayload)
     - [TmsPayload](#tmspayload)
+    - [StorageListPayload](#storagelistpayload)
+    - [StorageDownloadPayload](#storagedownloadpayload)
 ---
 
 ## Installation
@@ -270,7 +276,11 @@ else
 using StormGeo.AdvisorCore.Payloads;
 
 // requesting plan details
-var response = await sdk.Plan.GetInfoAsync();
+var planInfoPayload = new PlanInfoPayload
+{
+    Timezone = 3, // Optional: Set timezone offset in hours (e.g., 3 for UTC+3)
+};
+var response = await sdk.Plan.GetInfoAsync(planInfoPayload);
 
 // requesting api access logs
 var requestDetailsPayload = new RequestDetailsPayload(1, 10);
@@ -325,6 +335,42 @@ else
 }
 ```
 
+#### Static Map:
+```c#
+using StormGeo.AdvisorCore.Payloads;
+
+var staticMapPayload = new StaticMapPayload
+{
+    Type = "periods",
+    Category = "observed",
+    Variable = "temperature",
+    Lonmin = -46.5,
+    Lonmax = -46.4,
+    Latmin = -23.6,
+    Latmax = -23.5,
+    Aggregation = "max",
+    Dpi = 50,
+    Title = true,
+    TitleVariable = "Static Map",
+};
+
+var response = await sdk.StaticMap.GetStaticMapAsync(staticMapPayload);
+
+if (response.Error == null && response.Data != null)
+{
+    var filename = "tile.png";
+
+    using (var fileStream = new FileStream(filename, FileMode.Create))
+    {
+        await response.Data.CopyToAsync(fileStream);
+    }
+}
+else
+{
+    Console.WriteLine(response.Error); // string
+    Console.WriteLine(response.JsonDeserializeError()); // ExpandoObject if 'Error' is a json string
+}
+```
 
 #### Tms (Tiles Map Server):
 ```c#
@@ -339,7 +385,8 @@ var tmsPayload = new TmsPayload() {
     Y = 3,
     Z = 3,
     Istep = "2025-02-13 00:00:00",
-    Fstep = "2025-02-13 23:59:59"
+    Fstep = "2025-02-13 23:59:59",
+    Timezone = 3 // Optional: Set timezone offset in hours (e.g., 3 for UTC+3)
 };
 
 var response = await sdk.Tms.Get(tmsPayload);
@@ -460,6 +507,34 @@ All the methods return AdvisorResponse, this class contains the attributes and m
 - **Radius**: int
 - **Geometry**: string
 
+### PlanInfoPayload
+- **Timezone**: int? (Optional, default is null)
+
+### RequestDetailsPayload
+- **Page**: int
+- **PageSize**: int
+- **StartDate**: string? (Optional, default is null)
+- **EndDate**: string? (Optional, default is null)
+- **Path**: string? (Optional, default is null)
+- **Status**: string? (Optional, default is null)
+
+### StaticMapPayload
+- **Type**: string
+- **Category**: string
+- **Variable**: string
+- **StartDate**: string
+- **EndDate**: string
+- **Lonmin**: double
+- **Lonmax**: double
+- **Latmin**: double
+- **Latmax**: double
+- **Aggregation**: string
+- **Model**: string
+- **Dpi**: int
+- **Title**: bool
+- **TitleVariable**: string
+- **Hours**: bool
+
 ### TmsPayload
 
 - **Server**: char
@@ -471,3 +546,16 @@ All the methods return AdvisorResponse, this class contains the attributes and m
 - **Z**: int
 - **Istep**: string
 - **Fstep**: string
+
+### StorageListPayload
+- **Page**: int
+- **PageSize**: int
+- **StartDate**: string? (Optional, default is null)
+- **EndDate**: string? (Optional, default is null)
+- **FileName**: string? (Optional, default is null)
+- **FileExtension**: string? (Optional, default is null)
+
+
+### StorageDownloadPayload
+- **FileName**: string
+- **AccessKey**: string
