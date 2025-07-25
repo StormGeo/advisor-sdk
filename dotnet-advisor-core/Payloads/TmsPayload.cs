@@ -11,12 +11,14 @@ public class TmsPayload
     public required int Z { get; set; }
     public required string Istep { get; set; }
     public required string Fstep { get; set; }
+    public int? timezone { get; set; }
 
     public string GetQueryParams()
     {
         return new QueryParameterBuilder()
             .AddParamIfValueIsNotNull("istep", Istep)
             .AddParamIfValueIsNotNull("fstep", Fstep)
+            .AddParamIfValueIsNotNull("timezone", timezone?.ToString())
             .Build();
     }
 }
