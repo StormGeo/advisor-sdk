@@ -16,11 +16,13 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
         );
     }
 
-    protected async Task<AdvisorResponse<Stream>> GetImageAsync(string route)
+    protected async Task<AdvisorResponse<Stream>> GetFileAsync(string route)
     {
-        return await GetAdvisorResponseStreamAsync(
-            await RetryRequestAsync(() => MakeRequestAsync(HttpMethod.Get, _baseUrl + route))
+        var httpResponse = await RetryRequestAsync(
+            () => MakeRequestAsync(HttpMethod.Get, _baseUrl + route)
         );
+
+        return await GetAdvisorResponseStreamAsync(httpResponse);
     }
 
     protected async Task<AdvisorResponse<string>> PostAsync(string route, HttpContent body)
