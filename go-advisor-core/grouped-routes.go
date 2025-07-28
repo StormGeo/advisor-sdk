@@ -12,6 +12,7 @@ type RequestWithStationPayload func(StationPayload) (AdvisorResponse, error)
 type RequestWithRadiusPayload func(RadiusPayload) (AdvisorResponse, error)
 type RequestWithPayload func(RadiusPayload) (AdvisorResponse, error)
 type TmsRequest func(TmsPayload) (io.ReadCloser, error)
+type RequestWithRequestDetailsPayload func(RequestDetailsPayload) (AdvisorResponse, error)
 
 type chart struct {
 	GetForecastDaily  ImageRequestWithWeatherPayload
@@ -41,6 +42,7 @@ type monitoring struct {
 
 type plan struct {
 	GetInfo func() (response AdvisorResponse, err error)
+	GetRequestDetails RequestWithRequestDetailsPayload
 }
 
 type observed struct {

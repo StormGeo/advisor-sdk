@@ -88,6 +88,38 @@ func (a *queryParamsBuilder) addTimezone(timezone int8) *queryParamsBuilder {
 	return a
 }
 
+func (a *queryParamsBuilder) addPage(page uint32) *queryParamsBuilder {
+	if page > 0 {
+		a.params = append(a.params, fmt.Sprintf("page=%d", page))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addPageSize(pageSize uint32) *queryParamsBuilder {
+	if pageSize > 0 {
+		a.params = append(a.params, fmt.Sprintf("pageSize=%d", pageSize))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addPath(path string) *queryParamsBuilder {
+	if path != "" {
+		a.params = append(a.params, "path="+url.QueryEscape(path))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addStatus(status uint32) *queryParamsBuilder {
+	if status > 0 {
+		a.params = append(a.params, fmt.Sprintf("status=%d", status))
+	}
+
+	return a
+}
+
 func (a queryParamsBuilder) build() string {
 	return strings.Join(a.params, "&")
 }

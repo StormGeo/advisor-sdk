@@ -104,6 +104,7 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 					header,
 				))
 			},
+			GetRequestDetails: makeGetWithRequestDetailsPayload("/v1/plan/request-details", config, header),
 		},
 		Schema: schema{
 			GetDefinition: func() (response AdvisorResponse, err error) {
@@ -137,6 +138,19 @@ func formatUrl(route string, token string, params string) string {
 
 func makeGetWithWeatherPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithWeatherPayload {
 	return func(payload WeatherPayload) (response AdvisorResponse, err error) {
+		return formatResponse(retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+			header,
+		))
+	}
+}
+
+func makeGetWithRequestDetailsPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithRequestDetailsPayload {
+	return func(payload RequestDetailsPayload) (response AdvisorResponse, err error) {
 		return formatResponse(retryReq(
 			"GET",
 			config.Retries,

@@ -72,6 +72,15 @@ type WeatherPayload struct {
 	Timezone  int8
 }
 
+type RequestDetailsPayload struct {
+	Page      uint32
+	PageSize  uint32
+	Path      string
+	Status    uint32
+	StartDate string
+	EndDate   string
+}
+
 func (b WeatherPayload) toQueryParams() string {
 	builder := queryParamsBuilder{}
 
@@ -153,5 +162,18 @@ func (r RadiusPayload) toQueryParams() string {
 		addStartDate(r.StartDate).
 		addEndDate(r.EndDate).
 		addRadius(r.Radius).
+		build()
+}
+
+func (r RequestDetailsPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addPage(r.Page).
+		addPageSize(r.PageSize).
+		addPath(r.Path).
+		addStatus(r.Status).
+		addStartDate(r.StartDate).
+		addEndDate(r.EndDate).
 		build()
 }
