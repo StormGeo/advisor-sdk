@@ -120,6 +120,30 @@ func (a *queryParamsBuilder) addStatus(status uint32) *queryParamsBuilder {
 	return a
 }
 
+func (a *queryParamsBuilder) addAccessKey(accessKey string) *queryParamsBuilder {
+	if accessKey != "" {
+		a.params = append(a.params, "accessKey="+url.QueryEscape(accessKey))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addFileName(fileName string) *queryParamsBuilder {
+	if fileName != "" {
+		a.params = append(a.params, "fileName="+url.QueryEscape(fileName))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addFileExtension(fileExtension string) *queryParamsBuilder {
+	if fileExtension != "" {
+		a.params = append(a.params, "fileExtension="+url.QueryEscape(fileExtension))
+	}
+
+	return a
+}
+
 func (a queryParamsBuilder) build() string {
 	return strings.Join(a.params, "&")
 }

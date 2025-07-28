@@ -30,6 +30,20 @@ type GeometryPayload struct {
 	Geometry  string
 }
 
+type StorageDownloadPayload struct {
+	FileName  string
+	AccessKey string
+}
+
+type StorageListPayload struct {
+	Page           uint32
+	PageSize       uint32
+	StartDate      string
+	EndDate        string
+	FileName       string
+	FileExtension  string
+}
+
 type StationPayload struct {
 	StationId string
 	Layer     string
@@ -134,6 +148,27 @@ func (g GeometryPayload) toBodyBytes() []byte {
 	})
 
 	return body
+}
+
+func (s StorageDownloadPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addAccessKey(s.AccessKey).
+		build()
+}
+
+func (s StorageListPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addPage(s.Page).
+		addPageSize(s.PageSize).
+		addStartDate(s.StartDate).
+		addEndDate(s.EndDate).
+		addFileName(s.FileName).
+		addFileExtension(s.FileExtension).
+		build()
 }
 
 func (s SchemaPayload) toBodyBytes() []byte {

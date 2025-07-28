@@ -13,6 +13,8 @@ type RequestWithRadiusPayload func(RadiusPayload) (AdvisorResponse, error)
 type RequestWithPayload func(RadiusPayload) (AdvisorResponse, error)
 type TmsRequest func(TmsPayload) (io.ReadCloser, error)
 type RequestWithRequestDetailsPayload func(RequestDetailsPayload) (AdvisorResponse, error)
+type RequestWithStorageDownloadPayload func(StorageDownloadPayload) (io.ReadCloser, error)
+type RequestWithStorageListPayload func(StorageListPayload) (AdvisorResponse, error)
 
 type chart struct {
 	GetForecastDaily  ImageRequestWithWeatherPayload
@@ -54,6 +56,11 @@ type observed struct {
 	GetFireFocus           RequestWithRadiusPayload
 	GetFireFocusByGeometry RequestWithGeometryPayload
 	GetStationData         RequestWithStationPayload
+}
+
+type storage struct {
+	DownloadFile RequestWithStorageDownloadPayload
+	ListFiles    RequestWithStorageListPayload
 }
 
 type schema struct {

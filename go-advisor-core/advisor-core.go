@@ -26,6 +26,7 @@ type AdvisorCore struct {
 	Monitoring     monitoring
 	Plan           plan
 	Observed       observed
+	Storage        storage
 	Schema         schema
 	Tms            tms
 }
@@ -105,6 +106,10 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 				))
 			},
 			GetRequestDetails: makeGetWithRequestDetailsPayload("/v1/plan/request-details", config, header),
+		},
+		Storage: storage{
+			DownloadFile: makeGetFile("/v1/storage/download", config, header),
+			ListFiles: makeGetWithListFilesPayload("/v1/storage/list", config, header),
 		},
 		Schema: schema{
 			GetDefinition: func() (response AdvisorResponse, err error) {
@@ -229,6 +234,38 @@ func makeGetImage(route string, config AdvisorCoreConfig, header http.Header) Im
 		}
 
 		return resp.Body, nil
+	}
+}
+
+func makeGetFile(route string, config AdvisorCoreConfig, header http.Header) RequestWithStorageDownloadPayload {
+	return func(payload StorageDownloadPayload) (fileBody io.ReadCloser, err error) {
+		route = route + "/" + url.QueryEscape(payload.FileName)
+		resp, respErr := retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+			header,
+		)
+		if respErr != nil {
+			return nil, respErr
+		}
+
+		return resp.Body, nil
+	}
+}
+
+func makeGetWithListFilesPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithStorageListPayload {
+	return func(payload StorageListPayload) (response AdvisorResponse, err error) {
+		return formatResponse(retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+			header,
+		))
 	}
 }
 
