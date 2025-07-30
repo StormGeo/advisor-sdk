@@ -12,6 +12,11 @@ type RequestWithStationPayload func(StationPayload) (AdvisorResponse, error)
 type RequestWithRadiusPayload func(RadiusPayload) (AdvisorResponse, error)
 type RequestWithPayload func(RadiusPayload) (AdvisorResponse, error)
 type TmsRequest func(TmsPayload) (io.ReadCloser, error)
+type RequestWithPlanInfoPayload func(PlanInfoPayload) (AdvisorResponse, error)
+type RequestWithRequestDetailsPayload func(RequestDetailsPayload) (AdvisorResponse, error)
+type RequestWithStorageDownloadPayload func(StorageDownloadPayload) (io.ReadCloser, error)
+type RequestWithStorageListPayload func(StorageListPayload) (AdvisorResponse, error)
+type ImageRequestWithStaticMapPayload func(StaticMapPayload) (io.ReadCloser, error)
 
 type chart struct {
 	GetForecastDaily  ImageRequestWithWeatherPayload
@@ -40,7 +45,8 @@ type monitoring struct {
 }
 
 type plan struct {
-	GetInfo func() (response AdvisorResponse, err error)
+	GetInfo RequestWithPlanInfoPayload
+	GetRequestDetails RequestWithRequestDetailsPayload
 }
 
 type observed struct {
@@ -54,10 +60,19 @@ type observed struct {
 	GetStationData         RequestWithStationPayload
 }
 
+type storage struct {
+	DownloadFile RequestWithStorageDownloadPayload
+	ListFiles    RequestWithStorageListPayload
+}
+
 type schema struct {
 	GetDefinition  func() (response AdvisorResponse, err error)
 	PostDefinition RequestWithSchemaPayload
 	PostParameters RequestWithSchemaPayload
+}
+
+type staticMap struct {
+	Get ImageRequestWithStaticMapPayload
 }
 
 type tms struct {

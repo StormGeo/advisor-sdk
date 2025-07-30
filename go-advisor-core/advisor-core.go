@@ -26,7 +26,9 @@ type AdvisorCore struct {
 	Monitoring     monitoring
 	Plan           plan
 	Observed       observed
+	Storage        storage
 	Schema         schema
+	StaticMap      staticMap
 	Tms            tms
 }
 
@@ -94,16 +96,15 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 			GetStationData:         makeGetWithStationPayload("/v1/station", config, header),
 		},
 		Plan: plan{
-			GetInfo: func() (response AdvisorResponse, err error) {
-				return formatResponse(retryReq(
-					"GET",
-					config.Retries,
-					config.Delay,
-					BASE_URL+"/v1/plan/"+config.Token,
-					nil,
-					header,
-				))
-			},
+			GetInfo: makeGetWithPlanInfoPayload("/v1/plan", config, header),
+			GetRequestDetails: makeGetWithRequestDetailsPayload("/v1/plan/request-details", config, header),
+		},
+		Storage: storage{
+			DownloadFile: makeGetFile("/v1/storage/download", config, header),
+			ListFiles: makeGetWithListFilesPayload("/v1/storage/list", config, header),
+		},
+		StaticMap: staticMap{
+			Get: makeGetStaticMapImage("/v1/map", config, header),
 		},
 		Schema: schema{
 			GetDefinition: func() (response AdvisorResponse, err error) {
@@ -137,6 +138,32 @@ func formatUrl(route string, token string, params string) string {
 
 func makeGetWithWeatherPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithWeatherPayload {
 	return func(payload WeatherPayload) (response AdvisorResponse, err error) {
+		return formatResponse(retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+			header,
+		))
+	}
+}
+
+func makeGetWithPlanInfoPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithPlanInfoPayload {
+	return func(payload PlanInfoPayload) (response AdvisorResponse, err error) {
+		return formatResponse(retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route+"/"+config.Token, config.Token, payload.toQueryParams()),
+			nil,
+			header,
+		))
+	}
+}
+
+func makeGetWithRequestDetailsPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithRequestDetailsPayload {
+	return func(payload RequestDetailsPayload) (response AdvisorResponse, err error) {
 		return formatResponse(retryReq(
 			"GET",
 			config.Retries,
@@ -218,10 +245,69 @@ func makeGetImage(route string, config AdvisorCoreConfig, header http.Header) Im
 	}
 }
 
+func makeGetStaticMapImage(route string, config AdvisorCoreConfig, header http.Header) ImageRequestWithStaticMapPayload {
+	return func(payload StaticMapPayload) (imageBody io.ReadCloser, err error) {
+		route = fmt.Sprintf(
+			"%s/%s/%s/%s",
+			route,
+			url.QueryEscape(payload.Type),
+			url.QueryEscape(payload.Category),
+			url.QueryEscape(payload.Variable),
+		)
+
+		resp, respErr := retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+			header,
+		)
+
+		if respErr != nil {
+			return nil, respErr
+		}
+
+		return resp.Body, nil
+	}
+}
+
+func makeGetFile(route string, config AdvisorCoreConfig, header http.Header) RequestWithStorageDownloadPayload {
+	return func(payload StorageDownloadPayload) (fileBody io.ReadCloser, err error) {
+		route = route + "/" + url.QueryEscape(payload.FileName)
+		resp, respErr := retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+			header,
+		)
+		if respErr != nil {
+			return nil, respErr
+		}
+
+		return resp.Body, nil
+	}
+}
+
+func makeGetWithListFilesPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithStorageListPayload {
+	return func(payload StorageListPayload) (response AdvisorResponse, err error) {
+		return formatResponse(retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+			header,
+		))
+	}
+}
+
 func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest {
 	return func(payload TmsPayload) (imageBody io.ReadCloser, err error) {
 		url := fmt.Sprintf(
-			"%s/v1/tms/%s/%s/%s/%s/%d/%d/%d.png?token=%s&istep=%s&fstep=%s",
+			"%s/v1/tms/%s/%s/%s/%s/%d/%d/%d.png?token=%s&istep=%s&fstep=%s&timezone=%d",
 			BASE_URL,
 			payload.Server,
 			payload.Mode,
@@ -233,6 +319,7 @@ func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest 
 			config.Token,
 			url.QueryEscape(payload.Istep),
 			url.QueryEscape(payload.Fstep),
+			payload.Timezone,
 		)
 
 		resp, respErr := retryReq(

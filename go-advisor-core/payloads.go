@@ -30,6 +30,38 @@ type GeometryPayload struct {
 	Geometry  string
 }
 
+type StorageDownloadPayload struct {
+	FileName  string
+	AccessKey string
+}
+
+type StorageListPayload struct {
+	Page           uint32
+	PageSize       uint32
+	StartDate      string
+	EndDate        string
+	FileName       string
+	FileExtension  string
+}
+
+type StaticMapPayload struct {
+	StartDate     string
+	EndDate       string
+	Aggregation   string
+	Model         string
+	Lonmin        string
+	Lonmax        string
+	Latmin        string
+	Latmax        string
+	Dpi           int32
+	Title         bool
+	Titlevariable string
+	Hours         int32
+	Type          string
+	Category      string
+	Variable      string
+}
+
 type StationPayload struct {
 	StationId string
 	Layer     string
@@ -59,6 +91,7 @@ type TmsPayload struct {
 	X           uint16
 	Y           uint16
 	Z           uint16
+	Timezone    int8
 }
 
 type WeatherPayload struct {
@@ -70,6 +103,19 @@ type WeatherPayload struct {
 	EndDate   string
 	Variables []string
 	Timezone  int8
+}
+
+type PlanInfoPayload struct {
+	Timezone int8
+}
+
+type RequestDetailsPayload struct {
+	Page      uint32
+	PageSize  uint32
+	Path      string
+	Status    uint32
+	StartDate string
+	EndDate   string
 }
 
 func (b WeatherPayload) toQueryParams() string {
@@ -127,6 +173,27 @@ func (g GeometryPayload) toBodyBytes() []byte {
 	return body
 }
 
+func (s StorageDownloadPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addAccessKey(s.AccessKey).
+		build()
+}
+
+func (s StorageListPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addPage(s.Page).
+		addPageSize(s.PageSize).
+		addStartDate(s.StartDate).
+		addEndDate(s.EndDate).
+		addFileName(s.FileName).
+		addFileExtension(s.FileExtension).
+		build()
+}
+
 func (s SchemaPayload) toBodyBytes() []byte {
 	body, _ := json.Marshal(s)
 	return body
@@ -144,6 +211,22 @@ func (s StationPayload) toQueryParams() string {
 		build()
 }
 
+func (s StaticMapPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addStartDate(s.StartDate).
+		addEndDate(s.EndDate).
+		addAggregation(s.Aggregation).
+		addModel(s.Model).
+		addBBox(s.Lonmin, s.Lonmax, s.Latmin, s.Latmax).
+		addDpi(s.Dpi).
+		addTitle(s.Title).
+		addTitleVariable(s.Titlevariable).
+		addHours(s.Hours).
+		build()
+}
+
 func (r RadiusPayload) toQueryParams() string {
 	builder := queryParamsBuilder{}
 
@@ -153,5 +236,26 @@ func (r RadiusPayload) toQueryParams() string {
 		addStartDate(r.StartDate).
 		addEndDate(r.EndDate).
 		addRadius(r.Radius).
+		build()
+}
+
+func (p PlanInfoPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addTimezone(p.Timezone).
+		build()
+}
+
+func (r RequestDetailsPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addPage(r.Page).
+		addPageSize(r.PageSize).
+		addPath(r.Path).
+		addStatus(r.Status).
+		addStartDate(r.StartDate).
+		addEndDate(r.EndDate).
 		build()
 }
