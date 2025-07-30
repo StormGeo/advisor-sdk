@@ -96,16 +96,7 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 			GetStationData:         makeGetWithStationPayload("/v1/station", config, header),
 		},
 		Plan: plan{
-			GetInfo: func() (response AdvisorResponse, err error) {
-				return formatResponse(retryReq(
-					"GET",
-					config.Retries,
-					config.Delay,
-					BASE_URL+"/v1/plan/"+config.Token,
-					nil,
-					header,
-				))
-			},
+			GetInfo: makeGetWithPlanInfoPayload("/v1/plan", config, header),
 			GetRequestDetails: makeGetWithRequestDetailsPayload("/v1/plan/request-details", config, header),
 		},
 		Storage: storage{
@@ -152,6 +143,19 @@ func makeGetWithWeatherPayload(route string, config AdvisorCoreConfig, header ht
 			config.Retries,
 			config.Delay,
 			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+			header,
+		))
+	}
+}
+
+func makeGetWithPlanInfoPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithPlanInfoPayload {
+	return func(payload PlanInfoPayload) (response AdvisorResponse, err error) {
+		return formatResponse(retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route+"/"+config.Token, config.Token, payload.toQueryParams()),
 			nil,
 			header,
 		))
@@ -303,7 +307,7 @@ func makeGetWithListFilesPayload(route string, config AdvisorCoreConfig, header 
 func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest {
 	return func(payload TmsPayload) (imageBody io.ReadCloser, err error) {
 		url := fmt.Sprintf(
-			"%s/v1/tms/%s/%s/%s/%s/%d/%d/%d.png?token=%s&istep=%s&fstep=%s",
+			"%s/v1/tms/%s/%s/%s/%s/%d/%d/%d.png?token=%s&istep=%s&fstep=%s&timezone=%d",
 			BASE_URL,
 			payload.Server,
 			payload.Mode,
@@ -315,6 +319,7 @@ func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest 
 			config.Token,
 			url.QueryEscape(payload.Istep),
 			url.QueryEscape(payload.Fstep),
+			payload.Timezone,
 		)
 
 		resp, respErr := retryReq(

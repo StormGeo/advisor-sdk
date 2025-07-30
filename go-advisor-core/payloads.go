@@ -91,6 +91,7 @@ type TmsPayload struct {
 	X           uint16
 	Y           uint16
 	Z           uint16
+	Timezone    int8
 }
 
 type WeatherPayload struct {
@@ -102,6 +103,10 @@ type WeatherPayload struct {
 	EndDate   string
 	Variables []string
 	Timezone  int8
+}
+
+type PlanInfoPayload struct {
+	Timezone int8
 }
 
 type RequestDetailsPayload struct {
@@ -231,6 +236,14 @@ func (r RadiusPayload) toQueryParams() string {
 		addStartDate(r.StartDate).
 		addEndDate(r.EndDate).
 		addRadius(r.Radius).
+		build()
+}
+
+func (p PlanInfoPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addTimezone(p.Timezone).
 		build()
 }
 
