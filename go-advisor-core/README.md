@@ -17,6 +17,8 @@ Advisor Software Development Kit for Go.
       - [Observed:](#observed)
       - [Plan Information:](#plan-information)
       - [Schema/Parameter:](#schemaparameter)
+      - [Storage:](#storage)
+      - [Static Map:](#static-map)
       - [Tms (Tiles Map Server):](#tms-tiles-map-server)
   - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
@@ -28,6 +30,11 @@ Advisor Software Development Kit for Go.
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
     - [TmsPayload](#tmspayload)
+    - [StaticMapPayload](#staticmappayload)
+    - [RequestDetailsPayload](#requestdetailspayload)
+    - [PlanInfoPayload](#planinfopayload)
+    - [StorageListPayload](#storagelistpayload)
+    - [StorageDownloadPayload](#storagedownloadpayload)
 ---
 
 ## Installation
@@ -242,7 +249,7 @@ payload := sdk.RequestDetailsPayload{
 resp, respErr := advisor.Plan.GetRequestDetails(payload)
 
 payload := sdk.PlanInfoPayload{
-  Timezone: -3, // Set the timezone offset in hours
+  Timezone: -3, // Set the timezone offset the default is 0 (UTC)
 }
 
 resp, respErr := advisor.Plan.GetInfo(payload)
@@ -334,7 +341,7 @@ if err != nil {
 fmt.Println("File saved with success!")
 ```
 
-### Static Map:
+#### Static Map:
 ```go
 payload := sdk.StaticMapPayload{
   Type:          "periods",
@@ -384,7 +391,7 @@ payload := sdk.TmsPayload{
   X: 2,
   Y: 3,
   Z: 4,
-  Timezone: -3, // Set the timezone offset in hours
+  Timezone: -3, // Set the timezone offset the default is 0 (UTC)
 }
 
 resp, respErr := advisor.Tms.Get(payload)
@@ -523,6 +530,7 @@ All the methods returns two parameters data and error:
 - **Z**: uint16
 - **Istep**: string
 - **Fstep**: string
+- **Timezone**: int32
 
 ### StaticMapPayload
 
@@ -541,3 +549,26 @@ All the methods returns two parameters data and error:
 - **Title**: bool
 - **TitleVariable**: string
 - **Hours**: int32
+
+### RequestDetailsPayload
+- **Page**: int
+- **PageSize**: int
+- **Path**: string
+- **Status**: string
+- **StartDate**: string
+- **EndDate**: string
+
+### PlanInfoPayload
+- **Timezone**: int32
+
+### StorageListPayload
+- **Page**: uint32
+- **PageSize**: uint32
+- **FileName**: string
+- **FileExtension**: string
+- **StartDate**: string
+- **EndDate**: string
+
+### StorageDownloadPayload
+- **FileName**: string
+- **AccessKey**: string
