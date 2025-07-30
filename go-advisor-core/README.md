@@ -234,7 +234,18 @@ if respErr != nil {
 
 #### Plan Information:
 ```go
-resp, respErr := advisor.Plan.GetInfo()
+payload := sdk.RequestDetailsPayload{
+  Page:     1,
+  PageSize: 10,
+}
+
+resp, respErr := advisor.Plan.GetRequestDetails(payload)
+
+payload := sdk.PlanInfoPayload{
+  Timezone: -3, // Set the timezone offset in hours
+}
+
+resp, respErr := advisor.Plan.GetInfo(payload)
 
 if respErr != nil {
   fmt.Println(respErr)
@@ -278,6 +289,88 @@ if respErr != nil {
 }
 ```
 
+#### Storage:
+```go
+payload := sdk.StorageListPayload{
+  Page:      1,
+  PageSize:  10,
+}
+
+resp, respErr := advisor.Storage.ListFiles(payload)
+
+if respErr != nil {
+  fmt.Println(respErr)
+  fmt.Println("Error trying to get data!")
+} else {
+  fmt.Println(resp)
+}
+
+payload := sdk.StorageDownloadPayload{
+  FileName:  "file.pdf",
+  AccessKey: "<file-access-key>",
+}
+
+resp, respErr := advisor.Storage.DownloadFile(payload)
+
+if respErr != nil {
+  fmt.Println(respErr)
+  return
+}
+defer resp.Close()
+
+file, fileErr := os.Create("./file.pdf")
+if fileErr != nil {
+  fmt.Println(fileErr)
+  return
+}
+defer file.Close()
+
+_, err := io.Copy(file, resp)
+if err != nil {
+  fmt.Println(err)
+  return
+}
+
+fmt.Println("File saved with success!")
+```
+
+### Static Map:
+```go
+payload := sdk.StaticMapPayload{
+  Type:          "periods",
+  Category:      "observed",
+  Variable:      "temperature",
+  Aggregation:   "max",
+  StartDate:     "2025-07-28 00:00:00",
+  EndDate:       "2025-07-29 23:59:59",
+  Dpi:           50,
+  Title:         true,
+  Titlevariable: "temperature",
+}
+
+resp, respErr := advisor.StaticMap.Get(payload)
+
+if respErr != nil {
+  fmt.Println(respErr)
+  return
+}
+defer resp.Close()
+
+file, fileErr := os.Create("./map_image.png")
+if fileErr != nil {
+  fmt.Println(fileErr)
+  return
+}
+defer file.Close()
+
+_, err := io.Copy(file, resp)
+if err != nil {
+  fmt.Println(err)
+  return
+}
+
+fmt.Println("File saved with success!")
+```
 
 #### Tms (Tiles Map Server):
 ```go
@@ -291,6 +384,7 @@ payload := sdk.TmsPayload{
   X: 2,
   Y: 3,
   Z: 4,
+  Timezone: -3, // Set the timezone offset in hours
 }
 
 resp, respErr := advisor.Tms.Get(payload)
@@ -367,65 +461,83 @@ All the methods returns two parameters data and error:
 
 ### WeatherPayload
 
-- **localeId**: string
-- **stationId**: string
-- **latitude**: uint32
-- **longitude**: uint32
-- **timezone**: int8
-- **variables**: []string
-- **startDate**: string
-- **endDate**: string
+- **LocaleId**: string
+- **StationId**: string
+- **Latitude**: uint32
+- **Longitude**: uint32
+- **Timezone**: int8
+- **Variables**: []string
+- **StartDate**: string
+- **EndDate**: string
 
 ### StationPayload
 
-- **stationId**: string
-- **layer**: string
-- **variables**: []string
-- **startDate**: string
-- **endDate**: string
+- **StationId**: string
+- **Layer**: string
+- **Variables**: []string
+- **StartDate**: string
+- **EndDate**: string
 
 ### ClimatologyPayload
 
-- **localeId**: string
-- **stationId**: string
-- **latitude**: uint32
-- **longitude**: uint32
-- **variables**: []string
+- **LocaleId**: string
+- **StationId**: string
+- **Latitude**: uint32
+- **Longitude**: uint32
+- **Variables**: []string
 
 ### CurrentWeatherPayload
 
-- **localeId**: string
-- **stationId**: string
-- **latitude**: uint32
-- **longitude**: uint32
-- **timezone**: int8
-- **variables**: []string
+- **LocaleId**: string
+- **StationId**: string
+- **Latitude**: uint32
+- **Longitude**: uint32
+- **Timezone**: int8
+- **Variables**: []string
 
 ### RadiusPayload
 
-- **localeId**: string
-- **stationId**: string
-- **latitude**: uint32
-- **longitude**: uint32
-- **startDate**: string
-- **endDate**: string
-- **radius**: uint32
+- **LocaleId**: string
+- **StationId**: string
+- **Latitude**: uint32
+- **Longitude**: uint32
+- **StartDate**: string
+- **EndDate**: string
+- **Radius**: uint32
 
 ### GeometryPayload
 
-- **startDate**: string
-- **endDate**: string
-- **radius**: uint32
-- **geometry**: string
+- **StartDate**: string
+- **EndDate**: string
+- **Radius**: uint32
+- **Geometry**: string
 
 ### TmsPayload
 
-- **server**: string
-- **mode**: string
-- **variable**: string
-- **aggregation**: string
-- **x**: uint16
-- **y**: uint16
-- **z**: uint16
-- **istep**: string
-- **fstep**: string
+- **Server**: string
+- **Mode**: string
+- **Variable**: string
+- **Aggregation**: string
+- **X**: uint16
+- **Y**: uint16
+- **Z**: uint16
+- **Istep**: string
+- **Fstep**: string
+
+### StaticMapPayload
+
+- **Type**: string
+- **Category**: string
+- **Variable**: string
+- **StartDate**: string
+- **EndDate**: string
+- **Aggregation**: string
+- **Model**: string
+- **Lonmin**: string
+- **Lonmax**: string
+- **Latmin**: string
+- **Latmax**: string
+- **Dpi**: uint32
+- **Title**: bool
+- **TitleVariable**: string
+- **Hours**: int32
