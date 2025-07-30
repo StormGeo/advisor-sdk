@@ -44,6 +44,24 @@ type StorageListPayload struct {
 	FileExtension  string
 }
 
+type StaticMapPayload struct {
+	StartDate     string
+	EndDate       string
+	Aggregation   string
+	Model         string
+	Lonmin        string
+	Lonmax        string
+	Latmin        string
+	Latmax        string
+	Dpi           int32
+	Title         bool
+	Titlevariable string
+	Hours         int32
+	Type          string
+	Category      string
+	Variable      string
+}
+
 type StationPayload struct {
 	StationId string
 	Layer     string
@@ -185,6 +203,22 @@ func (s StationPayload) toQueryParams() string {
 		addVariables(s.Variables).
 		addStartDate(s.StartDate).
 		addEndDate(s.EndDate).
+		build()
+}
+
+func (s StaticMapPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addStartDate(s.StartDate).
+		addEndDate(s.EndDate).
+		addAggregation(s.Aggregation).
+		addModel(s.Model).
+		addBBox(s.Lonmin, s.Lonmax, s.Latmin, s.Latmax).
+		addDpi(s.Dpi).
+		addTitle(s.Title).
+		addTitleVariable(s.Titlevariable).
+		addHours(s.Hours).
 		build()
 }
 

@@ -144,6 +144,75 @@ func (a *queryParamsBuilder) addFileExtension(fileExtension string) *queryParams
 	return a
 }
 
+func (a *queryParamsBuilder) addAggregation(aggregation string) *queryParamsBuilder {
+	if aggregation != "" {
+		a.params = append(a.params, "aggregation="+url.QueryEscape(aggregation))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addModel(model string) *queryParamsBuilder {
+	if model != "" {
+		a.params = append(a.params, "model="+url.QueryEscape(model))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addBBox(lonmin, lonmax, latmin, latmax string) *queryParamsBuilder {
+	if lonmin != "" || lonmax != "" || latmin != "" || latmax != "" {
+		if lonmin != "" {
+			a.params = append(a.params, "lonmin="+lonmin)
+		}
+		if lonmax != "" {
+			a.params = append(a.params, "lonmax="+lonmax)
+		}
+		if latmin != "" {
+			a.params = append(a.params, "latmin="+latmin)
+		}
+		if latmax != "" {
+			a.params = append(a.params, "latmax="+latmax)
+		}
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addDpi(dpi int32) *queryParamsBuilder {
+	if dpi > 0 {
+		a.params = append(a.params, fmt.Sprintf("dpi=%d", dpi))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addTitle(title bool) *queryParamsBuilder {
+	if title {
+		a.params = append(a.params, "title=true")
+	} else {
+		a.params = append(a.params, "title=false")
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addTitleVariable(titleVariable string) *queryParamsBuilder {
+	if titleVariable != "" {
+		a.params = append(a.params, "titlevariable="+url.QueryEscape(titleVariable))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addHours(hours int32) *queryParamsBuilder {
+	if hours > 0 {
+		a.params = append(a.params, fmt.Sprintf("hours=%d", hours))
+	}
+
+	return a
+}
+
 func (a queryParamsBuilder) build() string {
 	return strings.Join(a.params, "&")
 }

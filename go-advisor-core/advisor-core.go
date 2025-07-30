@@ -28,6 +28,7 @@ type AdvisorCore struct {
 	Observed       observed
 	Storage        storage
 	Schema         schema
+	StaticMap      staticMap
 	Tms            tms
 }
 
@@ -110,6 +111,9 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 		Storage: storage{
 			DownloadFile: makeGetFile("/v1/storage/download", config, header),
 			ListFiles: makeGetWithListFilesPayload("/v1/storage/list", config, header),
+		},
+		StaticMap: staticMap{
+			Get: makeGetStaticMapImage("/v1/map", config, header),
 		},
 		Schema: schema{
 			GetDefinition: func() (response AdvisorResponse, err error) {
@@ -229,6 +233,33 @@ func makeGetImage(route string, config AdvisorCoreConfig, header http.Header) Im
 			nil,
 			header,
 		)
+		if respErr != nil {
+			return nil, respErr
+		}
+
+		return resp.Body, nil
+	}
+}
+
+func makeGetStaticMapImage(route string, config AdvisorCoreConfig, header http.Header) ImageRequestWithStaticMapPayload {
+	return func(payload StaticMapPayload) (imageBody io.ReadCloser, err error) {
+		route = fmt.Sprintf(
+			"%s/%s/%s/%s",
+			route,
+			url.QueryEscape(payload.Type),
+			url.QueryEscape(payload.Category),
+			url.QueryEscape(payload.Variable),
+		)
+
+		resp, respErr := retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
+			nil,
+			header,
+		)
+
 		if respErr != nil {
 			return nil, respErr
 		}

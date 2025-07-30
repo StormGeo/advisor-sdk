@@ -15,6 +15,7 @@ type TmsRequest func(TmsPayload) (io.ReadCloser, error)
 type RequestWithRequestDetailsPayload func(RequestDetailsPayload) (AdvisorResponse, error)
 type RequestWithStorageDownloadPayload func(StorageDownloadPayload) (io.ReadCloser, error)
 type RequestWithStorageListPayload func(StorageListPayload) (AdvisorResponse, error)
+type ImageRequestWithStaticMapPayload func(StaticMapPayload) (io.ReadCloser, error)
 
 type chart struct {
 	GetForecastDaily  ImageRequestWithWeatherPayload
@@ -67,6 +68,10 @@ type schema struct {
 	GetDefinition  func() (response AdvisorResponse, err error)
 	PostDefinition RequestWithSchemaPayload
 	PostParameters RequestWithSchemaPayload
+}
+
+type staticMap struct {
+	Get ImageRequestWithStaticMapPayload
 }
 
 type tms struct {
