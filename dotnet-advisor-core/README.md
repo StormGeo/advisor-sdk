@@ -5,6 +5,7 @@ Advisor Software Development Kit for .NET.
 ## Contents
 - [.NET SDK](#net-sdk)
   - [How to get your token](https://www.climatempoconsultoria.com.br/contato/)
+  - [Contents](#contents)
   - [Installation](#installation)
   - [Usage](#usage)
     - [Routes](#routes)

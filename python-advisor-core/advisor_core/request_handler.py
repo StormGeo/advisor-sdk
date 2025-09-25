@@ -32,7 +32,7 @@ class RequestHandler:
                 else:
                     error_message = response.json().get("error", response.text)
                 
-                if status < 500 and status != 429:
+                if status < 500:
                     return {"data": None, "error": error_message}
 
             response.raise_for_status()
