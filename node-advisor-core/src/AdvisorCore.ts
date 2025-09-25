@@ -192,7 +192,7 @@ export class AdvisorCore {
 
       return { data: response.data, error: null }
     } catch (error: any) {
-      if (retries > 0 && (error?.response?.status >= 500 || error?.response?.status == 429)) {
+      if (retries > 0 && (error?.response?.status >= 500)) {
         await sleep(this.delay)
         return this.makeRequest(method, url, params, data, --retries)
       }
@@ -220,7 +220,7 @@ export class AdvisorCore {
       const byteArray  = Buffer.from(response.data)
       return { data: byteArray, error: null }
     } catch (error: any) {
-      if (retries > 0 && (error?.response?.status >= 500 || error?.response?.status == 429)) {
+      if (retries > 0 && (error?.response?.status >= 500)) {
         await sleep(this.delay)
 
         return this.makeRequestFile(method, url, params, data, --retries)
@@ -248,7 +248,7 @@ export class AdvisorCore {
 
       return { data: response.data, error: null }
     } catch (error: any) {
-      if (retries > 0 && (error?.response?.status >= 500 || error?.response?.status == 429)) {
+      if (retries > 0 && (error?.response?.status >= 500)) {
         await sleep(this.delay)
 
         return this.makeRequestFileByStream(method, url, params, data, --retries)
