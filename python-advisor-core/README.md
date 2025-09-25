@@ -16,9 +16,9 @@ Advisor Software Development Kit for python.
       - [Monitoring](#monitoring)
       - [Observed](#observed)
       - [Plan Information](#plan-information)
+      - [Schema/Parameter](#schemaparameter)
       - [Static Map](#static-map)
       - [Storage](#storage)
-      - [Schema/Parameter](#schemaparameter)
       - [Tms (Tiles Map Server)](#tms-tiles-map-server)
   - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
@@ -30,7 +30,11 @@ Advisor Software Development Kit for python.
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
     - [TmsPayload](#tmspayload)
+    - [PlanInfoPayload](#planinfopayload)
     - [RequestDetailsPayload](#requestdetailspayload)
+    - [StorageListPayload](#storagelistpayload)
+    - [StorageDownloadPayload](#storagedownloadpayload)
+    - [StaticMapPayload](#staticmappayload)
 ---
 ## Importing
 

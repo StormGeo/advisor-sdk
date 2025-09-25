@@ -30,6 +30,11 @@ Advisor Software Development Kit for nodeJS.
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
     - [TmsPayload](#tmspayload)
+    - [PlanInfoPayload](#planinfopayload)
+    - [RequestDetailsPayload](#requestdetailspayload)
+    - [StorageListPayload](#storagelistpayload)
+    - [StorageDownloadPayload](#storagedownloadpayload)
+    - [StaticMapPayload](#staticmappayload)
 ---
 
 ## Installation

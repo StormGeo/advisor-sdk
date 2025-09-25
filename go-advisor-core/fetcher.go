@@ -30,7 +30,7 @@ func retryReq(
 		client := &http.Client{}
 
 		res, err = client.Do(req)
-		if (res.StatusCode < 500 && res.StatusCode != 429) || retryNumber == 0 {
+		if (res.StatusCode < 500) || retryNumber == 0 {
 			return res, err
 		}
 

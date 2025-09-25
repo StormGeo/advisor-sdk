@@ -64,7 +64,7 @@ public abstract class BaseRouter(AdvisorCoreConfig config)
                 {
                     var statusCode = (int) response.StatusCode;
 
-                    if (retryNumber == 0 || (statusCode < 500 && statusCode != 429))
+                    if (retryNumber == 0 || (statusCode < 500))
                     {
                         return response;
                     }
