@@ -36,12 +36,13 @@ type StorageDownloadPayload struct {
 }
 
 type StorageListPayload struct {
-	Page           uint32
-	PageSize       uint32
-	StartDate      string
-	EndDate        string
-	FileName       string
-	FileExtension  string
+	Page          uint32
+	PageSize      uint32
+	StartDate     string
+	EndDate       string
+	FileName      string
+	FileExtension string
+	FileTypes     []string
 }
 
 type StaticMapPayload struct {
@@ -191,6 +192,7 @@ func (s StorageListPayload) toQueryParams() string {
 		addEndDate(s.EndDate).
 		addFileName(s.FileName).
 		addFileExtension(s.FileExtension).
+		addFileTypes(s.FileTypes).
 		build()
 }
 

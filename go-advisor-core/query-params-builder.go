@@ -56,6 +56,16 @@ func (a *queryParamsBuilder) addVariables(variables []string) *queryParamsBuilde
 	return a
 }
 
+func (a *queryParamsBuilder) addFileTypes(fileTypes []string) *queryParamsBuilder {
+	if len(fileTypes) != 0 {
+		for _, fileType := range fileTypes {
+			a.params = append(a.params, "fileTypes[]="+fileType)
+		}
+	}
+
+	return a
+}
+
 func (a *queryParamsBuilder) addStartDate(startDate string) *queryParamsBuilder {
 	if startDate != "" {
 		a.params = append(a.params, "startDate="+url.QueryEscape(startDate))
