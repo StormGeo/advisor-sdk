@@ -87,6 +87,10 @@ export interface PlanInfoPayload {
   timezone?: number
 }
 
+export interface PlanLocalePayload {
+  localeId?: number
+}
+
 export interface RequestDetailsPayload {
   page?: number
   pageSize?: number

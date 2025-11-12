@@ -258,6 +258,21 @@ class PlanInfoPayload:
             "timezone": self.timezone,
         }
 
+class PlanLocalePayload:
+    def __init__(self, locale_id: int):
+        """
+        Initializes the PlanLocalePayload with required locale information.
+        """
+        self.locale_id = locale_id
+
+    def get_params(self) -> dict:
+        """
+        Returns the parameters as a dictionary for API requests.
+        """
+        return {
+            "localeId": self.locale_id,
+        }
+
 class RequestDetailsPayload:
     def __init__(
         self,

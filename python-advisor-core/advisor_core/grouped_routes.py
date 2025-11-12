@@ -242,6 +242,19 @@ class PlanAPI:
         )
         return self.request_handler.make_request("GET", "v1/plan/request-details", params=params)
 
+    def get_locale(self, payload: PlanLocalePayload):
+        """
+        Fetch locale information linked to the plan.
+        GET /v1/plan/locale
+        """
+        builder = QueryParamsBuilder()
+        params = (
+            builder
+            .add_payload(payload.get_params())
+            .build()
+        )
+        return self.request_handler.make_request("GET", "v1/plan/locale", params=params)
+
 class StorageAPI:
     def __init__(self, request_handler):
         self.request_handler = request_handler
