@@ -315,6 +315,7 @@ class StorageListPayload:
         end_date: str = None,
         file_name: str = None,
         file_extension: str = None,
+        file_types: List[str] = None,
     ):
         """
         Initializes the StorageListPayload with optional parameters.
@@ -325,6 +326,7 @@ class StorageListPayload:
         self.end_date = end_date
         self.file_name = file_name
         self.file_extension = file_extension
+        self.file_types = file_types
 
     def get_params(self) -> dict:
         """
@@ -337,6 +339,7 @@ class StorageListPayload:
             "endDate": self.end_date,
             "fileName": self.file_name,
             "fileExtension": self.file_extension,
+            "fileTypes[]": self.file_types,
         }
 
 class StorageDownloadPayload:

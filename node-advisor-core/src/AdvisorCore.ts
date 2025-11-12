@@ -120,6 +120,7 @@ function sleep(ms: number): Promise<void> {
  * @property {string} endDate
  * @property {string} fileName
  * @property {string} fileExtension
+ * @property {Array<string>} fileTypes
 */
 
 /**

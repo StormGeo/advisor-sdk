@@ -226,6 +226,7 @@ if (response.error) {
   const payload = {
     page: 1,
     pageSize: 2,
+    fileTypes: ['pdf', 'csv'],
   }
 
   // Requesting the files list
@@ -550,6 +551,7 @@ All the methods returns the same pattern:
 - **endDate**: string
 - **fileName**: string
 - **fileExtension**: string
+- **fileTypes**: string[]
 
 ### StorageDownloadPayload
 

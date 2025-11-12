@@ -213,7 +213,8 @@ else:
 ```python
 payload = StorageListPayload(
   page=1,
-  page_size=10
+  page_size=10,
+  file_types=["pdf", "csv"]
 )
 
 payload_for_download = StorageDownloadPayload(
@@ -526,6 +527,7 @@ All the methods will return the same pattern:
 - **end_date**: str
 - **file_name**: str
 - **file_extension**: str
+- **file_types**: List[str]
 
 ### StorageDownloadPayload
 

@@ -101,6 +101,7 @@ import {
  * @property {string} endDate
  * @property {string} fileName
  * @property {string} fileExtension
+ * @property {Array<string>} fileTypes
 */
 
 /**

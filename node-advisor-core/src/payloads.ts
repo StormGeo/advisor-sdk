@@ -107,6 +107,7 @@ export interface StorageListPayload {
   endDate?: string
   fileName?: string
   fileExtension?: string
+  fileTypes?: string[]
 }
 
 export interface StorageDownloadPayload {
