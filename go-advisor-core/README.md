@@ -16,6 +16,7 @@ Advisor Software Development Kit for Go.
       - [Monitoring:](#monitoring)
       - [Observed:](#observed)
       - [Plan Information:](#plan-information)
+      - [Plan Locale:](#plan-locale)
       - [Schema/Parameter:](#schemaparameter)
       - [Storage:](#storage)
       - [Static Map:](#static-map)
@@ -33,6 +34,7 @@ Advisor Software Development Kit for Go.
     - [StaticMapPayload](#staticmappayload)
     - [RequestDetailsPayload](#requestdetailspayload)
     - [PlanInfoPayload](#planinfopayload)
+    - [PlanLocalePayload](#planlocalepayload)
     - [StorageListPayload](#storagelistpayload)
     - [StorageDownloadPayload](#storagedownloadpayload)
 ---
@@ -253,6 +255,23 @@ payload := sdk.PlanInfoPayload{
 }
 
 resp, respErr := advisor.Plan.GetInfo(payload)
+
+if respErr != nil {
+  fmt.Println(respErr)
+  fmt.Println("Error trying to get data!")
+} else {
+  fmt.Println(resp)
+}
+```
+
+#### Plan Locale:
+```go
+payload := sdk.PlanLocalePayload{
+  LocaleId: 3477,
+  // You can also set Latitude/Longitude or StationId instead of LocaleId
+}
+
+resp, respErr := advisor.Plan.GetLocale(payload)
 
 if respErr != nil {
   fmt.Println(respErr)
@@ -561,11 +580,18 @@ All the methods returns two parameters data and error:
 ### PlanInfoPayload
 - **Timezone**: int32
 
+### PlanLocalePayload
+- **LocaleId**: uint32
+- **Latitude**: string
+- **Longitude**: string
+- **StationId**: string
+
 ### StorageListPayload
 - **Page**: uint32
 - **PageSize**: uint32
 - **FileName**: string
 - **FileExtension**: string
+- **FileTypes**: []string
 - **StartDate**: string
 - **EndDate**: string
 

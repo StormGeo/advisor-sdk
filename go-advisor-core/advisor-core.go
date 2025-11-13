@@ -96,12 +96,13 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 			GetStationData:         makeGetWithStationPayload("/v1/station", config, header),
 		},
 		Plan: plan{
-			GetInfo: makeGetWithPlanInfoPayload("/v1/plan", config, header),
+			GetInfo:           makeGetWithPlanInfoPayload("/v1/plan", config, header),
+			GetLocale:         makeGetWithPlanLocalePayload("/v1/plan/locale", config, header),
 			GetRequestDetails: makeGetWithRequestDetailsPayload("/v1/plan/request-details", config, header),
 		},
 		Storage: storage{
 			DownloadFile: makeGetFile("/v1/storage/download", config, header),
-			ListFiles: makeGetWithListFilesPayload("/v1/storage/list", config, header),
+			ListFiles:    makeGetWithListFilesPayload("/v1/storage/list", config, header),
 		},
 		StaticMap: staticMap{
 			Get: makeGetStaticMapImage("/v1/map", config, header),
@@ -156,6 +157,19 @@ func makeGetWithPlanInfoPayload(route string, config AdvisorCoreConfig, header h
 			config.Retries,
 			config.Delay,
 			formatUrl(route+"/"+config.Token, config.Token, payload.toQueryParams()),
+			nil,
+			header,
+		))
+	}
+}
+
+func makeGetWithPlanLocalePayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithPlanLocalePayload {
+	return func(payload PlanLocalePayload) (response AdvisorResponse, err error) {
+		return formatResponse(retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, config.Token, payload.toQueryParams()),
 			nil,
 			header,
 		))

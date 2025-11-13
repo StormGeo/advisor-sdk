@@ -110,6 +110,13 @@ type PlanInfoPayload struct {
 	Timezone int8
 }
 
+type PlanLocalePayload struct {
+	LocaleId  uint32
+	Latitude  string
+	Longitude string
+	StationId string
+}
+
 type RequestDetailsPayload struct {
 	Page      uint32
 	PageSize  uint32
@@ -246,6 +253,16 @@ func (p PlanInfoPayload) toQueryParams() string {
 
 	return builder.
 		addTimezone(p.Timezone).
+		build()
+}
+
+func (p PlanLocalePayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addLocaleId(p.LocaleId).
+		addLatLon(p.Latitude, p.Longitude).
+		addStationId(p.StationId).
 		build()
 }
 
