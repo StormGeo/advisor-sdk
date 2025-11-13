@@ -283,6 +283,9 @@ if (response.error) {
   // Requesting locale details from plan
   const localePayload = {
     localeId: 1234,
+    stationId: 'BR-SP-001',
+    latitude: '-23.55',
+    longitude: '-46.64',
   }
   const localeResponse = await advisor.plan.getLocale(localePayload)
 
@@ -485,6 +488,9 @@ All the methods returns the same pattern:
 ### PlanLocalePayload
 
 - **localeId**: string
+- **stationId**: string
+- **latitude**: string
+- **longitude**: string
 
 ### CurrentWeatherPayload
 

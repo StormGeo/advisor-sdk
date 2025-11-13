@@ -271,7 +271,10 @@ else:
 
 # requesting locale details
 plan_locale_payload = PlanLocalePayload(
-    locale_id=1234
+    locale_id=1234,
+    station_id="BR-SP-001",
+    latitude="-23.55",
+    longitude="-46.64",
 )
 
 plan_locale_response = advisor.plan.get_locale(plan_locale_payload)
@@ -509,6 +512,9 @@ All the methods will return the same pattern:
 
 ### PlanLocalePayload
 - **locale_id**: int
+- **station_id**: str
+- **latitude**: str
+- **longitude**: str
 
 ### RequestDetailsPayload
 

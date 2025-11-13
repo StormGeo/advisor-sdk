@@ -81,6 +81,9 @@ import {
 /**
  * @typedef {Object} PlanLocalePayload
  * @property {number} localeId
+ * @property {string} stationId
+ * @property {string} latitude
+ * @property {string} longitude
  */
 
 /**

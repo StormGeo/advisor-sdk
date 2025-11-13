@@ -259,11 +259,21 @@ class PlanInfoPayload:
         }
 
 class PlanLocalePayload:
-    def __init__(self, locale_id: int):
+    def __init__(
+        self,
+        locale_id: int = None,
+        station_id: str = None,
+        latitude: str = None,
+        longitude: str = None,
+    ):
         """
         Initializes the PlanLocalePayload with required locale information.
+        Optional parameters allow filtering by station or coordinates.
         """
         self.locale_id = locale_id
+        self.station_id = station_id
+        self.latitude = latitude
+        self.longitude = longitude
 
     def get_params(self) -> dict:
         """
@@ -271,6 +281,9 @@ class PlanLocalePayload:
         """
         return {
             "localeId": self.locale_id,
+            "stationId": self.station_id,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
         }
 
 class RequestDetailsPayload:

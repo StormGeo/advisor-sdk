@@ -89,6 +89,9 @@ export interface PlanInfoPayload {
 
 export interface PlanLocalePayload {
   localeId?: number
+  stationId?: string
+  latitude?: string
+  longitude?: string
 }
 
 export interface RequestDetailsPayload {
