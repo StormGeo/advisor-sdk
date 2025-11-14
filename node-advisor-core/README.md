@@ -283,9 +283,7 @@ if (response.error) {
   // Requesting locale details from plan
   const localePayload = {
     localeId: 1234,
-    stationId: 'BR-SP-001',
-    latitude: '-23.55',
-    longitude: '-46.64',
+    // You can also set Latitude/Longitude or StationId instead of LocaleId
   }
   const localeResponse = await advisor.plan.getLocale(localePayload)
 
