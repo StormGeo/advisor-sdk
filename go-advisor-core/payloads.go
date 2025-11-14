@@ -36,12 +36,13 @@ type StorageDownloadPayload struct {
 }
 
 type StorageListPayload struct {
-	Page           uint32
-	PageSize       uint32
-	StartDate      string
-	EndDate        string
-	FileName       string
-	FileExtension  string
+	Page          uint32
+	PageSize      uint32
+	StartDate     string
+	EndDate       string
+	FileName      string
+	FileExtension string
+	FileTypes     []string
 }
 
 type StaticMapPayload struct {
@@ -107,6 +108,13 @@ type WeatherPayload struct {
 
 type PlanInfoPayload struct {
 	Timezone int8
+}
+
+type PlanLocalePayload struct {
+	LocaleId  uint32
+	Latitude  string
+	Longitude string
+	StationId string
 }
 
 type RequestDetailsPayload struct {
@@ -191,6 +199,7 @@ func (s StorageListPayload) toQueryParams() string {
 		addEndDate(s.EndDate).
 		addFileName(s.FileName).
 		addFileExtension(s.FileExtension).
+		addFileTypes(s.FileTypes).
 		build()
 }
 
@@ -244,6 +253,16 @@ func (p PlanInfoPayload) toQueryParams() string {
 
 	return builder.
 		addTimezone(p.Timezone).
+		build()
+}
+
+func (p PlanLocalePayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addLocaleId(p.LocaleId).
+		addLatLon(p.Latitude, p.Longitude).
+		addStationId(p.StationId).
 		build()
 }
 

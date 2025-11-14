@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 const BASE_URL = "http://advisor-core.climatempo.io/api"
@@ -52,6 +53,9 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 	header := http.Header{}
 	header.Set("Accept", "application/json")
 	header.Set("Content-Type", "application/json")
+	header.Set("Accept-Language", "en-US")
+	header.Set("x-advisor-token", config.Token)
+	header.Set("User-Agent", "Go-AdvisorCore-SDK")
 
 	return AdvisorCore{
 		header: &header,
@@ -79,7 +83,7 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 					"GET",
 					config.Retries,
 					config.Delay,
-					BASE_URL+"/v1/monitoring/alerts?token="+config.Token,
+					BASE_URL+"/v1/monitoring/alerts",
 					nil,
 					header,
 				))
@@ -96,12 +100,13 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 			GetStationData:         makeGetWithStationPayload("/v1/station", config, header),
 		},
 		Plan: plan{
-			GetInfo: makeGetWithPlanInfoPayload("/v1/plan", config, header),
+			GetInfo:           makeGetWithPlanInfoPayload("/v1/plan", config, header),
+			GetLocale:         makeGetWithPlanLocalePayload("/v1/plan/locale", config, header),
 			GetRequestDetails: makeGetWithRequestDetailsPayload("/v1/plan/request-details", config, header),
 		},
 		Storage: storage{
 			DownloadFile: makeGetFile("/v1/storage/download", config, header),
-			ListFiles: makeGetWithListFilesPayload("/v1/storage/list", config, header),
+			ListFiles:    makeGetWithListFilesPayload("/v1/storage/list", config, header),
 		},
 		StaticMap: staticMap{
 			Get: makeGetStaticMapImage("/v1/map", config, header),
@@ -112,7 +117,7 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 					"GET",
 					config.Retries,
 					config.Delay,
-					BASE_URL+"/v1/schema/definition?token="+config.Token,
+					BASE_URL+"/v1/schema/definition",
 					nil,
 					header,
 				))
@@ -126,11 +131,16 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 	}
 }
 
-func formatUrl(route string, token string, params string) string {
-	url := BASE_URL + route + "?token=" + token
+func formatUrl(route string, params string) string {
+	url := BASE_URL + route
 
 	if params != "" {
-		url += "&" + params
+		separator := "?"
+		if strings.Contains(url, "?") {
+			separator = "&"
+		}
+
+		url += separator + params
 	}
 
 	return url
@@ -142,7 +152,7 @@ func makeGetWithWeatherPayload(route string, config AdvisorCoreConfig, header ht
 			"GET",
 			config.Retries,
 			config.Delay,
-			formatUrl(route, config.Token, payload.toQueryParams()),
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		))
@@ -155,7 +165,20 @@ func makeGetWithPlanInfoPayload(route string, config AdvisorCoreConfig, header h
 			"GET",
 			config.Retries,
 			config.Delay,
-			formatUrl(route+"/"+config.Token, config.Token, payload.toQueryParams()),
+			formatUrl(route+"/"+config.Token, payload.toQueryParams()),
+			nil,
+			header,
+		))
+	}
+}
+
+func makeGetWithPlanLocalePayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithPlanLocalePayload {
+	return func(payload PlanLocalePayload) (response AdvisorResponse, err error) {
+		return formatResponse(retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		))
@@ -168,7 +191,7 @@ func makeGetWithRequestDetailsPayload(route string, config AdvisorCoreConfig, he
 			"GET",
 			config.Retries,
 			config.Delay,
-			formatUrl(route, config.Token, payload.toQueryParams()),
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		))
@@ -181,7 +204,7 @@ func makeGetWithClimatologyPayload(route string, config AdvisorCoreConfig, heade
 			"GET",
 			config.Retries,
 			config.Delay,
-			formatUrl(route, config.Token, payload.toQueryParams()),
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		))
@@ -194,7 +217,7 @@ func makeGetWithCurrentWeatherPayload(route string, config AdvisorCoreConfig, he
 			"GET",
 			config.Retries,
 			config.Delay,
-			formatUrl(route, config.Token, payload.toQueryParams()),
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		))
@@ -207,7 +230,7 @@ func makeGetWithRadiusPayload(route string, config AdvisorCoreConfig, header htt
 			"GET",
 			config.Retries,
 			config.Delay,
-			formatUrl(route, config.Token, payload.toQueryParams()),
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		))
@@ -220,7 +243,7 @@ func makeGetWithStationPayload(route string, config AdvisorCoreConfig, header ht
 			"GET",
 			config.Retries,
 			config.Delay,
-			formatUrl(route, config.Token, payload.toQueryParams()),
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		))
@@ -233,7 +256,7 @@ func makeGetImage(route string, config AdvisorCoreConfig, header http.Header) Im
 			"GET",
 			config.Retries,
 			config.Delay,
-			formatUrl(route, config.Token, payload.toQueryParams()),
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		)
@@ -259,7 +282,7 @@ func makeGetStaticMapImage(route string, config AdvisorCoreConfig, header http.H
 			"GET",
 			config.Retries,
 			config.Delay,
-			formatUrl(route, config.Token, payload.toQueryParams()),
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		)
@@ -279,7 +302,7 @@ func makeGetFile(route string, config AdvisorCoreConfig, header http.Header) Req
 			"GET",
 			config.Retries,
 			config.Delay,
-			formatUrl(route, config.Token, payload.toQueryParams()),
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		)
@@ -297,7 +320,7 @@ func makeGetWithListFilesPayload(route string, config AdvisorCoreConfig, header 
 			"GET",
 			config.Retries,
 			config.Delay,
-			formatUrl(route, config.Token, payload.toQueryParams()),
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		))
@@ -307,7 +330,7 @@ func makeGetWithListFilesPayload(route string, config AdvisorCoreConfig, header 
 func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest {
 	return func(payload TmsPayload) (imageBody io.ReadCloser, err error) {
 		url := fmt.Sprintf(
-			"%s/v1/tms/%s/%s/%s/%s/%d/%d/%d.png?token=%s&istep=%s&fstep=%s&timezone=%d",
+			"%s/v1/tms/%s/%s/%s/%s/%d/%d/%d.png?istep=%s&fstep=%s&timezone=%d",
 			BASE_URL,
 			payload.Server,
 			payload.Mode,
@@ -316,7 +339,6 @@ func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest 
 			payload.X,
 			payload.Y,
 			payload.Z,
-			config.Token,
 			url.QueryEscape(payload.Istep),
 			url.QueryEscape(payload.Fstep),
 			payload.Timezone,
@@ -344,7 +366,7 @@ func makePostWithGeometryPayload(route string, config AdvisorCoreConfig, header 
 			"POST",
 			config.Retries,
 			config.Delay,
-			formatUrl(route, config.Token, payload.toQueryParams()),
+			formatUrl(route, payload.toQueryParams()),
 			payload.toBodyBytes(),
 			header,
 		))
@@ -357,7 +379,7 @@ func makePostWithSchemaPayload(route string, config AdvisorCoreConfig, header ht
 			"POST",
 			config.Retries,
 			config.Delay,
-			formatUrl(route, config.Token, ""),
+			formatUrl(route, ""),
 			payload.toBodyBytes(),
 			header,
 		))
