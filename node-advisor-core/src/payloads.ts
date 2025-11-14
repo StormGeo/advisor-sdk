@@ -87,6 +87,13 @@ export interface PlanInfoPayload {
   timezone?: number
 }
 
+export interface PlanLocalePayload {
+  localeId?: number
+  stationId?: string
+  latitude?: string
+  longitude?: string
+}
+
 export interface RequestDetailsPayload {
   page?: number
   pageSize?: number
@@ -103,6 +110,7 @@ export interface StorageListPayload {
   endDate?: string
   fileName?: string
   fileExtension?: string
+  fileTypes?: string[]
 }
 
 export interface StorageDownloadPayload {

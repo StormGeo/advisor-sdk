@@ -13,6 +13,7 @@ import {
   ApiFileResponse,
   ApiStreamResponse,
   PlanInfoPayload,
+  PlanLocalePayload,
   StaticMapPayload
 } from "./payloads"
 /**
@@ -78,6 +79,14 @@ import {
  */
 
 /**
+ * @typedef {Object} PlanLocalePayload
+ * @property {number} localeId
+ * @property {string} stationId
+ * @property {string} latitude
+ * @property {string} longitude
+ */
+
+/**
  * @typedef {Object} RequestDetailsPayload
  * @property {number} page
  * @property {number} pageSize
@@ -95,6 +104,7 @@ import {
  * @property {string} endDate
  * @property {string} fileName
  * @property {string} fileExtension
+ * @property {Array<string>} fileTypes
 */
 
 /**
@@ -301,6 +311,13 @@ export interface PlanRoutes {
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
   getRequestDetails: (payload: RequestDetailsPayload) => Promise<ApiResponse>
+  /**
+   * Fetch locale information for a plan.
+   * GET /v1/plan/locale
+   * @param {PlanLocalePayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  getLocale: (payload: PlanLocalePayload) => Promise<ApiResponse>
 }
 
 export interface SchemaRoutes {

@@ -32,6 +32,7 @@ Advisor Software Development Kit for nodeJS.
     - [TmsPayload](#tmspayload)
     - [PlanInfoPayload](#planinfopayload)
     - [RequestDetailsPayload](#requestdetailspayload)
+    - [PlanLocalePayload](#planlocalepayload)
     - [StorageListPayload](#storagelistpayload)
     - [StorageDownloadPayload](#storagedownloadpayload)
     - [StaticMapPayload](#staticmappayload)
@@ -225,6 +226,7 @@ if (response.error) {
   const payload = {
     page: 1,
     pageSize: 2,
+    fileTypes: ['pdf', 'csv'],
   }
 
   // Requesting the files list
@@ -268,22 +270,43 @@ if (response.error) {
 
 #### Plan Information:
 ```javascript
-//Requesting plan information
-let response = await advisor.plan.getInfo({ timezone: -3 })
+  // Requesting plan information
+  const planInfoResponse = await advisor.plan.getInfo({ timezone: -3 })
 
-const payload = {
-  page: 1,
-  pageSize: 10,
-}
-// Requesting access history
-let response = await advisor.plan.getRequestDetails(payload)
+  if (planInfoResponse.error) {
+    console.log(planInfoResponse.error)
+    console.log('Error trying to get plan information!')
+  } else {
+    console.log(planInfoResponse.data)
+  }
 
-if (response.error) {
-  console.log(response.error)
-  console.log('Error trying to get data!')
-} else {
-  console.log(response.data)
-}
+  // Requesting locale details from plan
+  const localePayload = {
+    localeId: 1234,
+    // You can also set Latitude/Longitude or StationId instead of LocaleId
+  }
+  const localeResponse = await advisor.plan.getLocale(localePayload)
+
+  if (localeResponse.error) {
+    console.log(localeResponse.error)
+    console.log('Error trying to get locale data!')
+  } else {
+    console.log(localeResponse.data)
+  }
+
+  const requestDetailsPayload = {
+    page: 1,
+    pageSize: 10,
+  }
+  // Requesting access history
+  const requestDetailsResponse = await advisor.plan.getRequestDetails(requestDetailsPayload)
+
+  if (requestDetailsResponse.error) {
+    console.log(requestDetailsResponse.error)
+    console.log('Error trying to get data!')
+  } else {
+    console.log(requestDetailsResponse.data)
+  }
 ```
 
 #### Schema/Parameter:
@@ -460,6 +483,13 @@ All the methods returns the same pattern:
 
 - **timezone**: number
 
+### PlanLocalePayload
+
+- **localeId**: string
+- **stationId**: string
+- **latitude**: string
+- **longitude**: string
+
 ### CurrentWeatherPayload
 
 - **localeId**: string
@@ -525,6 +555,7 @@ All the methods returns the same pattern:
 - **endDate**: string
 - **fileName**: string
 - **fileExtension**: string
+- **fileTypes**: string[]
 
 ### StorageDownloadPayload
 

@@ -32,6 +32,7 @@ import {
   StorageDownloadPayload,
   ApiStreamResponse,
   PlanInfoPayload,
+  PlanLocalePayload,
   StaticMapPayload,
 } from "./payloads"
 
@@ -119,6 +120,7 @@ function sleep(ms: number): Promise<void> {
  * @property {string} endDate
  * @property {string} fileName
  * @property {string} fileExtension
+ * @property {Array<string>} fileTypes
 */
 
 /**
@@ -508,6 +510,15 @@ export class AdvisorCore {
      */
     getRequestDetails: async (payload: RequestDetailsPayload): Promise<ApiResponse> => {
       return this.makeRequest("GET", 'v1/plan/request-details', payload)
+    },
+    /**
+     * Fetch locale information associated with a plan.
+     * GET /v1/plan/locale
+     * @param {PlanLocalePayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    getLocale: async (payload: PlanLocalePayload): Promise<ApiResponse> => {
+      return this.makeRequest("GET", 'v1/plan/locale', payload)
     }
   }
 

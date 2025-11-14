@@ -32,6 +32,7 @@ Advisor Software Development Kit for python.
     - [TmsPayload](#tmspayload)
     - [PlanInfoPayload](#planinfopayload)
     - [RequestDetailsPayload](#requestdetailspayload)
+    - [PlanLocalePayload](#planlocalepayload)
     - [StorageListPayload](#storagelistpayload)
     - [StorageDownloadPayload](#storagedownloadpayload)
     - [StaticMapPayload](#staticmappayload)
@@ -212,7 +213,8 @@ else:
 ```python
 payload = StorageListPayload(
   page=1,
-  page_size=10
+  page_size=10,
+  file_types=["pdf", "csv"]
 )
 
 payload_for_download = StorageDownloadPayload(
@@ -254,26 +256,46 @@ else:
 
 #### Plan Information
 ```python
-payload = PlanInfoPayload(
-  timezone=-3
-)
-
-payload_for_details = RequestDetailsPayload(
-  page=1,
-  page_size=10
-)
-
 # requesting plan information
-response = advisor.plan.get_info(payload)
+plan_info_payload = PlanInfoPayload(
+    timezone=-3
+)
+
+plan_info_response = advisor.plan.get_info(plan_info_payload)
+
+if plan_info_response['error']:
+    print('Error trying to get plan information!')
+    print(plan_info_response['error'])
+else:
+    print(plan_info_response['data'])
+
+# requesting locale details
+plan_locale_payload = PlanLocalePayload(
+    locale_id=1234,
+    # You can also set Latitude/Longitude or StationId instead of LocaleId
+)
+
+plan_locale_response = advisor.plan.get_locale(plan_locale_payload)
+
+if plan_locale_response['error']:
+    print('Error trying to get plan locale!')
+    print(plan_locale_response['error'])
+else:
+    print(plan_locale_response['data'])
 
 # requesting access history
-response = advisor.plan.get_request_details(payload_for_details)
+request_details_payload = RequestDetailsPayload(
+    page=1,
+    page_size=10
+)
 
-if response['error']:
-  print('Error trying to get data!')
-  print(response['error'])
+request_details_response = advisor.plan.get_request_details(request_details_payload)
+
+if request_details_response['error']:
+    print('Error trying to get request details!')
+    print(request_details_response['error'])
 else:
-  print(response['data'])
+    print(request_details_response['data'])
 ```
 
 #### Static Map
@@ -486,6 +508,12 @@ All the methods will return the same pattern:
 ### PlanInfoPayload
 - **timezone**: int
 
+### PlanLocalePayload
+- **locale_id**: int
+- **station_id**: str
+- **latitude**: str
+- **longitude**: str
+
 ### RequestDetailsPayload
 
 - **page**: int
@@ -503,6 +531,7 @@ All the methods will return the same pattern:
 - **end_date**: str
 - **file_name**: str
 - **file_extension**: str
+- **file_types**: List[str]
 
 ### StorageDownloadPayload
 
