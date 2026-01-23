@@ -143,6 +143,7 @@ class StationPayload:
         self,
         station_id: str = None,
         layer: str = None,
+        timezone: int = None,
         variables: List[str] = None,
         start_date: str = None,
         end_date: str = None,
@@ -152,6 +153,7 @@ class StationPayload:
         """
         self.station_id = station_id 
         self.layer = layer
+        self.timezone = timezone
         self.variables = variables
         self.start_date = start_date
         self.end_date = end_date
@@ -163,6 +165,7 @@ class StationPayload:
         return {
             "stationId": self.station_id,
             "layer": self.layer,
+            "timezone": self.timezone,
             "variables[]": self.variables,
             "startDate": self.start_date,
             "endDate": self.end_date,

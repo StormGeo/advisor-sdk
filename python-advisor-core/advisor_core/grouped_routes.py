@@ -217,7 +217,7 @@ class PlanAPI:
     def get_info(self, payload=None):
         """
         Fetch plan information.
-        GET /v1/plan/{token}
+        GET /v2/plan
         """
         params = {}
         if payload is not None:
@@ -227,7 +227,7 @@ class PlanAPI:
                 .add_payload(payload.get_params())
                 .build()
             )
-        return self.request_handler.make_request("GET", f"v1/plan/{self.request_handler.token}", params=params)
+        return self.request_handler.make_request("GET", "v2/plan", params=params)
 
     def get_request_details(self, payload: RequestDetailsPayload):
         """
