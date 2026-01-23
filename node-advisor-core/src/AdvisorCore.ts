@@ -56,6 +56,7 @@ function sleep(ms: number): Promise<void> {
  * @typedef {Object} StationPayload
  * @property {string} stationId
  * @property {string} layer
+ * @property {number} timezone
  * @property {Array<string>} variables
  * @property {string} startDate
  * @property {string} endDate
@@ -495,12 +496,12 @@ export class AdvisorCore {
   plan: PlanRoutes = {
     /**
      * Fetch plan information.
-     * GET /v1/plan/{token}
+     * GET /v2/plan
      * @param {PlanInfoPayload} payload
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getInfo: async (payload: PlanInfoPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", `v1/plan/${this.token}`, payload)
+      return this.makeRequest("GET", "v2/plan", payload)
     },
     /**
      * Get request history of a plan

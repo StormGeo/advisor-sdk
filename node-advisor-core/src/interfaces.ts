@@ -32,6 +32,7 @@ import {
  * @typedef {Object} StationPayload
  * @property {string} stationId
  * @property {string} layer
+ * @property {number} timezone
  * @property {Array<string>} variables
  * @property {string} startDate
  * @property {string} endDate
@@ -299,7 +300,7 @@ export interface MonitoringRoutes {
 export interface PlanRoutes {
   /**
    * Fetch plan information.
-   * GET /v1/plan/{token}
+   * GET /v2/plan
    * @param {PlanInfoPayload} payload
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
