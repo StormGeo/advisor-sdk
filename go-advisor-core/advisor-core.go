@@ -100,7 +100,7 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 			GetStationData:         makeGetWithStationPayload("/v1/station", config, header),
 		},
 		Plan: plan{
-			GetInfo:           makeGetWithPlanInfoPayload("/v1/plan", config, header),
+			GetInfo:           makeGetWithPlanInfoPayload("/v2/plan", config, header),
 			GetLocale:         makeGetWithPlanLocalePayload("/v1/plan/locale", config, header),
 			GetRequestDetails: makeGetWithRequestDetailsPayload("/v1/plan/request-details", config, header),
 		},
@@ -165,7 +165,7 @@ func makeGetWithPlanInfoPayload(route string, config AdvisorCoreConfig, header h
 			"GET",
 			config.Retries,
 			config.Delay,
-			formatUrl(route+"/"+config.Token, payload.toQueryParams()),
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		))

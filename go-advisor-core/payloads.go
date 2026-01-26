@@ -66,6 +66,7 @@ type StaticMapPayload struct {
 type StationPayload struct {
 	StationId string
 	Layer     string
+	Timezone  int8
 	Variables []string
 	StartDate string
 	EndDate   string
@@ -214,6 +215,7 @@ func (s StationPayload) toQueryParams() string {
 	return builder.
 		addStationId(s.StationId).
 		addLayer(s.Layer).
+		addTimezone(s.Timezone).
 		addVariables(s.Variables).
 		addStartDate(s.StartDate).
 		addEndDate(s.EndDate).
