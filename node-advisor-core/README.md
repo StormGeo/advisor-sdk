@@ -458,6 +458,7 @@ All the methods returns the same pattern:
 
 - **stationId**: string
 - **layer**: string
+- **timezone**: number
 - **variables**: string[]
 - **startDate**: string
 - **endDate**: string

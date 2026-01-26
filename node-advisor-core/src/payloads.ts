@@ -14,6 +14,7 @@ export interface WeatherPayload {
 export interface StationPayload {
   stationId?: string
   layer?: string
+  timezone?: number
   variables?: string[]
   startDate?: string
   endDate?: string

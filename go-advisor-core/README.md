@@ -500,6 +500,7 @@ All the methods returns two parameters data and error:
 
 - **StationId**: string
 - **Layer**: string
+- **Timezone**: int8
 - **Variables**: []string
 - **StartDate**: string
 - **EndDate**: string

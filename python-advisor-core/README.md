@@ -454,6 +454,7 @@ All the methods will return the same pattern:
 
 - **station_id**: str
 - **layer**: str
+- **timezone**: int
 - **variables**: List[str]
 - **start_date**: str
 - **end_date**: str
