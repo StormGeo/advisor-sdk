@@ -311,7 +311,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getObservedDaily: async (payload: WeatherPayload): Promise<ApiFileResponse> => {
-      return this.makeRequestFile("GET", "v1/forecast/daily/chart", payload)
+      return this.makeRequestFile("GET", "v1/observed/daily/chart", payload)
     },
     /**
      * Fetch hourly observed weather chart.
@@ -320,7 +320,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getObservedHourly: async (payload: WeatherPayload): Promise<ApiFileResponse> => {
-      return this.makeRequestFile("GET", "v1/forecast/hourly/chart", payload)
+      return this.makeRequestFile("GET", "v1/observed/hourly/chart", payload)
     },
   }
 
@@ -368,7 +368,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getDaily: async (payload: WeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/forecast/daily", payload)
+      return this.makeRequest("GET", "v1/observed/daily", payload)
     },
     /**
      * Fetch hourly observed weather.
@@ -377,7 +377,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getHourly: async (payload: WeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/forecast/hourly", payload)
+      return this.makeRequest("GET", "v1/observed/hourly", payload)
     },
     /**
      * Fetch period observed weather.
@@ -386,7 +386,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getPeriod: async (payload: WeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/forecast/period", payload)
+      return this.makeRequest("GET", "v1/observed/period", payload)
     },
     /**
      * Fetch station observed data.
@@ -598,7 +598,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     listFiles: async (payload: StorageListPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", '/v1/storage/list', payload)
+      return this.makeRequest("GET", 'v1/storage/list', payload)
     },
     /**
      * Download a file.
@@ -607,7 +607,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     downloadFile: async ({ fileName, ...rest }: StorageDownloadPayload): Promise<ApiFileResponse> => {
-      return this.makeRequestFile("GET", `/v1/storage/download/${fileName}`, rest)
+      return this.makeRequestFile("GET", `v1/storage/download/${fileName}`, rest)
     },
     /**
      * Download a file by stream.
@@ -616,7 +616,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     downloadFileByStream: async ({ fileName, ...rest }: StorageDownloadPayload): Promise<ApiStreamResponse> => {
-      return this.makeRequestFileByStream("GET", `/v1/storage/download/${fileName}`, rest)
+      return this.makeRequestFileByStream("GET", `v1/storage/download/${fileName}`, rest)
     },
   }
 }
