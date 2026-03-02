@@ -3,6 +3,7 @@ import {
   ClimatologyPayload,
   CurrentWeatherPayload,
   GeometryPayload,
+  PmtilesPayload,
   StationPayload,
   RadiusPayload,
   TmsPayload,
@@ -145,6 +146,18 @@ import {
  * @property {string} z
  * @property {string} istep
  * @property {string} fstep
+ */
+
+/**
+ * @typedef {Object} PmtilesPayload
+ * @property {string} mode
+ * @property {string} model
+ * @property {string} variable
+ * @property {string} aggregation
+ * @property {number} timezone
+ * @property {string} istep
+ * @property {string} fstep
+ * @property {number} maxZoom
  */
 
 export interface ChartRoutes {
@@ -362,6 +375,16 @@ export interface TmsRoutes {
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
   get: (payload: TmsPayload) => Promise<ApiResponse>
+}
+
+export interface PmtilesRoutes {
+  /**
+   * Fetch PMTiles file.
+   * GET /v1/pmtiles/{mode}/{model}/{aggregation}/{variable}.pmtiles
+   * @param {PmtilesPayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  get: (payload: PmtilesPayload) => Promise<ApiResponse>
 }
 
 export interface StorageRoutes {
