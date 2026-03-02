@@ -84,6 +84,17 @@ export interface TmsPayload {
   fstep?: string
 }
 
+export interface PmtilesPayload {
+  mode?: string
+  model?: string
+  variable?: string
+  aggregation?: string
+  timezone?: number
+  istep?: string
+  fstep?: string
+  maxZoom?: number
+}
+
 export interface PlanInfoPayload {
   timezone?: number
 }

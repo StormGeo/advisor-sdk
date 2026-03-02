@@ -10,6 +10,7 @@ import {
   ForecastRoutes,
   MonitoringRoutes,
   ObservedRoutes,
+  PmtilesRoutes,
   PlanRoutes,
   SchemaRoutes,
   StaticMapRoutes,
@@ -24,6 +25,7 @@ import {
   CurrentWeatherPayload,
   StationPayload,
   GeometryPayload,
+  PmtilesPayload,
   RadiusPayload,
   TmsPayload,
   WeatherPayload,
@@ -141,6 +143,18 @@ function sleep(ms: number): Promise<void> {
  * @property {string} z
  * @property {string} istep
  * @property {string} fstep
+ */
+
+/**
+ * @typedef {Object} PmtilesPayload
+ * @property {string} mode
+ * @property {string} model
+ * @property {string} variable
+ * @property {string} aggregation
+ * @property {number} timezone
+ * @property {string} istep
+ * @property {string} fstep
+ * @property {number} maxZoom
  */
 
 export class AdvisorCore {
@@ -584,6 +598,22 @@ export class AdvisorCore {
     get: async (payload: TmsPayload): Promise<ApiFileResponse> => {
       const path = `v1/tms/${payload.server}/${payload.mode}/${payload.variable}/${payload.aggregation}/${payload.x}/${payload.y}/${payload.z}.png`
       return this.makeRequestFile("GET", path, { timezone: payload.timezone, istep: payload.istep, fstep: payload.fstep })
+    },
+  }
+
+  /**
+   * Fetch pmtiles service.
+   */
+  pmtiles: PmtilesRoutes = {
+    /**
+     * Fetch PMTiles file.
+     * GET /v1/pmtiles/{mode}/{model}/{aggregation}/{variable}.pmtiles
+     * @param {PmtilesPayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    get: async (payload: PmtilesPayload): Promise<ApiFileResponse> => {
+      const path = `v1/pmtiles/${payload.mode}/${payload.model}/${payload.aggregation}/${payload.variable}.pmtiles`
+      return this.makeRequestFile("GET", path, { timezone: payload.timezone, istep: payload.istep, fstep: payload.fstep, maxZoom: payload.maxZoom })
     },
   }
 
