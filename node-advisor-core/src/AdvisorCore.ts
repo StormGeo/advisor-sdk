@@ -243,7 +243,12 @@ export class AdvisorCore {
         return this.makeRequestFile(method, url, params, data, --retries)
       }
 
-      return { data: null, error: error?.response?.data ?? error }
+      let responseData = error?.response?.data ?? error
+      if (responseData instanceof Buffer) {
+        responseData = this.bufferToJson(responseData)
+      }
+
+      return { data: null, error: responseData }
     }
   }
 
@@ -286,6 +291,16 @@ export class AdvisorCore {
     }
 
     return JSON.parse(content)
+  }
+
+  private bufferToJson(data: Buffer): Record<any, any> {
+    const bufferString = data.toString()
+
+    try {
+      return JSON.parse(bufferString)
+    } catch {
+      return { error: { message: bufferString } }
+    }
   }
 
   setHeaderAccept(value: string): void {
