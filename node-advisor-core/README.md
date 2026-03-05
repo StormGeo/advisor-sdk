@@ -15,6 +15,7 @@ Advisor Software Development Kit for nodeJS.
       - [Forecast:](#forecast)
       - [Monitoring:](#monitoring)
       - [Observed:](#observed)
+      - [Stations:](#stations)
       - [Storage:](#storage)
       - [Plan Information:](#plan-information)
       - [Schema/Parameter:](#schemaparameter)
@@ -26,6 +27,7 @@ Advisor Software Development Kit for nodeJS.
   - [Payload Types](#payload-types)
     - [WeatherPayload](#weatherpayload)
     - [StationPayload](#stationpayload)
+    - [StationsLastDataPayload](#stationslastdatapayload)
     - [ClimatologyPayload](#climatologypayload)
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
@@ -214,6 +216,24 @@ let response = await advisor.observed.getFireFocusByGeometry(geometryPayload)
 
 // requesting lightning observed data by geometry
 let response = await advisor.observed.getLightningByGeometry(geometryPayload)
+
+if (response.error) {
+  console.log(response.error)
+  console.log('Error trying to get data!')
+} else {
+  console.log(response.data)
+}
+```
+
+#### Stations:
+```javascript
+const payload = {
+  stationIds: ['ABC123abc321CBA', 'XYZ789xyz987ZYX'], // optional
+  variables: ['temperature', 'humidity'], // optional
+}
+
+// requesting last observed data for multiple stations
+let response = await advisor.stations.getLastData(payload)
 
 if (response.error) {
   console.log(response.error)
@@ -486,6 +506,11 @@ All the methods returns the same pattern:
 - **variables**: string[]
 - **startDate**: string
 - **endDate**: string
+
+### StationsLastDataPayload
+
+- **stationIds**: string[]
+- **variables**: string[]
 
 ### ClimatologyPayload
 
