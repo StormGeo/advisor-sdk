@@ -20,6 +20,11 @@ export interface StationPayload {
   endDate?: string
 }
 
+export interface StationsLastDataPayload {
+  stationIds?: string[]
+  variables?: string[]
+}
+
 export interface ClimatologyPayload {
   stationId?: string
   localeId?: number

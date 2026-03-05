@@ -5,6 +5,7 @@ import {
   GeometryPayload,
   PmtilesPayload,
   StationPayload,
+  StationsLastDataPayload,
   RadiusPayload,
   TmsPayload,
   WeatherPayload,
@@ -37,6 +38,12 @@ import {
  * @property {Array<string>} variables
  * @property {string} startDate
  * @property {string} endDate
+ */
+
+/**
+ * @typedef {Object} StationsLastDataPayload
+ * @property {Array<string>} stationIds
+ * @property {Array<string>} variables
  */
 
 /**
@@ -308,6 +315,16 @@ export interface MonitoringRoutes {
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
   getAlerts: () => Promise<ApiResponse>
+}
+
+export interface StationsRoutes {
+  /**
+   * Fetch last observed data for multiple stations.
+   * POST /v1/stations/last-data
+   * @param {StationsLastDataPayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  getLastData: (payload?: StationsLastDataPayload) => Promise<ApiResponse>
 }
 
 export interface PlanRoutes {

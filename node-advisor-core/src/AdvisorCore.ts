@@ -13,6 +13,7 @@ import {
   PmtilesRoutes,
   PlanRoutes,
   SchemaRoutes,
+  StationsRoutes,
   StaticMapRoutes,
   StorageRoutes,
   TmsRoutes,
@@ -24,6 +25,7 @@ import {
   ClimatologyPayload,
   CurrentWeatherPayload,
   StationPayload,
+  StationsLastDataPayload,
   GeometryPayload,
   PmtilesPayload,
   RadiusPayload,
@@ -62,6 +64,12 @@ function sleep(ms: number): Promise<void> {
  * @property {Array<string>} variables
  * @property {string} startDate
  * @property {string} endDate
+ */
+
+/**
+ * @typedef {Object} StationsLastDataPayload
+ * @property {Array<string>} stationIds
+ * @property {Array<string>} variables
  */
 
 /**
@@ -516,6 +524,21 @@ export class AdvisorCore {
      */
     getAlerts: async (): Promise<ApiResponse> => {
       return this.makeRequest("GET", "v1/monitoring/alerts")
+    },
+  }
+
+  /**
+   * Fetch stations data.
+   */
+  stations: StationsRoutes = {
+    /**
+     * Fetch last observed data for multiple stations.
+     * POST /v1/stations/last-data
+     * @param {StationsLastDataPayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    getLastData: async (payload?: StationsLastDataPayload): Promise<ApiResponse> => {
+      return this.makeRequest("POST", "v1/stations/last-data", {}, payload ?? {})
     },
   }
 
