@@ -171,6 +171,29 @@ class StationPayload:
             "endDate": self.end_date,
         }
 
+class StationsLastDataPayload:
+    def __init__(
+        self,
+        station_ids: List[str] = None,
+        variables: List[str] = None,
+    ):
+        """
+        Initializes the StationsLastDataPayload object with optional parameters.
+        """
+        self.station_ids = station_ids
+        self.variables = variables
+
+    def getBody(self) -> dict:
+        """
+        Returns the body of the request as a dictionary for API requests.
+        """
+        body = {}
+        if self.station_ids is not None:
+            body["stationIds"] = self.station_ids
+        if self.variables is not None:
+            body["variables"] = self.variables
+        return body
+
 class GeometryPayload:
     def __init__(
         self,

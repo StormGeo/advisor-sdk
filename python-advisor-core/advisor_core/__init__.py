@@ -15,6 +15,7 @@ from .grouped_routes import (
     ClimatologyAPI,
     CurrentWeatherAPI,
     MonitoringAlertsAPI,
+    StationsAPI,
 )
 from .payloads import (
     PmtilesPayload,
@@ -23,6 +24,7 @@ from .payloads import (
     WeatherPayload,
     ClimatologyPayload,
     CurrentWeatherPayload,
+    StationsLastDataPayload,
     GeometryPayload,
     RadiusPayload,
     PlanInfoPayload,
@@ -43,6 +45,7 @@ __all__ = [
     "ClimatologyAPI",
     "CurrentWeatherAPI",
     "MonitoringAlertsAPI",
+    "StationsAPI",
     "PlanAPI",
     "ChartAPI",
     "PmtilesAPI",
@@ -53,6 +56,7 @@ __all__ = [
     "WeatherPayload",
     "ClimatologyPayload",
     "CurrentWeatherPayload",
+    "StationsLastDataPayload",
     "RadiusPayload",
     "StationPayload",
     "GeometryPayload",

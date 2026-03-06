@@ -15,6 +15,7 @@ Advisor Software Development Kit for python.
       - [Forecast](#forecast)
       - [Monitoring](#monitoring)
       - [Observed](#observed)
+      - [Stations](#stations)
       - [Plan Information](#plan-information)
       - [Schema/Parameter](#schemaparameter)
       - [Static Map](#static-map)
@@ -26,6 +27,7 @@ Advisor Software Development Kit for python.
   - [Payload Types](#payload-types)
     - [WeatherPayload](#weatherpayload)
     - [StationPayload](#stationpayload)
+    - [StationsLastDataPayload](#stationslastdatapayload)
     - [ClimatologyPayload](#climatologypayload)
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
@@ -203,6 +205,23 @@ response = advisor.observed.get_fire_focus_by_geometry(payload_for_geometry)
 
 # requesting lightning observed data by geometry
 response = advisor.observed.get_lightning_by_geometry(payload_for_geometry)
+
+if response['error']:
+  print('Error trying to get data!')
+  print(response['error'])
+else:
+  print(response['data'])
+```
+
+#### Stations
+```python
+payload = StationsLastDataPayload(
+  station_ids=["ABC123abc321CBA", "XYZ789xyz987ZYX"], # optional
+  variables=["temperature", "humidity"] # optional
+)
+
+# requesting last observed data for multiple stations
+response = advisor.stations.get_last_data(payload)
 
 if response['error']:
   print('Error trying to get data!')
@@ -482,6 +501,11 @@ All the methods will return the same pattern:
 - **variables**: List[str]
 - **start_date**: str
 - **end_date**: str
+
+### StationsLastDataPayload
+
+- **station_ids**: List[str]
+- **variables**: List[str]
 
 ### ClimatologyPayload
 
