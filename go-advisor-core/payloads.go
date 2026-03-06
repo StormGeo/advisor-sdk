@@ -72,6 +72,11 @@ type StationPayload struct {
 	EndDate   string
 }
 
+type StationsLastDataPayload struct {
+	StationIds []string
+	Variables  []string
+}
+
 type RadiusPayload struct {
 	LocaleId  uint32
 	Latitude  string
@@ -217,6 +222,14 @@ func (s StorageListPayload) toQueryParams() string {
 
 func (s SchemaPayload) toBodyBytes() []byte {
 	body, _ := json.Marshal(s)
+	return body
+}
+
+func (s StationsLastDataPayload) toBodyBytes() []byte {
+	body, _ := json.Marshal(map[string][]string{
+		"stationIds": s.StationIds,
+		"variables":  s.Variables,
+	})
 	return body
 }
 

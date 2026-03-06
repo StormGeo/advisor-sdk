@@ -14,6 +14,7 @@ Advisor Software Development Kit for Go.
       - [Current Weather:](#current-weather)
       - [Forecast:](#forecast)
       - [Monitoring:](#monitoring)
+      - [Stations:](#stations)
       - [Observed:](#observed)
       - [Plan Information:](#plan-information)
       - [Plan Locale:](#plan-locale)
@@ -27,6 +28,7 @@ Advisor Software Development Kit for Go.
   - [Payload Types](#payload-types)
     - [WeatherPayload](#weatherpayload)
     - [StationPayload](#stationpayload)
+    - [StationsLastDataPayload](#stationslastdatapayload)
     - [ClimatologyPayload](#climatologypayload)
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
@@ -177,6 +179,23 @@ if respErr != nil {
 #### Monitoring:
 ```go
 resp, respErr := advisor.Monitoring.GetAlerts()
+
+if respErr != nil {
+  fmt.Println(respErr)
+  fmt.Println("Error trying to get data!")
+} else {
+  fmt.Println(resp)
+}
+```
+
+#### Stations:
+```go
+payload := sdk.StationsLastDataPayload{
+  StationIds: []string{"ABC123abc321CBA", "ZYX987xyz789WVU"}, // optional
+  Variables:  []string{"temperature", "humidity"}, // optional
+}
+
+resp, respErr := advisor.Stations.GetLastData(payload)
 
 if respErr != nil {
   fmt.Println(respErr)
@@ -542,6 +561,11 @@ All the methods returns two parameters data and error:
 - **Variables**: []string
 - **StartDate**: string
 - **EndDate**: string
+
+### StationsLastDataPayload
+
+- **StationIds**: []string
+- **Variables**: []string
 
 ### ClimatologyPayload
 
