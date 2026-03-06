@@ -171,6 +171,29 @@ class StationPayload:
             "endDate": self.end_date,
         }
 
+class StationsLastDataPayload:
+    def __init__(
+        self,
+        station_ids: List[str] = None,
+        variables: List[str] = None,
+    ):
+        """
+        Initializes the StationsLastDataPayload object with optional parameters.
+        """
+        self.station_ids = station_ids
+        self.variables = variables
+
+    def getBody(self) -> dict:
+        """
+        Returns the body of the request as a dictionary for API requests.
+        """
+        body = {}
+        if self.station_ids is not None:
+            body["stationIds"] = self.station_ids
+        if self.variables is not None:
+            body["variables"] = self.variables
+        return body
+
 class GeometryPayload:
     def __init__(
         self,
@@ -241,6 +264,41 @@ class TmsPayload:
             "istep": self.istep,
             "fstep": self.fstep,
             "timezone": self.timezone,
+        }
+
+class PmtilesPayload:
+    def __init__(
+        self,
+        mode: str = None,
+        model: str = None,
+        variable: str = None,
+        aggregation: str = None,
+        istep: str = None,
+        fstep: str = None,
+        timezone: int = None,
+        max_zoom: int = None,
+    ):
+        """
+        Initializes the PmtilesPayload object with optional parameters.
+        """
+        self.mode = mode
+        self.model = model
+        self.variable = variable
+        self.aggregation = aggregation
+        self.istep = istep
+        self.fstep = fstep
+        self.timezone = timezone
+        self.max_zoom = max_zoom
+
+    def get_params(self) -> dict:
+        """
+        Returns the parameters as a dictionary for API requests.
+        """
+        return {
+            "istep": self.istep,
+            "fstep": self.fstep,
+            "timezone": self.timezone,
+            "maxZoom": self.max_zoom,
         }
 
 class PlanInfoPayload:
