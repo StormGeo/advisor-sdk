@@ -6,6 +6,10 @@ node_modules/
 python-advisor-core/advisor_core/__pycache__
 python-advisor-core/runner.py
 
+# go
+main.go
+go.mod
+
 # .NET
 advisor-sdk.sln
 dotnet-advisor-core/obj/

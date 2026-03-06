@@ -14,6 +14,7 @@ Advisor Software Development Kit for Go.
       - [Current Weather:](#current-weather)
       - [Forecast:](#forecast)
       - [Monitoring:](#monitoring)
+      - [Stations:](#stations)
       - [Observed:](#observed)
       - [Plan Information:](#plan-information)
       - [Plan Locale:](#plan-locale)
@@ -21,16 +22,19 @@ Advisor Software Development Kit for Go.
       - [Storage:](#storage)
       - [Static Map:](#static-map)
       - [Tms (Tiles Map Server):](#tms-tiles-map-server)
+      - [Pmtiles:](#pmtiles)
   - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
   - [Payload Types](#payload-types)
     - [WeatherPayload](#weatherpayload)
     - [StationPayload](#stationpayload)
+    - [StationsLastDataPayload](#stationslastdatapayload)
     - [ClimatologyPayload](#climatologypayload)
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
     - [TmsPayload](#tmspayload)
+    - [PmtilesPayload](#pmtilespayload)
     - [StaticMapPayload](#staticmappayload)
     - [RequestDetailsPayload](#requestdetailspayload)
     - [PlanInfoPayload](#planinfopayload)
@@ -175,6 +179,23 @@ if respErr != nil {
 #### Monitoring:
 ```go
 resp, respErr := advisor.Monitoring.GetAlerts()
+
+if respErr != nil {
+  fmt.Println(respErr)
+  fmt.Println("Error trying to get data!")
+} else {
+  fmt.Println(resp)
+}
+```
+
+#### Stations:
+```go
+payload := sdk.StationsLastDataPayload{
+  StationIds: []string{"ABC123abc321CBA", "ZYX987xyz789WVU"}, // optional
+  Variables:  []string{"temperature", "humidity"}, // optional
+}
+
+resp, respErr := advisor.Stations.GetLastData(payload)
 
 if respErr != nil {
   fmt.Println(respErr)
@@ -437,6 +458,42 @@ if err != nil {
 fmt.Println("Tile saved with success!")
 ```
 
+#### Pmtiles:
+```go
+payload := sdk.PmtilesPayload{
+  Mode: "forecast",
+  Model: "ct2w15_as",
+  Variable: "precipitation",
+  Aggregation: "sum",
+  Istep: "2026-03-02 00:00:00",
+  Fstep: "2026-03-02 01:00:00",
+  MaxZoom: 4,
+}
+
+resp, respErr := advisor.Pmtiles.Get(payload)
+
+if respErr != nil {
+  fmt.Println(respErr)
+  return
+}
+defer resp.Close()
+
+file, fileErr := os.Create("./tile.pmtiles")
+if fileErr != nil {
+  fmt.Println(fileErr)
+  return
+}
+defer file.Close()
+
+_, err := io.Copy(file, resp)
+if err != nil {
+  fmt.Println(err)
+  return
+}
+
+fmt.Println("PMTiles file saved with success!")
+```
+
 ## Headers Configuration
 
 You can also set headers to translate the error descriptions or to receive the response in a different format type. This functionality is only available for some routes, consult the API documentation to find out which routes have this functionality.
@@ -505,6 +562,11 @@ All the methods returns two parameters data and error:
 - **StartDate**: string
 - **EndDate**: string
 
+### StationsLastDataPayload
+
+- **StationIds**: []string
+- **Variables**: []string
+
 ### ClimatologyPayload
 
 - **LocaleId**: string
@@ -551,6 +613,17 @@ All the methods returns two parameters data and error:
 - **Istep**: string
 - **Fstep**: string
 - **Timezone**: int32
+
+### PmtilesPayload
+
+- **Mode**: string
+- **Model**: string
+- **Variable**: string
+- **Aggregation**: string
+- **Istep**: string
+- **Fstep**: string
+- **Timezone**: int8
+- **MaxZoom**: uint8
 
 ### StaticMapPayload
 

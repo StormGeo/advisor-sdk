@@ -72,6 +72,11 @@ type StationPayload struct {
 	EndDate   string
 }
 
+type StationsLastDataPayload struct {
+	StationIds []string
+	Variables  []string
+}
+
 type RadiusPayload struct {
 	LocaleId  uint32
 	Latitude  string
@@ -94,6 +99,17 @@ type TmsPayload struct {
 	Y           uint16
 	Z           uint16
 	Timezone    int8
+}
+
+type PmtilesPayload struct {
+	Istep       string
+	Fstep       string
+	Mode        string
+	Model       string
+	Variable    string
+	Aggregation string
+	Timezone    int8
+	MaxZoom     uint8
 }
 
 type WeatherPayload struct {
@@ -209,6 +225,14 @@ func (s SchemaPayload) toBodyBytes() []byte {
 	return body
 }
 
+func (s StationsLastDataPayload) toBodyBytes() []byte {
+	body, _ := json.Marshal(map[string][]string{
+		"stationIds": s.StationIds,
+		"variables":  s.Variables,
+	})
+	return body
+}
+
 func (s StationPayload) toQueryParams() string {
 	builder := queryParamsBuilder{}
 
@@ -247,6 +271,17 @@ func (r RadiusPayload) toQueryParams() string {
 		addStartDate(r.StartDate).
 		addEndDate(r.EndDate).
 		addRadius(r.Radius).
+		build()
+}
+
+func (p PmtilesPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addIstep(p.Istep).
+		addFstep(p.Fstep).
+		addTimezone(p.Timezone).
+		addMaxZoom(p.MaxZoom).
 		build()
 }
 
