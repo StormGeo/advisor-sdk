@@ -31,6 +31,7 @@ type AdvisorCore struct {
 	Schema         schema
 	StaticMap      staticMap
 	Tms            tms
+	Pmtiles        pmtiles
 }
 
 func (a *AdvisorCore) SetHeaderAccept(value string) {
@@ -127,6 +128,9 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 		},
 		Tms: tms{
 			Get: makeGetTmsImageV1(config, header),
+		},
+		Pmtiles: pmtiles{
+			Get: makeGetPmtilesFileV1(config, header),
 		},
 	}
 }
@@ -354,6 +358,48 @@ func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest 
 		)
 		if respErr != nil {
 			return nil, respErr
+		}
+
+		return resp.Body, nil
+	}
+}
+
+func makeGetPmtilesFileV1(config AdvisorCoreConfig, header http.Header) PmtilesRequest {
+	return func(payload PmtilesPayload) (fileBody io.ReadCloser, err error) {
+		route := fmt.Sprintf(
+			"/v1/pmtiles/%s/%s/%s/%s.pmtiles",
+			url.QueryEscape(payload.Mode),
+			url.QueryEscape(payload.Model),
+			url.QueryEscape(payload.Aggregation),
+			url.QueryEscape(payload.Variable),
+		)
+
+		resp, respErr := retryReq(
+			"GET",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, payload.toQueryParams()),
+			nil,
+			header,
+		)
+		if respErr != nil {
+			return nil, respErr
+		}
+
+		if resp.StatusCode != http.StatusOK {
+			defer resp.Body.Close()
+
+			body, bodyErr := io.ReadAll(resp.Body)
+			if bodyErr != nil {
+				return nil, fmt.Errorf("pmtiles request failed with status %d and unreadable body: %w", resp.StatusCode, bodyErr)
+			}
+
+			errorMessage := strings.TrimSpace(string(body))
+			if errorMessage == "" {
+				return nil, fmt.Errorf("pmtiles request failed with status %d", resp.StatusCode)
+			}
+
+			return nil, fmt.Errorf("pmtiles request failed with status %d: %s", resp.StatusCode, errorMessage)
 		}
 
 		return resp.Body, nil

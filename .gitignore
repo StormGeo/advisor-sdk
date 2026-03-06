@@ -5,6 +5,10 @@ node_modules/
 # python
 python-advisor-core/stormgeo.advisor_core/__pycache__
 
+# go
+main.go
+go.mod
+
 # .NET
 advisor-sdk.sln
 dotnet-advisor-core/obj/

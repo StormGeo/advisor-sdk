@@ -12,6 +12,7 @@ type RequestWithStationPayload func(StationPayload) (AdvisorResponse, error)
 type RequestWithRadiusPayload func(RadiusPayload) (AdvisorResponse, error)
 type RequestWithPayload func(RadiusPayload) (AdvisorResponse, error)
 type TmsRequest func(TmsPayload) (io.ReadCloser, error)
+type PmtilesRequest func(PmtilesPayload) (io.ReadCloser, error)
 type RequestWithPlanInfoPayload func(PlanInfoPayload) (AdvisorResponse, error)
 type RequestWithPlanLocalePayload func(PlanLocalePayload) (AdvisorResponse, error)
 type RequestWithRequestDetailsPayload func(RequestDetailsPayload) (AdvisorResponse, error)
@@ -79,4 +80,8 @@ type staticMap struct {
 
 type tms struct {
 	Get TmsRequest
+}
+
+type pmtiles struct {
+	Get PmtilesRequest
 }

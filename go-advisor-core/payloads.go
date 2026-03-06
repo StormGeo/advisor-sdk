@@ -96,6 +96,17 @@ type TmsPayload struct {
 	Timezone    int8
 }
 
+type PmtilesPayload struct {
+	Istep       string
+	Fstep       string
+	Mode        string
+	Model       string
+	Variable    string
+	Aggregation string
+	Timezone    int8
+	MaxZoom     uint8
+}
+
 type WeatherPayload struct {
 	LocaleId  uint32
 	Latitude  string
@@ -247,6 +258,17 @@ func (r RadiusPayload) toQueryParams() string {
 		addStartDate(r.StartDate).
 		addEndDate(r.EndDate).
 		addRadius(r.Radius).
+		build()
+}
+
+func (p PmtilesPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addIstep(p.Istep).
+		addFstep(p.Fstep).
+		addTimezone(p.Timezone).
+		addMaxZoom(p.MaxZoom).
 		build()
 }
 
