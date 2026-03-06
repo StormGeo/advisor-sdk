@@ -20,6 +20,7 @@ Advisor Software Development Kit for python.
       - [Static Map](#static-map)
       - [Storage](#storage)
       - [Tms (Tiles Map Server)](#tms-tiles-map-server)
+      - [Pmtiles](#pmtiles)
   - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
   - [Payload Types](#payload-types)
@@ -30,6 +31,7 @@ Advisor Software Development Kit for python.
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
     - [TmsPayload](#tmspayload)
+    - [PmtilesPayload](#pmtilespayload)
     - [PlanInfoPayload](#planinfopayload)
     - [RequestDetailsPayload](#requestdetailspayload)
     - [PlanLocalePayload](#planlocalepayload)
@@ -389,6 +391,28 @@ else:
     f.write(response["data"])
 ```
 
+#### Pmtiles
+```python
+payload = PmtilesPayload(
+  mode="forecast",
+  model="ct2w15_as",
+  variable="precipitation",
+  aggregation="sum",
+  istep="2026-03-02 00:00:00",
+  fstep="2026-03-02 01:00:00",
+  max_zoom=4,
+)
+
+response = advisor.pmtiles.get(payload)
+
+if response['error']:
+  print('Error trying to get data!')
+  print(response['error'])
+else:
+  with open("response.pmtiles", "wb") as f:
+    f.write(response["data"])
+```
+
 ---
 
 ## Headers Configuration
@@ -505,6 +529,17 @@ All the methods will return the same pattern:
 - **istep**: str
 - **fstep**: str
 - **timezone**: int
+
+### PmtilesPayload
+
+- **mode**: str
+- **model**: str
+- **variable**: str
+- **aggregation**: str
+- **istep**: str
+- **fstep**: str
+- **timezone**: int
+- **max_zoom**: int
 
 ### PlanInfoPayload
 - **timezone**: int

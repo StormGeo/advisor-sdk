@@ -243,6 +243,41 @@ class TmsPayload:
             "timezone": self.timezone,
         }
 
+class PmtilesPayload:
+    def __init__(
+        self,
+        mode: str = None,
+        model: str = None,
+        variable: str = None,
+        aggregation: str = None,
+        istep: str = None,
+        fstep: str = None,
+        timezone: int = None,
+        max_zoom: int = None,
+    ):
+        """
+        Initializes the PmtilesPayload object with optional parameters.
+        """
+        self.mode = mode
+        self.model = model
+        self.variable = variable
+        self.aggregation = aggregation
+        self.istep = istep
+        self.fstep = fstep
+        self.timezone = timezone
+        self.max_zoom = max_zoom
+
+    def get_params(self) -> dict:
+        """
+        Returns the parameters as a dictionary for API requests.
+        """
+        return {
+            "istep": self.istep,
+            "fstep": self.fstep,
+            "timezone": self.timezone,
+            "maxZoom": self.max_zoom,
+        }
+
 class PlanInfoPayload:
     def __init__(
         self,

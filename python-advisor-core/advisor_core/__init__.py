@@ -3,6 +3,7 @@ from .header import Header
 from .request_handler import RequestHandler
 from .query_builder import QueryParamsBuilder
 from .grouped_routes import (
+    PmtilesAPI,
     TmsAPI,
     PlanAPI,
     ChartAPI,
@@ -16,6 +17,7 @@ from .grouped_routes import (
     MonitoringAlertsAPI,
 )
 from .payloads import (
+    PmtilesPayload,
     TmsPayload,
     StationPayload,
     WeatherPayload,
@@ -43,6 +45,7 @@ __all__ = [
     "MonitoringAlertsAPI",
     "PlanAPI",
     "ChartAPI",
+    "PmtilesAPI",
     "TmsAPI",
     "SchemaAPI",
     "StorageAPI",
@@ -53,6 +56,7 @@ __all__ = [
     "RadiusPayload",
     "StationPayload",
     "GeometryPayload",
+    "PmtilesPayload",
     "TmsPayload",
     "PlanInfoPayload",
     "PlanLocalePayload",

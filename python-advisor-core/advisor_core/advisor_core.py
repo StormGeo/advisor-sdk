@@ -9,6 +9,7 @@ from .grouped_routes import (
     PlanAPI,
     ChartAPI,
     TmsAPI,
+    PmtilesAPI,
     SchemaAPI,
     StorageAPI,
     StaticMapAPI,
@@ -45,6 +46,8 @@ class AdvisorCore:
         """Fetch static map images."""
         self.tms = TmsAPI(request_handler)
         """Fetch tiles map service."""
+        self.pmtiles = PmtilesAPI(request_handler)
+        """Fetch pmtiles service."""
         self.schema = SchemaAPI(request_handler)
         """Get and set schema/parameters."""
 

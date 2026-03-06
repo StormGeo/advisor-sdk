@@ -392,6 +392,24 @@ class TmsAPI:
         path = f"v1/tms/{payload.server}/{payload.mode}/{payload.variable}/{payload.aggregation}/{payload.x}/{payload.y}/{payload.z}.png"
         return self.request_handler.make_request("GET", path, params=params)
 
+class PmtilesAPI:
+    def __init__(self, request_handler):
+        self.request_handler = request_handler
+
+    def get(self, payload: PmtilesPayload):
+        """
+        Fetch PMTiles file.
+        GET /v1/pmtiles/{mode}/{model}/{aggregation}/{variable}.pmtiles
+        """
+        builder = QueryParamsBuilder()
+        params = (
+            builder
+            .add_payload(payload.get_params())
+            .build()
+        )
+        path = f"v1/pmtiles/{payload.mode}/{payload.model}/{payload.aggregation}/{payload.variable}.pmtiles"
+        return self.request_handler.make_request("GET", path, params=params)
+
 class SchemaAPI:
     def __init__(self, request_handler):
         self.request_handler = request_handler
