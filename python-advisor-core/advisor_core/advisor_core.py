@@ -6,9 +6,11 @@ from .grouped_routes import (
     CurrentWeatherAPI,
     ClimatologyAPI,
     MonitoringAlertsAPI,
+    StationsAPI,
     PlanAPI,
     ChartAPI,
     TmsAPI,
+    PmtilesAPI,
     SchemaAPI,
     StorageAPI,
     StaticMapAPI,
@@ -35,6 +37,8 @@ class AdvisorCore:
         """Fetch climatology weather."""
         self.monitoring = MonitoringAlertsAPI(request_handler)
         """Fetch alerts."""
+        self.stations = StationsAPI(request_handler)
+        """Fetch stations data."""
         self.storage = StorageAPI(request_handler)
         """Fetch bucket files."""
         self.plan = PlanAPI(request_handler)
@@ -45,6 +49,8 @@ class AdvisorCore:
         """Fetch static map images."""
         self.tms = TmsAPI(request_handler)
         """Fetch tiles map service."""
+        self.pmtiles = PmtilesAPI(request_handler)
+        """Fetch pmtiles service."""
         self.schema = SchemaAPI(request_handler)
         """Get and set schema/parameters."""
 

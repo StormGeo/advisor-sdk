@@ -15,21 +15,25 @@ Advisor Software Development Kit for python.
       - [Forecast](#forecast)
       - [Monitoring](#monitoring)
       - [Observed](#observed)
+      - [Stations](#stations)
       - [Plan Information](#plan-information)
       - [Schema/Parameter](#schemaparameter)
       - [Static Map](#static-map)
       - [Storage](#storage)
       - [Tms (Tiles Map Server)](#tms-tiles-map-server)
+      - [Pmtiles](#pmtiles)
   - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
   - [Payload Types](#payload-types)
     - [WeatherPayload](#weatherpayload)
     - [StationPayload](#stationpayload)
+    - [StationsLastDataPayload](#stationslastdatapayload)
     - [ClimatologyPayload](#climatologypayload)
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
     - [TmsPayload](#tmspayload)
+    - [PmtilesPayload](#pmtilespayload)
     - [PlanInfoPayload](#planinfopayload)
     - [RequestDetailsPayload](#requestdetailspayload)
     - [PlanLocalePayload](#planlocalepayload)
@@ -201,6 +205,23 @@ response = advisor.observed.get_fire_focus_by_geometry(payload_for_geometry)
 
 # requesting lightning observed data by geometry
 response = advisor.observed.get_lightning_by_geometry(payload_for_geometry)
+
+if response['error']:
+  print('Error trying to get data!')
+  print(response['error'])
+else:
+  print(response['data'])
+```
+
+#### Stations
+```python
+payload = StationsLastDataPayload(
+  station_ids=["ABC123abc321CBA", "XYZ789xyz987ZYX"], # optional
+  variables=["temperature", "humidity"] # optional
+)
+
+# requesting last observed data for multiple stations
+response = advisor.stations.get_last_data(payload)
 
 if response['error']:
   print('Error trying to get data!')
@@ -389,6 +410,28 @@ else:
     f.write(response["data"])
 ```
 
+#### Pmtiles
+```python
+payload = PmtilesPayload(
+  mode="forecast",
+  model="ct2w15_as",
+  variable="precipitation",
+  aggregation="sum",
+  istep="2026-03-02 00:00:00",
+  fstep="2026-03-02 01:00:00",
+  max_zoom=4,
+)
+
+response = advisor.pmtiles.get(payload)
+
+if response['error']:
+  print('Error trying to get data!')
+  print(response['error'])
+else:
+  with open("response.pmtiles", "wb") as f:
+    f.write(response["data"])
+```
+
 ---
 
 ## Headers Configuration
@@ -459,6 +502,11 @@ All the methods will return the same pattern:
 - **start_date**: str
 - **end_date**: str
 
+### StationsLastDataPayload
+
+- **station_ids**: List[str]
+- **variables**: List[str]
+
 ### ClimatologyPayload
 
 - **locale_id**: int
@@ -505,6 +553,17 @@ All the methods will return the same pattern:
 - **istep**: str
 - **fstep**: str
 - **timezone**: int
+
+### PmtilesPayload
+
+- **mode**: str
+- **model**: str
+- **variable**: str
+- **aggregation**: str
+- **istep**: str
+- **fstep**: str
+- **timezone**: int
+- **max_zoom**: int
 
 ### PlanInfoPayload
 - **timezone**: int
