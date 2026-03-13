@@ -165,6 +165,10 @@ import {
  * @property {string} istep
  * @property {string} fstep
  * @property {number} maxZoom
+ * @property {string} cmap
+ * @property {string} dynamicElevation
+ * @property {string} dynamicType
+ * @property {string} dynamicVariable
  */
 
 export interface ChartRoutes {
