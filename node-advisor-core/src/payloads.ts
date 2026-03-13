@@ -98,6 +98,10 @@ export interface PmtilesPayload {
   istep?: string
   fstep?: string
   maxZoom?: number
+  cmap?: string
+  dynamicElevation?: string
+  dynamicType?: string
+  dynamicVariable?: string
 }
 
 export interface PlanInfoPayload {

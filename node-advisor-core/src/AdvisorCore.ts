@@ -163,6 +163,10 @@ function sleep(ms: number): Promise<void> {
  * @property {string} istep
  * @property {string} fstep
  * @property {number} maxZoom
+ * @property {string} cmap
+ * @property {string} dynamicElevation
+ * @property {string} dynamicType
+ * @property {string} dynamicVariable
  */
 
 export class AdvisorCore {
@@ -651,7 +655,16 @@ export class AdvisorCore {
      */
     get: async (payload: PmtilesPayload): Promise<ApiFileResponse> => {
       const path = `v1/pmtiles/${payload.mode}/${payload.model}/${payload.aggregation}/${payload.variable}.pmtiles`
-      return this.makeRequestFile("GET", path, { timezone: payload.timezone, istep: payload.istep, fstep: payload.fstep, maxZoom: payload.maxZoom })
+      return this.makeRequestFile("GET", path, {
+        timezone: payload.timezone,
+        istep: payload.istep,
+        fstep: payload.fstep,
+        maxZoom: payload.maxZoom,
+        cmap: payload.cmap,
+        dynamicElevation: payload.dynamicElevation,
+        dynamicType: payload.dynamicType,
+        dynamicVariable: payload.dynamicVariable,
+      })
     },
   }
 

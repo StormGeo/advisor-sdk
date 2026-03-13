@@ -607,6 +607,10 @@ All the methods returns the same pattern:
 - **fstep**: string
 - **maxZoom**: number
 - **timezone**: number
+- **cmap**: string
+- **dynamicElevation**: string
+- **dynamicType**: string
+- **dynamicVariable**: string
 
 ### StorageListPayload
 
