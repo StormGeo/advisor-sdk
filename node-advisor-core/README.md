@@ -15,16 +15,19 @@ Advisor Software Development Kit for nodeJS.
       - [Forecast:](#forecast)
       - [Monitoring:](#monitoring)
       - [Observed:](#observed)
+      - [Stations:](#stations)
       - [Storage:](#storage)
       - [Plan Information:](#plan-information)
       - [Schema/Parameter:](#schemaparameter)
       - [Static Map:](#static-map)
       - [Tms (Tiles Map Server):](#tms-tiles-map-server)
+      - [Pmtiles:](#pmtiles)
   - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
   - [Payload Types](#payload-types)
     - [WeatherPayload](#weatherpayload)
     - [StationPayload](#stationpayload)
+    - [StationsLastDataPayload](#stationslastdatapayload)
     - [ClimatologyPayload](#climatologypayload)
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
@@ -32,8 +35,10 @@ Advisor Software Development Kit for nodeJS.
     - [LightningDetailsPayload](#lightningdetailspayload)
     - [LightningLitePayload](#lightninglitepayload)
     - [TmsPayload](#tmspayload)
+    - [PmtilesPayload](#pmtilespayload)
     - [PlanInfoPayload](#planinfopayload)
     - [RequestDetailsPayload](#requestdetailspayload)
+    - [PlanLocalePayload](#planlocalepayload)
     - [StorageListPayload](#storagelistpayload)
     - [StorageDownloadPayload](#storagedownloadpayload)
     - [StaticMapPayload](#staticmappayload)
@@ -247,11 +252,30 @@ if (response.error) {
 }
 ```
 
+#### Stations:
+```javascript
+const payload = {
+  stationIds: ['ABC123abc321CBA', 'XYZ789xyz987ZYX'], // optional
+  variables: ['temperature', 'humidity'], // optional
+}
+
+// requesting last observed data for multiple stations
+let response = await advisor.stations.getLastData(payload)
+
+if (response.error) {
+  console.log(response.error)
+  console.log('Error trying to get data!')
+} else {
+  console.log(response.data)
+}
+```
+
 #### Storage:
 ```javascript
   const payload = {
     page: 1,
     pageSize: 2,
+    fileTypes: ['pdf', 'csv'],
   }
 
   // Requesting the files list
@@ -295,22 +319,43 @@ if (response.error) {
 
 #### Plan Information:
 ```javascript
-//Requesting plan information
-let response = await advisor.plan.getInfo({ timezone: -3 })
+  // Requesting plan information
+  const planInfoResponse = await advisor.plan.getInfo({ timezone: -3 })
 
-const payload = {
-  page: 1,
-  pageSize: 10,
-}
-// Requesting access history
-let response = await advisor.plan.getRequestDetails(payload)
+  if (planInfoResponse.error) {
+    console.log(planInfoResponse.error)
+    console.log('Error trying to get plan information!')
+  } else {
+    console.log(planInfoResponse.data)
+  }
 
-if (response.error) {
-  console.log(response.error)
-  console.log('Error trying to get data!')
-} else {
-  console.log(response.data)
-}
+  // Requesting locale details from plan
+  const localePayload = {
+    localeId: 1234,
+    // You can also set Latitude/Longitude or StationId instead of LocaleId
+  }
+  const localeResponse = await advisor.plan.getLocale(localePayload)
+
+  if (localeResponse.error) {
+    console.log(localeResponse.error)
+    console.log('Error trying to get locale data!')
+  } else {
+    console.log(localeResponse.data)
+  }
+
+  const requestDetailsPayload = {
+    page: 1,
+    pageSize: 10,
+  }
+  // Requesting access history
+  const requestDetailsResponse = await advisor.plan.getRequestDetails(requestDetailsPayload)
+
+  if (requestDetailsResponse.error) {
+    console.log(requestDetailsResponse.error)
+    console.log('Error trying to get data!')
+  } else {
+    console.log(requestDetailsResponse.data)
+  }
 ```
 
 #### Schema/Parameter:
@@ -396,6 +441,28 @@ if (response.error) {
 }
 ```
 
+#### Pmtiles:
+```javascript
+const payload = {
+  mode: "forecast",
+  model: "ct2w15_as",
+  variable: "precipitation",
+  aggregation: "sum",
+  istep: "2026-03-02 00:00:00",
+  fstep: "2026-03-02 01:00:00",
+  maxZoom: 4
+}
+
+let response = await advisor.pmtiles.get(payload)
+
+if (response.error) {
+  console.log(response.error)
+  console.log('Error trying to get data!')
+} else {
+  writeFileSync('test.pmtiles', response.data)
+}
+```
+
 ## Headers Configuration
 
 You can also set headers to translate the error descriptions or to receive the response in a different format type. This functionality is only available for some routes, consult the API documentation to find out which routes have this functionality.
@@ -462,9 +529,15 @@ All the methods returns the same pattern:
 
 - **stationId**: string
 - **layer**: string
+- **timezone**: number
 - **variables**: string[]
 - **startDate**: string
 - **endDate**: string
+
+### StationsLastDataPayload
+
+- **stationIds**: string[]
+- **variables**: string[]
 
 ### ClimatologyPayload
 
@@ -486,6 +559,13 @@ All the methods returns the same pattern:
 ### PlanInfoPayload
 
 - **timezone**: number
+
+### PlanLocalePayload
+
+- **localeId**: string
+- **stationId**: string
+- **latitude**: string
+- **longitude**: string
 
 ### CurrentWeatherPayload
 
@@ -564,6 +644,21 @@ All the methods returns the same pattern:
 - **fstep**: string
 - **timezone**: number
 
+### PmtilesPayload
+
+- **mode**: string
+- **model**: string
+- **variable**: string
+- **aggregation**: string
+- **istep**: string
+- **fstep**: string
+- **maxZoom**: number
+- **timezone**: number
+- **cmap**: string
+- **dynamicElevation**: string
+- **dynamicType**: string
+- **dynamicVariable**: string
+
 ### StorageListPayload
 
 - **page**: number
@@ -572,6 +667,7 @@ All the methods returns the same pattern:
 - **endDate**: string
 - **fileName**: string
 - **fileExtension**: string
+- **fileTypes**: string[]
 
 ### StorageDownloadPayload
 

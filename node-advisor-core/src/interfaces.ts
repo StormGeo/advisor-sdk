@@ -5,7 +5,9 @@ import {
   GeometryPayload,
   LightningDetailsPayload,
   LightningLitePayload,
+  PmtilesPayload,
   StationPayload,
+  StationsLastDataPayload,
   RadiusPayload,
   TmsPayload,
   WeatherPayload,
@@ -15,6 +17,7 @@ import {
   ApiFileResponse,
   ApiStreamResponse,
   PlanInfoPayload,
+  PlanLocalePayload,
   StaticMapPayload
 } from "./payloads"
 /**
@@ -33,9 +36,16 @@ import {
  * @typedef {Object} StationPayload
  * @property {string} stationId
  * @property {string} layer
+ * @property {number} timezone
  * @property {Array<string>} variables
  * @property {string} startDate
  * @property {string} endDate
+ */
+
+/**
+ * @typedef {Object} StationsLastDataPayload
+ * @property {Array<string>} stationIds
+ * @property {Array<string>} variables
  */
 
 /**
@@ -102,6 +112,14 @@ import {
  */
 
 /**
+ * @typedef {Object} PlanLocalePayload
+ * @property {number} localeId
+ * @property {string} stationId
+ * @property {string} latitude
+ * @property {string} longitude
+ */
+
+/**
  * @typedef {Object} RequestDetailsPayload
  * @property {number} page
  * @property {number} pageSize
@@ -119,6 +137,7 @@ import {
  * @property {string} endDate
  * @property {string} fileName
  * @property {string} fileExtension
+ * @property {Array<string>} fileTypes
 */
 
 /**
@@ -158,6 +177,22 @@ import {
  * @property {string} z
  * @property {string} istep
  * @property {string} fstep
+ */
+
+/**
+ * @typedef {Object} PmtilesPayload
+ * @property {string} mode
+ * @property {string} model
+ * @property {string} variable
+ * @property {string} aggregation
+ * @property {number} timezone
+ * @property {string} istep
+ * @property {string} fstep
+ * @property {number} maxZoom
+ * @property {string} cmap
+ * @property {string} dynamicElevation
+ * @property {string} dynamicType
+ * @property {string} dynamicVariable
  */
 
 export interface ChartRoutes {
@@ -324,10 +359,20 @@ export interface MonitoringRoutes {
   getAlerts: () => Promise<ApiResponse>
 }
 
+export interface StationsRoutes {
+  /**
+   * Fetch last observed data for multiple stations.
+   * POST /v1/stations/last-data
+   * @param {StationsLastDataPayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  getLastData: (payload?: StationsLastDataPayload) => Promise<ApiResponse>
+}
+
 export interface PlanRoutes {
   /**
    * Fetch plan information.
-   * GET /v1/plan/{token}
+   * GET /v2/plan
    * @param {PlanInfoPayload} payload
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
@@ -339,6 +384,13 @@ export interface PlanRoutes {
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
   getRequestDetails: (payload: RequestDetailsPayload) => Promise<ApiResponse>
+  /**
+   * Fetch locale information for a plan.
+   * GET /v1/plan/locale
+   * @param {PlanLocalePayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  getLocale: (payload: PlanLocalePayload) => Promise<ApiResponse>
 }
 
 export interface SchemaRoutes {
@@ -382,6 +434,16 @@ export interface TmsRoutes {
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
   get: (payload: TmsPayload) => Promise<ApiResponse>
+}
+
+export interface PmtilesRoutes {
+  /**
+   * Fetch PMTiles file.
+   * GET /v1/pmtiles/{mode}/{model}/{aggregation}/{variable}.pmtiles
+   * @param {PmtilesPayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  get: (payload: PmtilesPayload) => Promise<ApiResponse>
 }
 
 export interface StorageRoutes {

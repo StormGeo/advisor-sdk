@@ -9,10 +9,13 @@ type RequestWithCurrentWeatherPayload func(CurrentWeatherPayload) (AdvisorRespon
 type RequestWithGeometryPayload func(GeometryPayload) (AdvisorResponse, error)
 type RequestWithSchemaPayload func(SchemaPayload) (AdvisorResponse, error)
 type RequestWithStationPayload func(StationPayload) (AdvisorResponse, error)
+type RequestWithStationsLastDataPayload func(StationsLastDataPayload) (AdvisorResponse, error)
 type RequestWithRadiusPayload func(RadiusPayload) (AdvisorResponse, error)
 type RequestWithPayload func(RadiusPayload) (AdvisorResponse, error)
 type TmsRequest func(TmsPayload) (io.ReadCloser, error)
+type PmtilesRequest func(PmtilesPayload) (io.ReadCloser, error)
 type RequestWithPlanInfoPayload func(PlanInfoPayload) (AdvisorResponse, error)
+type RequestWithPlanLocalePayload func(PlanLocalePayload) (AdvisorResponse, error)
 type RequestWithRequestDetailsPayload func(RequestDetailsPayload) (AdvisorResponse, error)
 type RequestWithStorageDownloadPayload func(StorageDownloadPayload) (io.ReadCloser, error)
 type RequestWithStorageListPayload func(StorageListPayload) (AdvisorResponse, error)
@@ -44,8 +47,13 @@ type monitoring struct {
 	GetAlerts func() (response AdvisorResponse, err error)
 }
 
+type stations struct {
+	GetLastData RequestWithStationsLastDataPayload
+}
+
 type plan struct {
-	GetInfo RequestWithPlanInfoPayload
+	GetInfo           RequestWithPlanInfoPayload
+	GetLocale         RequestWithPlanLocalePayload
 	GetRequestDetails RequestWithRequestDetailsPayload
 }
 
@@ -77,4 +85,8 @@ type staticMap struct {
 
 type tms struct {
 	Get TmsRequest
+}
+
+type pmtiles struct {
+	Get PmtilesRequest
 }

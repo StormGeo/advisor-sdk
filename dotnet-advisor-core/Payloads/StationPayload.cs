@@ -7,6 +7,7 @@ public class StationPayload
     public string? EndDate { get; set; }
     public string[]? Variables { get; set; }
     public string? Layer { get; set; }
+    public int? Timezone { get; set; }
 
     public string GetQueryParams()
     {
@@ -16,6 +17,7 @@ public class StationPayload
             .AddEndDate(EndDate)
             .AddVariables(Variables)
             .AddLayer(Layer)
+            .AddTimezone(Timezone)
             .Build();
     }
 }

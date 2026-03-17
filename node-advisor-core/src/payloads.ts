@@ -14,9 +14,15 @@ export interface WeatherPayload {
 export interface StationPayload {
   stationId?: string
   layer?: string
+  timezone?: number
   variables?: string[]
   startDate?: string
   endDate?: string
+}
+
+export interface StationsLastDataPayload {
+  stationIds?: string[]
+  variables?: string[]
 }
 
 export interface ClimatologyPayload {
@@ -93,8 +99,30 @@ export interface TmsPayload {
   fstep?: string
 }
 
+export interface PmtilesPayload {
+  mode?: string
+  model?: string
+  variable?: string
+  aggregation?: string
+  timezone?: number
+  istep?: string
+  fstep?: string
+  maxZoom?: number
+  cmap?: string
+  dynamicElevation?: string
+  dynamicType?: string
+  dynamicVariable?: string
+}
+
 export interface PlanInfoPayload {
   timezone?: number
+}
+
+export interface PlanLocalePayload {
+  localeId?: number
+  stationId?: string
+  latitude?: string
+  longitude?: string
 }
 
 export interface RequestDetailsPayload {
@@ -113,6 +141,7 @@ export interface StorageListPayload {
   endDate?: string
   fileName?: string
   fileExtension?: string
+  fileTypes?: string[]
 }
 
 export interface StorageDownloadPayload {

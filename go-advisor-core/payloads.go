@@ -36,12 +36,13 @@ type StorageDownloadPayload struct {
 }
 
 type StorageListPayload struct {
-	Page           uint32
-	PageSize       uint32
-	StartDate      string
-	EndDate        string
-	FileName       string
-	FileExtension  string
+	Page          uint32
+	PageSize      uint32
+	StartDate     string
+	EndDate       string
+	FileName      string
+	FileExtension string
+	FileTypes     []string
 }
 
 type StaticMapPayload struct {
@@ -65,9 +66,15 @@ type StaticMapPayload struct {
 type StationPayload struct {
 	StationId string
 	Layer     string
+	Timezone  int8
 	Variables []string
 	StartDate string
 	EndDate   string
+}
+
+type StationsLastDataPayload struct {
+	StationIds []string
+	Variables  []string
 }
 
 type RadiusPayload struct {
@@ -94,6 +101,17 @@ type TmsPayload struct {
 	Timezone    int8
 }
 
+type PmtilesPayload struct {
+	Istep       string
+	Fstep       string
+	Mode        string
+	Model       string
+	Variable    string
+	Aggregation string
+	Timezone    int8
+	MaxZoom     uint8
+}
+
 type WeatherPayload struct {
 	LocaleId  uint32
 	Latitude  string
@@ -107,6 +125,13 @@ type WeatherPayload struct {
 
 type PlanInfoPayload struct {
 	Timezone int8
+}
+
+type PlanLocalePayload struct {
+	LocaleId  uint32
+	Latitude  string
+	Longitude string
+	StationId string
 }
 
 type RequestDetailsPayload struct {
@@ -191,11 +216,20 @@ func (s StorageListPayload) toQueryParams() string {
 		addEndDate(s.EndDate).
 		addFileName(s.FileName).
 		addFileExtension(s.FileExtension).
+		addFileTypes(s.FileTypes).
 		build()
 }
 
 func (s SchemaPayload) toBodyBytes() []byte {
 	body, _ := json.Marshal(s)
+	return body
+}
+
+func (s StationsLastDataPayload) toBodyBytes() []byte {
+	body, _ := json.Marshal(map[string][]string{
+		"stationIds": s.StationIds,
+		"variables":  s.Variables,
+	})
 	return body
 }
 
@@ -205,6 +239,7 @@ func (s StationPayload) toQueryParams() string {
 	return builder.
 		addStationId(s.StationId).
 		addLayer(s.Layer).
+		addTimezone(s.Timezone).
 		addVariables(s.Variables).
 		addStartDate(s.StartDate).
 		addEndDate(s.EndDate).
@@ -239,11 +274,32 @@ func (r RadiusPayload) toQueryParams() string {
 		build()
 }
 
+func (p PmtilesPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addIstep(p.Istep).
+		addFstep(p.Fstep).
+		addTimezone(p.Timezone).
+		addMaxZoom(p.MaxZoom).
+		build()
+}
+
 func (p PlanInfoPayload) toQueryParams() string {
 	builder := queryParamsBuilder{}
 
 	return builder.
 		addTimezone(p.Timezone).
+		build()
+}
+
+func (p PlanLocalePayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addLocaleId(p.LocaleId).
+		addLatLon(p.Latitude, p.Longitude).
+		addStationId(p.StationId).
 		build()
 }
 

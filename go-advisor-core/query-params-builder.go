@@ -56,6 +56,16 @@ func (a *queryParamsBuilder) addVariables(variables []string) *queryParamsBuilde
 	return a
 }
 
+func (a *queryParamsBuilder) addFileTypes(fileTypes []string) *queryParamsBuilder {
+	if len(fileTypes) != 0 {
+		for _, fileType := range fileTypes {
+			a.params = append(a.params, "fileTypes[]="+fileType)
+		}
+	}
+
+	return a
+}
+
 func (a *queryParamsBuilder) addStartDate(startDate string) *queryParamsBuilder {
 	if startDate != "" {
 		a.params = append(a.params, "startDate="+url.QueryEscape(startDate))
@@ -67,6 +77,22 @@ func (a *queryParamsBuilder) addStartDate(startDate string) *queryParamsBuilder 
 func (a *queryParamsBuilder) addEndDate(endDate string) *queryParamsBuilder {
 	if endDate != "" {
 		a.params = append(a.params, "endDate="+url.QueryEscape(endDate))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addIstep(istep string) *queryParamsBuilder {
+	if istep != "" {
+		a.params = append(a.params, "istep="+url.QueryEscape(istep))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addFstep(fstep string) *queryParamsBuilder {
+	if fstep != "" {
+		a.params = append(a.params, "fstep="+url.QueryEscape(fstep))
 	}
 
 	return a
@@ -208,6 +234,14 @@ func (a *queryParamsBuilder) addTitleVariable(titleVariable string) *queryParams
 func (a *queryParamsBuilder) addHours(hours int32) *queryParamsBuilder {
 	if hours > 0 {
 		a.params = append(a.params, fmt.Sprintf("hours=%d", hours))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addMaxZoom(maxZoom uint8) *queryParamsBuilder {
+	if maxZoom > 0 {
+		a.params = append(a.params, fmt.Sprintf("maxZoom=%d", maxZoom))
 	}
 
 	return a

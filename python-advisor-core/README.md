@@ -15,23 +15,28 @@ Advisor Software Development Kit for python.
       - [Forecast](#forecast)
       - [Monitoring](#monitoring)
       - [Observed](#observed)
+      - [Stations](#stations)
       - [Plan Information](#plan-information)
       - [Schema/Parameter](#schemaparameter)
       - [Static Map](#static-map)
       - [Storage](#storage)
       - [Tms (Tiles Map Server)](#tms-tiles-map-server)
+      - [Pmtiles](#pmtiles)
   - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
   - [Payload Types](#payload-types)
     - [WeatherPayload](#weatherpayload)
     - [StationPayload](#stationpayload)
+    - [StationsLastDataPayload](#stationslastdatapayload)
     - [ClimatologyPayload](#climatologypayload)
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
     - [TmsPayload](#tmspayload)
+    - [PmtilesPayload](#pmtilespayload)
     - [PlanInfoPayload](#planinfopayload)
     - [RequestDetailsPayload](#requestdetailspayload)
+    - [PlanLocalePayload](#planlocalepayload)
     - [StorageListPayload](#storagelistpayload)
     - [StorageDownloadPayload](#storagedownloadpayload)
     - [StaticMapPayload](#staticmappayload)
@@ -208,11 +213,29 @@ else:
   print(response['data'])
 ```
 
+#### Stations
+```python
+payload = StationsLastDataPayload(
+  station_ids=["ABC123abc321CBA", "XYZ789xyz987ZYX"], # optional
+  variables=["temperature", "humidity"] # optional
+)
+
+# requesting last observed data for multiple stations
+response = advisor.stations.get_last_data(payload)
+
+if response['error']:
+  print('Error trying to get data!')
+  print(response['error'])
+else:
+  print(response['data'])
+```
+
 #### Storage
 ```python
 payload = StorageListPayload(
   page=1,
-  page_size=10
+  page_size=10,
+  file_types=["pdf", "csv"]
 )
 
 payload_for_download = StorageDownloadPayload(
@@ -254,26 +277,46 @@ else:
 
 #### Plan Information
 ```python
-payload = PlanInfoPayload(
-  timezone=-3
-)
-
-payload_for_details = RequestDetailsPayload(
-  page=1,
-  page_size=10
-)
-
 # requesting plan information
-response = advisor.plan.get_info(payload)
+plan_info_payload = PlanInfoPayload(
+    timezone=-3
+)
+
+plan_info_response = advisor.plan.get_info(plan_info_payload)
+
+if plan_info_response['error']:
+    print('Error trying to get plan information!')
+    print(plan_info_response['error'])
+else:
+    print(plan_info_response['data'])
+
+# requesting locale details
+plan_locale_payload = PlanLocalePayload(
+    locale_id=1234,
+    # You can also set Latitude/Longitude or StationId instead of LocaleId
+)
+
+plan_locale_response = advisor.plan.get_locale(plan_locale_payload)
+
+if plan_locale_response['error']:
+    print('Error trying to get plan locale!')
+    print(plan_locale_response['error'])
+else:
+    print(plan_locale_response['data'])
 
 # requesting access history
-response = advisor.plan.get_request_details(payload_for_details)
+request_details_payload = RequestDetailsPayload(
+    page=1,
+    page_size=10
+)
 
-if response['error']:
-  print('Error trying to get data!')
-  print(response['error'])
+request_details_response = advisor.plan.get_request_details(request_details_payload)
+
+if request_details_response['error']:
+    print('Error trying to get request details!')
+    print(request_details_response['error'])
 else:
-  print(response['data'])
+    print(request_details_response['data'])
 ```
 
 #### Static Map
@@ -367,6 +410,28 @@ else:
     f.write(response["data"])
 ```
 
+#### Pmtiles
+```python
+payload = PmtilesPayload(
+  mode="forecast",
+  model="ct2w15_as",
+  variable="precipitation",
+  aggregation="sum",
+  istep="2026-03-02 00:00:00",
+  fstep="2026-03-02 01:00:00",
+  max_zoom=4,
+)
+
+response = advisor.pmtiles.get(payload)
+
+if response['error']:
+  print('Error trying to get data!')
+  print(response['error'])
+else:
+  with open("response.pmtiles", "wb") as f:
+    f.write(response["data"])
+```
+
 ---
 
 ## Headers Configuration
@@ -432,9 +497,15 @@ All the methods will return the same pattern:
 
 - **station_id**: str
 - **layer**: str
+- **timezone**: int
 - **variables**: List[str]
 - **start_date**: str
 - **end_date**: str
+
+### StationsLastDataPayload
+
+- **station_ids**: List[str]
+- **variables**: List[str]
 
 ### ClimatologyPayload
 
@@ -483,8 +554,25 @@ All the methods will return the same pattern:
 - **fstep**: str
 - **timezone**: int
 
+### PmtilesPayload
+
+- **mode**: str
+- **model**: str
+- **variable**: str
+- **aggregation**: str
+- **istep**: str
+- **fstep**: str
+- **timezone**: int
+- **max_zoom**: int
+
 ### PlanInfoPayload
 - **timezone**: int
+
+### PlanLocalePayload
+- **locale_id**: int
+- **station_id**: str
+- **latitude**: str
+- **longitude**: str
 
 ### RequestDetailsPayload
 
@@ -503,6 +591,7 @@ All the methods will return the same pattern:
 - **end_date**: str
 - **file_name**: str
 - **file_extension**: str
+- **file_types**: List[str]
 
 ### StorageDownloadPayload
 

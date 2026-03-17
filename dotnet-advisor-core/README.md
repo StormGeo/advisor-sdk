@@ -471,6 +471,7 @@ All the methods return AdvisorResponse, this class contains the attributes and m
 
 - **StationId**: string
 - **Layer**: string
+- **Timezone**: int
 - **Variables**: string[]
 - **StartDate**: string
 - **EndDate**: string

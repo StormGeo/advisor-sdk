@@ -210,6 +210,18 @@ class MonitoringAlertsAPI:
         """
         return self.request_handler.make_request("GET", "v1/monitoring/alerts")
 
+class StationsAPI:
+    def __init__(self, request_handler):
+        self.request_handler = request_handler
+
+    def get_last_data(self, payload: StationsLastDataPayload = None):
+        """
+        Fetch last observed data for multiple stations.
+        POST /v1/stations/last-data
+        """
+        json_data = payload.getBody() if payload is not None else {}
+        return self.request_handler.make_request("POST", "v1/stations/last-data", json_data=json_data)
+
 class PlanAPI:
     def __init__(self, request_handler):
         self.request_handler = request_handler
@@ -217,7 +229,7 @@ class PlanAPI:
     def get_info(self, payload=None):
         """
         Fetch plan information.
-        GET /v1/plan/{token}
+        GET /v2/plan
         """
         params = {}
         if payload is not None:
@@ -227,7 +239,7 @@ class PlanAPI:
                 .add_payload(payload.get_params())
                 .build()
             )
-        return self.request_handler.make_request("GET", f"v1/plan/{self.request_handler.token}", params=params)
+        return self.request_handler.make_request("GET", "v2/plan", params=params)
 
     def get_request_details(self, payload: RequestDetailsPayload):
         """
@@ -241,6 +253,19 @@ class PlanAPI:
             .build()
         )
         return self.request_handler.make_request("GET", "v1/plan/request-details", params=params)
+
+    def get_locale(self, payload: PlanLocalePayload):
+        """
+        Fetch locale information linked to the plan.
+        GET /v1/plan/locale
+        """
+        builder = QueryParamsBuilder()
+        params = (
+            builder
+            .add_payload(payload.get_params())
+            .build()
+        )
+        return self.request_handler.make_request("GET", "v1/plan/locale", params=params)
 
 class StorageAPI:
     def __init__(self, request_handler):
@@ -377,6 +402,24 @@ class TmsAPI:
             .build()
         )
         path = f"v1/tms/{payload.server}/{payload.mode}/{payload.variable}/{payload.aggregation}/{payload.x}/{payload.y}/{payload.z}.png"
+        return self.request_handler.make_request("GET", path, params=params)
+
+class PmtilesAPI:
+    def __init__(self, request_handler):
+        self.request_handler = request_handler
+
+    def get(self, payload: PmtilesPayload):
+        """
+        Fetch PMTiles file.
+        GET /v1/pmtiles/{mode}/{model}/{aggregation}/{variable}.pmtiles
+        """
+        builder = QueryParamsBuilder()
+        params = (
+            builder
+            .add_payload(payload.get_params())
+            .build()
+        )
+        path = f"v1/pmtiles/{payload.mode}/{payload.model}/{payload.aggregation}/{payload.variable}.pmtiles"
         return self.request_handler.make_request("GET", path, params=params)
 
 class SchemaAPI:

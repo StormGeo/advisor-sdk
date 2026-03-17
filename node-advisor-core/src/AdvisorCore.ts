@@ -10,8 +10,10 @@ import {
   ForecastRoutes,
   MonitoringRoutes,
   ObservedRoutes,
+  PmtilesRoutes,
   PlanRoutes,
   SchemaRoutes,
+  StationsRoutes,
   StaticMapRoutes,
   StorageRoutes,
   TmsRoutes,
@@ -23,9 +25,11 @@ import {
   ClimatologyPayload,
   CurrentWeatherPayload,
   StationPayload,
+  StationsLastDataPayload,
   GeometryPayload,
   LightningDetailsPayload,
   LightningLitePayload,
+  PmtilesPayload,
   RadiusPayload,
   TmsPayload,
   WeatherPayload,
@@ -34,6 +38,7 @@ import {
   StorageDownloadPayload,
   ApiStreamResponse,
   PlanInfoPayload,
+  PlanLocalePayload,
   StaticMapPayload,
 } from "./payloads"
 
@@ -57,9 +62,16 @@ function sleep(ms: number): Promise<void> {
  * @typedef {Object} StationPayload
  * @property {string} stationId
  * @property {string} layer
+ * @property {number} timezone
  * @property {Array<string>} variables
  * @property {string} startDate
  * @property {string} endDate
+ */
+
+/**
+ * @typedef {Object} StationsLastDataPayload
+ * @property {Array<string>} stationIds
+ * @property {Array<string>} variables
  */
 
 /**
@@ -143,6 +155,7 @@ function sleep(ms: number): Promise<void> {
  * @property {string} endDate
  * @property {string} fileName
  * @property {string} fileExtension
+ * @property {Array<string>} fileTypes
 */
 
 /**
@@ -162,6 +175,22 @@ function sleep(ms: number): Promise<void> {
  * @property {string} z
  * @property {string} istep
  * @property {string} fstep
+ */
+
+/**
+ * @typedef {Object} PmtilesPayload
+ * @property {string} mode
+ * @property {string} model
+ * @property {string} variable
+ * @property {string} aggregation
+ * @property {number} timezone
+ * @property {string} istep
+ * @property {string} fstep
+ * @property {number} maxZoom
+ * @property {string} cmap
+ * @property {string} dynamicElevation
+ * @property {string} dynamicType
+ * @property {string} dynamicVariable
  */
 
 export class AdvisorCore {
@@ -250,7 +279,12 @@ export class AdvisorCore {
         return this.makeRequestFile(method, url, params, data, --retries)
       }
 
-      return { data: null, error: error?.response?.data ?? error }
+      let responseData = error?.response?.data ?? error
+      if (responseData instanceof Buffer) {
+        responseData = this.bufferToJson(responseData)
+      }
+
+      return { data: null, error: responseData }
     }
   }
 
@@ -295,6 +329,16 @@ export class AdvisorCore {
     return JSON.parse(content)
   }
 
+  private bufferToJson(data: Buffer): Record<any, any> {
+    const bufferString = data.toString()
+
+    try {
+      return JSON.parse(bufferString)
+    } catch {
+      return { error: { message: bufferString } }
+    }
+  }
+
   setHeaderAccept(value: string): void {
     this.headers.Accept = value
   }
@@ -332,7 +376,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getObservedDaily: async (payload: WeatherPayload): Promise<ApiFileResponse> => {
-      return this.makeRequestFile("GET", "v1/forecast/daily/chart", payload)
+      return this.makeRequestFile("GET", "v1/observed/daily/chart", payload)
     },
     /**
      * Fetch hourly observed weather chart.
@@ -341,7 +385,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getObservedHourly: async (payload: WeatherPayload): Promise<ApiFileResponse> => {
-      return this.makeRequestFile("GET", "v1/forecast/hourly/chart", payload)
+      return this.makeRequestFile("GET", "v1/observed/hourly/chart", payload)
     },
   }
 
@@ -389,7 +433,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getDaily: async (payload: WeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/forecast/daily", payload)
+      return this.makeRequest("GET", "v1/observed/daily", payload)
     },
     /**
      * Fetch hourly observed weather.
@@ -398,7 +442,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getHourly: async (payload: WeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/forecast/hourly", payload)
+      return this.makeRequest("GET", "v1/observed/hourly", payload)
     },
     /**
      * Fetch period observed weather.
@@ -407,7 +451,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getPeriod: async (payload: WeatherPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", "v1/forecast/period", payload)
+      return this.makeRequest("GET", "v1/observed/period", payload)
     },
     /**
      * Fetch station observed data.
@@ -531,17 +575,32 @@ export class AdvisorCore {
   }
 
   /**
+   * Fetch stations data.
+   */
+  stations: StationsRoutes = {
+    /**
+     * Fetch last observed data for multiple stations.
+     * POST /v1/stations/last-data
+     * @param {StationsLastDataPayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    getLastData: async (payload?: StationsLastDataPayload): Promise<ApiResponse> => {
+      return this.makeRequest("POST", "v1/stations/last-data", {}, payload ?? {})
+    },
+  }
+
+  /**
    * Fetch plan information.
    */
   plan: PlanRoutes = {
     /**
      * Fetch plan information.
-     * GET /v1/plan/{token}
+     * GET /v2/plan
      * @param {PlanInfoPayload} payload
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     getInfo: async (payload: PlanInfoPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", `v1/plan/${this.token}`, payload)
+      return this.makeRequest("GET", "v2/plan", payload)
     },
     /**
      * Get request history of a plan
@@ -551,6 +610,15 @@ export class AdvisorCore {
      */
     getRequestDetails: async (payload: RequestDetailsPayload): Promise<ApiResponse> => {
       return this.makeRequest("GET", 'v1/plan/request-details', payload)
+    },
+    /**
+     * Fetch locale information associated with a plan.
+     * GET /v1/plan/locale
+     * @param {PlanLocalePayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    getLocale: async (payload: PlanLocalePayload): Promise<ApiResponse> => {
+      return this.makeRequest("GET", 'v1/plan/locale', payload)
     }
   }
 
@@ -619,6 +687,31 @@ export class AdvisorCore {
   }
 
   /**
+   * Fetch pmtiles service.
+   */
+  pmtiles: PmtilesRoutes = {
+    /**
+     * Fetch PMTiles file.
+     * GET /v1/pmtiles/{mode}/{model}/{aggregation}/{variable}.pmtiles
+     * @param {PmtilesPayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    get: async (payload: PmtilesPayload): Promise<ApiFileResponse> => {
+      const path = `v1/pmtiles/${payload.mode}/${payload.model}/${payload.aggregation}/${payload.variable}.pmtiles`
+      return this.makeRequestFile("GET", path, {
+        timezone: payload.timezone,
+        istep: payload.istep,
+        fstep: payload.fstep,
+        maxZoom: payload.maxZoom,
+        cmap: payload.cmap,
+        dynamicElevation: payload.dynamicElevation,
+        dynamicType: payload.dynamicType,
+        dynamicVariable: payload.dynamicVariable,
+      })
+    },
+  }
+
+  /**
    * List and Download bucket files.
    */
   storage: StorageRoutes = {
@@ -629,7 +722,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     listFiles: async (payload: StorageListPayload): Promise<ApiResponse> => {
-      return this.makeRequest("GET", '/v1/storage/list', payload)
+      return this.makeRequest("GET", 'v1/storage/list', payload)
     },
     /**
      * Download a file.
@@ -638,7 +731,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     downloadFile: async ({ fileName, ...rest }: StorageDownloadPayload): Promise<ApiFileResponse> => {
-      return this.makeRequestFile("GET", `/v1/storage/download/${fileName}`, rest)
+      return this.makeRequestFile("GET", `v1/storage/download/${fileName}`, rest)
     },
     /**
      * Download a file by stream.
@@ -647,7 +740,7 @@ export class AdvisorCore {
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
     downloadFileByStream: async ({ fileName, ...rest }: StorageDownloadPayload): Promise<ApiStreamResponse> => {
-      return this.makeRequestFileByStream("GET", `/v1/storage/download/${fileName}`, rest)
+      return this.makeRequestFileByStream("GET", `v1/storage/download/${fileName}`, rest)
     },
   }
 }

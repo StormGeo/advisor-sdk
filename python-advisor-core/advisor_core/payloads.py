@@ -143,6 +143,7 @@ class StationPayload:
         self,
         station_id: str = None,
         layer: str = None,
+        timezone: int = None,
         variables: List[str] = None,
         start_date: str = None,
         end_date: str = None,
@@ -152,6 +153,7 @@ class StationPayload:
         """
         self.station_id = station_id 
         self.layer = layer
+        self.timezone = timezone
         self.variables = variables
         self.start_date = start_date
         self.end_date = end_date
@@ -163,10 +165,34 @@ class StationPayload:
         return {
             "stationId": self.station_id,
             "layer": self.layer,
+            "timezone": self.timezone,
             "variables[]": self.variables,
             "startDate": self.start_date,
             "endDate": self.end_date,
         }
+
+class StationsLastDataPayload:
+    def __init__(
+        self,
+        station_ids: List[str] = None,
+        variables: List[str] = None,
+    ):
+        """
+        Initializes the StationsLastDataPayload object with optional parameters.
+        """
+        self.station_ids = station_ids
+        self.variables = variables
+
+    def getBody(self) -> dict:
+        """
+        Returns the body of the request as a dictionary for API requests.
+        """
+        body = {}
+        if self.station_ids is not None:
+            body["stationIds"] = self.station_ids
+        if self.variables is not None:
+            body["variables"] = self.variables
+        return body
 
 class GeometryPayload:
     def __init__(
@@ -240,6 +266,41 @@ class TmsPayload:
             "timezone": self.timezone,
         }
 
+class PmtilesPayload:
+    def __init__(
+        self,
+        mode: str = None,
+        model: str = None,
+        variable: str = None,
+        aggregation: str = None,
+        istep: str = None,
+        fstep: str = None,
+        timezone: int = None,
+        max_zoom: int = None,
+    ):
+        """
+        Initializes the PmtilesPayload object with optional parameters.
+        """
+        self.mode = mode
+        self.model = model
+        self.variable = variable
+        self.aggregation = aggregation
+        self.istep = istep
+        self.fstep = fstep
+        self.timezone = timezone
+        self.max_zoom = max_zoom
+
+    def get_params(self) -> dict:
+        """
+        Returns the parameters as a dictionary for API requests.
+        """
+        return {
+            "istep": self.istep,
+            "fstep": self.fstep,
+            "timezone": self.timezone,
+            "maxZoom": self.max_zoom,
+        }
+
 class PlanInfoPayload:
     def __init__(
         self,
@@ -256,6 +317,34 @@ class PlanInfoPayload:
         """
         return {
             "timezone": self.timezone,
+        }
+
+class PlanLocalePayload:
+    def __init__(
+        self,
+        locale_id: int = None,
+        station_id: str = None,
+        latitude: str = None,
+        longitude: str = None,
+    ):
+        """
+        Initializes the PlanLocalePayload with required locale information.
+        Optional parameters allow filtering by station or coordinates.
+        """
+        self.locale_id = locale_id
+        self.station_id = station_id
+        self.latitude = latitude
+        self.longitude = longitude
+
+    def get_params(self) -> dict:
+        """
+        Returns the parameters as a dictionary for API requests.
+        """
+        return {
+            "localeId": self.locale_id,
+            "stationId": self.station_id,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
         }
 
 class RequestDetailsPayload:
@@ -300,6 +389,7 @@ class StorageListPayload:
         end_date: str = None,
         file_name: str = None,
         file_extension: str = None,
+        file_types: List[str] = None,
     ):
         """
         Initializes the StorageListPayload with optional parameters.
@@ -310,6 +400,7 @@ class StorageListPayload:
         self.end_date = end_date
         self.file_name = file_name
         self.file_extension = file_extension
+        self.file_types = file_types
 
     def get_params(self) -> dict:
         """
@@ -322,6 +413,7 @@ class StorageListPayload:
             "endDate": self.end_date,
             "fileName": self.file_name,
             "fileExtension": self.file_extension,
+            "fileTypes[]": self.file_types,
         }
 
 class StorageDownloadPayload:
