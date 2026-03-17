@@ -29,6 +29,8 @@ Advisor Software Development Kit for nodeJS.
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
+    - [LightningDetailsPayload](#lightningdetailspayload)
+    - [LightningLitePayload](#lightninglitepayload)
     - [TmsPayload](#tmspayload)
     - [PlanInfoPayload](#planinfopayload)
     - [RequestDetailsPayload](#requestdetailspayload)
@@ -192,6 +194,8 @@ let response = await advisor.observed.getStationData(stationPayload)
 
 const radiusPayload = {
   localeId: 1234,
+  startDate: '2025-07-01 00:00:00',
+  endDate: '2025-07-05 23:59:59',
   radius: 100,
 }
 
@@ -200,6 +204,17 @@ let response = await advisor.observed.getFireFocus(radiusPayload)
 
 // requesting lightning observed data
 let response = await advisor.observed.getLightning(radiusPayload)
+
+const lightningDetailsPayload = {
+  latitude: -22.90,
+  longitude: -43.20,
+  startDate: '2025-07-01 00:00:00',
+  endDate: '2025-07-05 23:59:59',
+  radius: 100,
+}
+
+// requesting lightning observed details data
+let response = await advisor.observed.getLightningDetails(lightningDetailsPayload)
 
 const geometryPayload = {
   geometry: "{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
@@ -211,6 +226,18 @@ let response = await advisor.observed.getFireFocusByGeometry(geometryPayload)
 
 // requesting lightning observed data by geometry
 let response = await advisor.observed.getLightningByGeometry(geometryPayload)
+
+const lightningLitePayload = {
+  geometry: "{\"type\": \"Polygon\", \"coordinates\": [[[-41.90, -22.80], [-41.80, -22.80], [-41.80, -22.70], [-41.90, -22.70], [-41.90, -22.80]]]}",
+  startDate: '2025-07-01 00:00:00',
+  endDate: '2025-07-05 23:59:59',
+  radius: 100,
+  page: 1,
+  pageSize: 50,
+}
+
+// requesting lightning lite observed data by geometry
+let response = await advisor.observed.getLightningLite(lightningLitePayload)
 
 if (response.error) {
   console.log(response.error)
@@ -485,6 +512,26 @@ All the methods returns the same pattern:
 - **endDate**: string
 - **radius**: number
 - **geometry**: string
+
+### LightningDetailsPayload
+
+- **localeId**: string
+- **latitude**: number
+- **longitude**: number
+- **startDate**: string
+- **endDate**: string
+- **radius**: number
+- **sources**: string[]
+
+### LightningLitePayload
+
+- **startDate**: string
+- **endDate**: string
+- **radius**: number
+- **geometry**: string
+- **page**: number
+- **pageSize**: number
+- **sources**: string[]
 
 ### StaticMapPayload
 
