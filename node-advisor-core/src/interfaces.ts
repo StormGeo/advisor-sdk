@@ -3,7 +3,6 @@ import {
   ClimatologyPayload,
   CurrentWeatherPayload,
   GeometryPayload,
-  LightningDetailsPayload,
   LightningLitePayload,
   PmtilesPayload,
   StationPayload,
@@ -82,17 +81,6 @@ import {
  * @property {string} endDate
  * @property {number} radius
  * @property {string} geometry
- */
-
-/**
- * @typedef {Object} LightningDetailsPayload
- * @property {number} localeId
- * @property {number} latitude
- * @property {number} longitude
- * @property {string} startDate
- * @property {string} endDate
- * @property {number} radius
- * @property {Array<string>} sources
  */
 
 /**
@@ -292,7 +280,7 @@ export interface ObservedRoutes {
    * @param {LightningDetailsPayload} payload
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
-  getLightningDetails: (payload: LightningDetailsPayload) => Promise<ApiResponse>
+  getLightningDetails: (payload: RadiusPayload) => Promise<ApiResponse>
   /**
    * Fetch observed lightning by geometry.
    * POST /v1/observed/lightning

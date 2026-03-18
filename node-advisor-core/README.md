@@ -32,7 +32,6 @@ Advisor Software Development Kit for nodeJS.
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
-    - [LightningDetailsPayload](#lightningdetailspayload)
     - [LightningLitePayload](#lightninglitepayload)
     - [TmsPayload](#tmspayload)
     - [PmtilesPayload](#pmtilespayload)
@@ -592,16 +591,6 @@ All the methods returns the same pattern:
 - **endDate**: string
 - **radius**: number
 - **geometry**: string
-
-### LightningDetailsPayload
-
-- **localeId**: string
-- **latitude**: number
-- **longitude**: number
-- **startDate**: string
-- **endDate**: string
-- **radius**: number
-- **sources**: string[]
 
 ### LightningLitePayload
 

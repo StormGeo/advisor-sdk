@@ -27,7 +27,6 @@ import {
   StationPayload,
   StationsLastDataPayload,
   GeometryPayload,
-  LightningDetailsPayload,
   LightningLitePayload,
   PmtilesPayload,
   RadiusPayload,
@@ -108,17 +107,6 @@ function sleep(ms: number): Promise<void> {
  * @property {string} endDate
  * @property {number} radius
  * @property {string} geometry
- */
-
-/**
- * @typedef {Object} LightningDetailsPayload
- * @property {number} localeId
- * @property {number} latitude
- * @property {number} longitude
- * @property {string} startDate
- * @property {string} endDate
- * @property {number} radius
- * @property {Array<string>} sources
  */
 
 /**
@@ -474,10 +462,10 @@ export class AdvisorCore {
     /**
      * Fetch observed lightning details.
      * GET /v1/observed/lightning/details
-     * @param {LightningDetailsPayload} payload
+     * @param {RadiusPayload} payload
      * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
      */
-    getLightningDetails: async (payload: LightningDetailsPayload): Promise<ApiResponse> => {
+    getLightningDetails: async (payload: RadiusPayload): Promise<ApiResponse> => {
       return this.makeRequest("GET", "v1/observed/lightning/details", payload)
     },
     /**
