@@ -27,6 +27,7 @@ import {
   StationPayload,
   StationsLastDataPayload,
   GeometryPayload,
+  LightningLitePayload,
   PmtilesPayload,
   RadiusPayload,
   TmsPayload,
@@ -106,6 +107,17 @@ function sleep(ms: number): Promise<void> {
  * @property {string} endDate
  * @property {number} radius
  * @property {string} geometry
+ */
+
+/**
+ * @typedef {Object} LightningLitePayload
+ * @property {string} startDate
+ * @property {string} endDate
+ * @property {number} radius
+ * @property {string} geometry
+ * @property {number} page
+ * @property {number} pageSize
+ * @property {Array<string>} sources
  */
 
 /**
@@ -448,6 +460,15 @@ export class AdvisorCore {
       return this.makeRequest("GET", "v1/observed/lightning", payload)
     },
     /**
+     * Fetch observed lightning details.
+     * GET /v1/observed/lightning/details
+     * @param {RadiusPayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    getLightningDetails: async (payload: RadiusPayload): Promise<ApiResponse> => {
+      return this.makeRequest("GET", "v1/observed/lightning/details", payload)
+    },
+    /**
      * Fetch observed lightning by geometry.
      * POST /v1/observed/lightning
      * @param {GeometryPayload} payload
@@ -456,6 +477,16 @@ export class AdvisorCore {
     getLightningByGeometry: async (payload: GeometryPayload): Promise<ApiResponse> => {
       const { geometry, ...restData } = payload
       return this.makeRequest("POST", "v1/observed/lightning", restData, { geometry })
+    },
+    /**
+     * Fetch observed lightning lite by geometry.
+     * POST /v1/observed/lightning/lite
+     * @param {LightningLitePayload} payload
+     * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+     */
+    getLightningLite: async (payload: LightningLitePayload): Promise<ApiResponse> => {
+      const { geometry, ...restData } = payload
+      return this.makeRequest("POST", "v1/observed/lightning/lite", restData, { geometry })
     },
     /**
      * Fetch observed fire focus bu geometry.

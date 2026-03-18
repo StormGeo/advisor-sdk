@@ -3,6 +3,7 @@ import {
   ClimatologyPayload,
   CurrentWeatherPayload,
   GeometryPayload,
+  LightningLitePayload,
   PmtilesPayload,
   StationPayload,
   StationsLastDataPayload,
@@ -80,6 +81,17 @@ import {
  * @property {string} endDate
  * @property {number} radius
  * @property {string} geometry
+ */
+
+/**
+ * @typedef {Object} LightningLitePayload
+ * @property {string} startDate
+ * @property {string} endDate
+ * @property {number} radius
+ * @property {string} geometry
+ * @property {number} page
+ * @property {number} pageSize
+ * @property {Array<string>} sources
  */
 
 /**
@@ -263,12 +275,26 @@ export interface ObservedRoutes {
    */
   getLightning: (payload: RadiusPayload) => Promise<ApiResponse>
   /**
+   * Fetch observed lightning details.
+   * GET /v1/observed/lightning/details
+   * @param {LightningDetailsPayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  getLightningDetails: (payload: RadiusPayload) => Promise<ApiResponse>
+  /**
    * Fetch observed lightning by geometry.
    * POST /v1/observed/lightning
    * @param {GeometryPayload} payload
    * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
    */
   getLightningByGeometry: (payload: GeometryPayload) => Promise<ApiResponse>
+  /**
+   * Fetch observed lightning lite by geometry.
+   * POST /v1/observed/lightning/lite
+   * @param {LightningLitePayload} payload
+   * @returns {Promise<{data: Object|null, error: Object|null}>} API response.
+   */
+  getLightningLite: (payload: LightningLitePayload) => Promise<ApiResponse>
   /**
    * Fetch observed fire focus bu geometry.
    * GET /v1/observed/fire-focus

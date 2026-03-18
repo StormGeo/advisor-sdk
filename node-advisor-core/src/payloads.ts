@@ -58,6 +58,12 @@ export interface GeometryPayload {
   geometry?: string
 }
 
+export interface LightningLitePayload extends GeometryPayload {
+  page?: number
+  pageSize?: number
+  sources?: string[]
+}
+
 export interface StaticMapPayload {
   startDate?: string
   endDate?: string
