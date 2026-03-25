@@ -277,6 +277,10 @@ class PmtilesPayload:
         fstep: str = None,
         timezone: int = None,
         max_zoom: int = None,
+        cmap: str = None,
+        dynamic_elevation: str = None,
+        dynamic_type: str = None,
+        dynamic_variable: str = None,
     ):
         """
         Initializes the PmtilesPayload object with optional parameters.
@@ -289,6 +293,10 @@ class PmtilesPayload:
         self.fstep = fstep
         self.timezone = timezone
         self.max_zoom = max_zoom
+        self.cmap = cmap
+        self.dynamic_elevation = dynamic_elevation
+        self.dynamic_type = dynamic_type
+        self.dynamic_variable = dynamic_variable
 
     def get_params(self) -> dict:
         """
@@ -299,6 +307,10 @@ class PmtilesPayload:
             "fstep": self.fstep,
             "timezone": self.timezone,
             "maxZoom": self.max_zoom,
+            "cmap": self.cmap,
+            "dynamicElevation": self.dynamic_elevation,
+            "dynamicType": self.dynamic_type,
+            "dynamicVariable": self.dynamic_variable,
         }
 
 class PlanInfoPayload:

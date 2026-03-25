@@ -247,6 +247,38 @@ func (a *queryParamsBuilder) addMaxZoom(maxZoom uint8) *queryParamsBuilder {
 	return a
 }
 
+func (a *queryParamsBuilder) addCmap(cmap string) *queryParamsBuilder {
+	if cmap != "" {
+		a.params = append(a.params, "cmap="+url.QueryEscape(cmap))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addDynamicElevation(dynamicElevation string) *queryParamsBuilder {
+	if dynamicElevation != "" {
+		a.params = append(a.params, "dynamicElevation="+url.QueryEscape(dynamicElevation))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addDynamicType(dynamicType string) *queryParamsBuilder {
+	if dynamicType != "" {
+		a.params = append(a.params, "dynamicType="+url.QueryEscape(dynamicType))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addDynamicVariable(dynamicVariable string) *queryParamsBuilder {
+	if dynamicVariable != "" {
+		a.params = append(a.params, "dynamicVariable="+url.QueryEscape(dynamicVariable))
+	}
+
+	return a
+}
+
 func (a queryParamsBuilder) build() string {
 	return strings.Join(a.params, "&")
 }

@@ -624,6 +624,10 @@ All the methods returns two parameters data and error:
 - **Fstep**: string
 - **Timezone**: int8
 - **MaxZoom**: uint8
+- **Cmap**: string
+- **DynamicElevation**: string
+- **DynamicType**: string
+- **DynamicVariable**: string
 
 ### StaticMapPayload
 

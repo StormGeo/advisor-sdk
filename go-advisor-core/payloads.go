@@ -102,14 +102,18 @@ type TmsPayload struct {
 }
 
 type PmtilesPayload struct {
-	Istep       string
-	Fstep       string
-	Mode        string
-	Model       string
-	Variable    string
-	Aggregation string
-	Timezone    int8
-	MaxZoom     uint8
+	Istep            string
+	Fstep            string
+	Mode             string
+	Model            string
+	Variable         string
+	Aggregation      string
+	Timezone         int8
+	MaxZoom          uint8
+	Cmap             string
+	DynamicElevation string
+	DynamicType      string
+	DynamicVariable  string
 }
 
 type WeatherPayload struct {
@@ -282,6 +286,10 @@ func (p PmtilesPayload) toQueryParams() string {
 		addFstep(p.Fstep).
 		addTimezone(p.Timezone).
 		addMaxZoom(p.MaxZoom).
+		addCmap(p.Cmap).
+		addDynamicElevation(p.DynamicElevation).
+		addDynamicType(p.DynamicType).
+		addDynamicVariable(p.DynamicVariable).
 		build()
 }
 
