@@ -228,6 +228,49 @@ class GeometryPayload:
             "geometry": self.geometry,
         }
 
+class LightningLitePayload:
+    def __init__(
+        self,
+        radius: int = None,
+        start_date: str = None,
+        end_date: str = None,
+        geometry: str = None,
+        page: int = None,
+        page_size: int = None,
+        sources: List[str] = None,
+    ):
+        """
+        Initializes the LightningLitePayload object with optional parameters.
+        """
+        self.radius = radius
+        self.start_date = start_date
+        self.end_date = end_date
+        self.geometry = geometry
+        self.page = page
+        self.page_size = page_size
+        self.sources = sources
+
+    def get_params(self) -> dict:
+        """
+        Returns the parameters as a dictionary for API requests.
+        """
+        return {
+            "radius": self.radius,
+            "startDate": self.start_date,
+            "endDate": self.end_date,
+            "page": self.page,
+            "pageSize": self.page_size,
+            "sources": self.sources
+        }
+
+    def getBody(self) -> dict:
+        """
+        Returns the body of the request with the geometry information.
+        """
+        return {
+            "geometry": self.geometry,
+        }
+
 class TmsPayload:
     def __init__(
         self,

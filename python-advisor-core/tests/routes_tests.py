@@ -6,6 +6,7 @@ from advisor_core import (
     ClimatologyPayload,
     CurrentWeatherPayload,
     GeometryPayload,
+    LightningLitePayload,
     PlanInfoPayload,
     PlanLocalePayload,
     PmtilesPayload,
@@ -28,8 +29,8 @@ DEFAULT_GEOMETRY = (
     '[-47.09861059094109,-23.895097240590488],[-46.12890390857018,-23.895097240590488],'
     '[-46.12890390857018,-23.280351816702165],[-47.09861059094109,-23.280351816702165]]]}'
 )
-DEFAULT_STORAGE_FILE_NAME = "Boletim_Nexar_Agro_-_Regiao_Sul-30_04_2025_15_26.pdf"
-DEFAULT_STORAGE_ACCESS_KEY = "27b1ff73708261bf0ab90f4779b1e0b21ce56a9e-1746037569388"
+DEFAULT_STORAGE_FILE_NAME = "Boletim_Meteorologico_-_Andre_Alves-22_03_2026_07_02.pdf"
+DEFAULT_STORAGE_ACCESS_KEY = "ad441946268c2227a96ad254fafe71565acd02e2-1774173734244"
 
 def _assert_json_success(response):
     assert response["error"] is None, response["error"]
@@ -102,6 +103,17 @@ def geometry_payload(observed_day):
         start_date=_start_of_day(observed_day),
         end_date=_end_of_day(observed_day),
         radius=10000,
+    )
+
+@pytest.fixture(scope="session")
+def lightning_lite_payload(observed_day):
+    return LightningLitePayload(
+        geometry=DEFAULT_GEOMETRY,
+        start_date=_start_of_day(observed_day),
+        end_date=_end_of_day(observed_day),
+        radius=10000,
+        page=1,
+        page_size=10
     )
 
 @pytest.fixture(scope="session")
@@ -213,7 +225,7 @@ def test_observed_station_data(advisor, station_payload):
     response = advisor.observed.get_station_data(station_payload)
     _assert_json_success(response)
 
-@pytest.mark.parametrize("method_name", ["get_fire_focus", "get_lightning"])
+@pytest.mark.parametrize("method_name", ["get_fire_focus", "get_lightning", "get_lightning_details"])
 def test_observed_radius_routes(advisor, radius_payload, method_name):
     response = getattr(advisor.observed, method_name)(radius_payload)
     _assert_json_success(response)
@@ -224,6 +236,10 @@ def test_observed_radius_routes(advisor, radius_payload, method_name):
 )
 def test_observed_geometry_routes(advisor, geometry_payload, method_name):
     response = getattr(advisor.observed, method_name)(geometry_payload)
+    _assert_json_success(response)
+
+def test_observed_lightning_lite(advisor, lightning_lite_payload):
+    response = advisor.observed.get_lightning_lite(lightning_lite_payload)
     _assert_json_success(response)
 
 def test_current_weather(advisor, current_weather_payload):
