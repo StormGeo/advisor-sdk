@@ -20,12 +20,13 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test:integration": "tsc -p tsconfig.test.json && node --test dist/test/routes.integration.test.js"
   },
   "keywords": [],
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
-    "@types/node": "^22.19.15",
+    "@types/node": "^22.19.17",
     "typescript": "^5.7.2"
   },
   "dependencies": {
