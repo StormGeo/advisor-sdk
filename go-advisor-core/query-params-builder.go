@@ -56,6 +56,16 @@ func (a *queryParamsBuilder) addVariables(variables []string) *queryParamsBuilde
 	return a
 }
 
+func (a *queryParamsBuilder) addSources(sources []string) *queryParamsBuilder {
+	if len(sources) != 0 {
+		for _, source := range sources {
+			a.params = append(a.params, "sources[]="+source)
+		}
+	}
+
+	return a
+}
+
 func (a *queryParamsBuilder) addFileTypes(fileTypes []string) *queryParamsBuilder {
 	if len(fileTypes) != 0 {
 		for _, fileType := range fileTypes {

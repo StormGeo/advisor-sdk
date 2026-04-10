@@ -30,6 +30,16 @@ type GeometryPayload struct {
 	Geometry  string
 }
 
+type LightningLitePayload struct {
+	StartDate string
+	EndDate   string
+	Radius    uint32
+	Geometry  string
+	Page      uint32
+	PageSize  uint32
+	Sources   []string
+}
+
 type StorageDownloadPayload struct {
 	FileName  string
 	AccessKey string
@@ -195,6 +205,27 @@ func (g GeometryPayload) toQueryParams() string {
 }
 
 func (g GeometryPayload) toBodyBytes() []byte {
+	body, _ := json.Marshal(map[string]string{
+		"geometry": g.Geometry,
+	})
+
+	return body
+}
+
+func (g LightningLitePayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addStartDate(g.StartDate).
+		addEndDate(g.EndDate).
+		addRadius(g.Radius).
+		addPage(g.Page).
+		addPageSize(g.PageSize).
+		addSources(g.Sources).
+		build()
+}
+
+func (g LightningLitePayload) toBodyBytes() []byte {
 	body, _ := json.Marshal(map[string]string{
 		"geometry": g.Geometry,
 	})

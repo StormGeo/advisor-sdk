@@ -7,6 +7,7 @@ type RequestWithWeatherPayload func(WeatherPayload) (AdvisorResponse, error)
 type RequestWithClimatologyPayload func(ClimatologyPayload) (AdvisorResponse, error)
 type RequestWithCurrentWeatherPayload func(CurrentWeatherPayload) (AdvisorResponse, error)
 type RequestWithGeometryPayload func(GeometryPayload) (AdvisorResponse, error)
+type RequestWithLightningLitePayload func(LightningLitePayload) (AdvisorResponse, error)
 type RequestWithSchemaPayload func(SchemaPayload) (AdvisorResponse, error)
 type RequestWithStationPayload func(StationPayload) (AdvisorResponse, error)
 type RequestWithStationsLastDataPayload func(StationsLastDataPayload) (AdvisorResponse, error)
@@ -62,7 +63,9 @@ type observed struct {
 	GetHourly              RequestWithWeatherPayload
 	GetPeriod              RequestWithWeatherPayload
 	GetLightning           RequestWithRadiusPayload
+	GetLightningDetails    RequestWithRadiusPayload
 	GetLightningByGeometry RequestWithGeometryPayload
+	GetLightningLite       RequestWithLightningLitePayload
 	GetFireFocus           RequestWithRadiusPayload
 	GetFireFocusByGeometry RequestWithGeometryPayload
 	GetStationData         RequestWithStationPayload

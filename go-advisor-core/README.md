@@ -33,6 +33,7 @@ Advisor Software Development Kit for Go.
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
+    - [LightningLitePayload](#lightninglitepayload)
     - [TmsPayload](#tmspayload)
     - [PmtilesPayload](#pmtilespayload)
     - [StaticMapPayload](#staticmappayload)
@@ -240,11 +241,22 @@ resp, respErr := advisor.Observed.GetFireFocus(radiusPayload)
 // requesting lightning observed data
 resp, respErr := advisor.Observed.GetLightning(radiusPayload)
 
+// requesting lightning observed details data
+resp, respErr := advisor.Observed.GetLightningDetails(radiusPayload)
+
 
 geometryPayload := sdk.GeometryPayload{
   StartDate: "2024-11-28 00:00:00",
   EndDate:   "2024-11-28 23:59:59",
   Geometry:  "{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
+}
+
+lightningLitePayload := sdk.LightningLitePayload{
+  StartDate: "2024-11-28 00:00:00",
+  EndDate:   "2024-11-28 23:59:59",
+  Geometry:  "{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
+  Page:      1,
+  PageSize:  10,
 }
 
 // requesting fire-focus observed data by geometry
@@ -253,9 +265,12 @@ resp, respErr := advisor.Observed.GetFireFocusByGeometry(geometryPayload)
 // requesting lightning observed data by geometry
 resp, respErr := advisor.Observed.GetLightningByGeometry(geometryPayload)
 
+// requesting lightning lite observed data by geometry
+resp, respErr := advisor.Observed.GetLightningLite(lightningLitePayload)
+
 if respErr != nil {
-  fmt.Println(respErr)
-  fmt.Println("Error trying to get data!")
+	fmt.Println(respErr)
+	fmt.Println("Error trying to get data!")
 } else {
   fmt.Println(resp)
 }
@@ -600,6 +615,16 @@ All the methods returns two parameters data and error:
 - **EndDate**: string
 - **Radius**: uint32
 - **Geometry**: string
+
+### LightningLitePayload
+
+- **StartDate**: string
+- **EndDate**: string
+- **Radius**: uint32
+- **Geometry**: string
+- **Page**: uint32
+- **PageSize**: uint32
+- **Sources**: []string
 
 ### TmsPayload
 
