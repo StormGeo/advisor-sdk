@@ -29,6 +29,7 @@ Advisor Software Development Kit for .NET.
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
+    - [LightningLitePayload](#lightninglitepayload)
     - [PlanInfoPayload](#planinfopayload)
     - [PmtilesPayload](#pmtilespayload)
     - [RequestDetailsPayload](#requestdetailspayload)
@@ -249,10 +250,22 @@ var response = await sdk.Observed.GetFireFocusAsync(radiusPayload);
 // requesting lightning observed data
 var response = await sdk.Observed.GetLightningAsync(radiusPayload);
 
+// requesting lightning observed details data
+var response = await sdk.Observed.GetLightningDetailsAsync(radiusPayload);
+
 var geometryPayload = new GeometryPayload() {
     StartDate = "2024-11-28 00:00:00",
     EndDate = "2024-11-28 23:59:59",
     Geometry = "{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
+};
+
+var lightningLitePayload = new LightningLitePayload() {
+    StartDate = "2024-11-28 00:00:00",
+    EndDate = "2024-11-28 23:59:59",
+    Geometry = "{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
+    Page = 1,
+    PageSize = 10,
+    Sources = ["earthNetworks"],
 };
 
 // requesting fire-focus observed data by geometry
@@ -260,6 +273,9 @@ var response = await sdk.Observed.GetFireFocusByGeometryAsync(geometryPayload);
 
 // requesting lightning observed data by geometry
 var response = await sdk.Observed.GetLightningByGeometryAsync(geometryPayload);
+
+// requesting lightning lite observed data by geometry
+var response = await sdk.Observed.GetLightningLiteAsync(lightningLitePayload);
 
 if (response.Error == null && response.Data != null)
 {
@@ -542,6 +558,16 @@ All the methods return AdvisorResponse, this class contains the attributes and m
 - **EndDate**: string
 - **Radius**: int
 - **Geometry**: string
+
+### LightningLitePayload
+
+- **StartDate**: string
+- **EndDate**: string
+- **Radius**: int
+- **Geometry**: string
+- **Page**: int
+- **PageSize**: int
+- **Sources**: string[]
 
 ### PlanInfoPayload
 - **Timezone**: int? (Optional, default is null)
