@@ -4,7 +4,7 @@ node_modules/
 
 # python
 python-advisor-core/advisor_core/__pycache__
-python-advisor-core/runner.py
+python-advisor-core/tests/__pycache__
 
 # go
 main.go
@@ -15,3 +15,9 @@ advisor-sdk.sln
 dotnet-advisor-core/obj/
 dotnet-advisor-core/bin/
 dotnet-advisor-core/*.json
+dotnet-advisor-core.Tests/obj/
+dotnet-advisor-core.Tests/bin/
+
+# integration test env
+.env.integration.local
+.env*.local
