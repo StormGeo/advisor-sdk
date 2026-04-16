@@ -21,7 +21,7 @@ public class PmtilesPayload
             .AddParamIfValueIsNotNull("istep", Istep)
             .AddParamIfValueIsNotNull("fstep", Fstep)
             .AddTimezone(Timezone)
-            .AddParamIfValueIsNotNull("maxZoom", MaxZoom?.ToString())
+            .AddParamIfValueIsNotNull("maxZoom", MaxZoom.ToString())
             .AddParamIfValueIsNotNull("cmap", Cmap)
             .AddParamIfValueIsNotNull("dynamicElevation", DynamicElevation)
             .AddParamIfValueIsNotNull("dynamicType", DynamicType)
