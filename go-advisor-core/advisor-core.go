@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-const BASE_URL = "http://advisor-core.climatempo.io/api"
+const BASE_URL = "https://advisor-core.climatempo.io/api"
 
 type AdvisorCoreConfig struct {
 	Token     string
@@ -353,9 +353,8 @@ func makeGetWithListFilesPayload(route string, config AdvisorCoreConfig, header 
 
 func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest {
 	return func(payload TmsPayload) (imageBody io.ReadCloser, err error) {
-		url := fmt.Sprintf(
-			"%s/v1/tms/%s/%s/%s/%s/%d/%d/%d.png?istep=%s&fstep=%s&timezone=%d",
-			BASE_URL,
+		route := fmt.Sprintf(
+			"/v1/tms/%s/%s/%s/%s/%d/%d/%d.png",
 			payload.Server,
 			payload.Mode,
 			payload.Variable,
@@ -363,16 +362,13 @@ func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest 
 			payload.X,
 			payload.Y,
 			payload.Z,
-			url.QueryEscape(payload.Istep),
-			url.QueryEscape(payload.Fstep),
-			payload.Timezone,
 		)
 
 		resp, respErr := retryReq(
 			"GET",
 			config.Retries,
 			config.Delay,
-			url,
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		)

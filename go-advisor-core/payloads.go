@@ -324,6 +324,16 @@ func (p PmtilesPayload) toQueryParams() string {
 		build()
 }
 
+func (t TmsPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addIstep(t.Istep).
+		addFstep(t.Fstep).
+		addTimezone(t.Timezone).
+		build()
+}
+
 func (p PlanInfoPayload) toQueryParams() string {
 	builder := queryParamsBuilder{}
 
