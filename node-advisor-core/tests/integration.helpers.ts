@@ -1,4 +1,6 @@
 import assert from "node:assert/strict"
+import { existsSync, readFileSync } from "node:fs"
+import path from "node:path"
 import { Readable } from "node:stream"
 
 import { AdvisorCore } from "../src/AdvisorCore"
@@ -22,15 +24,6 @@ import {
   TmsPayload,
   WeatherPayload,
 } from "../src/payloads"
-
-const DEFAULT_STATION_ID = "bWV0b3M6MDM0MTMyRjM6LTIyLjIzMTQ1MjQ4MDg0NDU2Oi00NC4yNTEzNTMwMzgzMTcx"
-const DEFAULT_GEOMETRY = (
-  '{"type":"Polygon","coordinates":[[[-47.09861059094109,-23.280351816702165],'
-  + '[-47.09861059094109,-23.895097240590488],[-46.12890390857018,-23.895097240590488],'
-  + '[-46.12890390857018,-23.280351816702165],[-47.09861059094109,-23.280351816702165]]]}'
-)
-const DEFAULT_STORAGE_FILE_NAME = "Boletim_Nexar_Agro_-_Regiao_Sul-30_04_2025_15_26.pdf"
-const DEFAULT_STORAGE_ACCESS_KEY = "27b1ff73708261bf0ab90f4779b1e0b21ce56a9e-1746037569388"
 
 type JsonLike = Record<string, unknown>
 
@@ -60,13 +53,69 @@ function getEnvInt(name: string, defaultValue: number): number {
   return value ? Number.parseInt(value, 10) : defaultValue
 }
 
+function findIntegrationEnvFile(startDir: string): string | undefined {
+  let currentDir = startDir
+
+  while (true) {
+    const candidate = path.join(currentDir, ".env.integration.local")
+    if (existsSync(candidate)) {
+      return candidate
+    }
+
+    const parentDir = path.dirname(currentDir)
+    if (parentDir === currentDir) {
+      return undefined
+    }
+
+    currentDir = parentDir
+  }
+}
+
+function loadIntegrationEnv(): void {
+  const envFile = findIntegrationEnvFile(__dirname) ?? findIntegrationEnvFile(process.cwd())
+  if (!envFile) {
+    return
+  }
+
+  for (const rawLine of readFileSync(envFile, "utf8").split(/\r?\n/u)) {
+    const line = rawLine.trim()
+    if (!line || line.startsWith("#")) {
+      continue
+    }
+
+    const separatorIndex = line.indexOf("=")
+    if (separatorIndex === -1) {
+      continue
+    }
+
+    const name = line.slice(0, separatorIndex).trim()
+    if (!name || process.env[name]) {
+      continue
+    }
+
+    let value = line.slice(separatorIndex + 1).trim()
+    if (
+      value.length >= 2
+      && ((value.startsWith("\"") && value.endsWith("\"")) || (value.startsWith("'") && value.endsWith("'")))
+    ) {
+      value = value.slice(1, -1)
+    }
+
+    process.env[name] = value
+  }
+}
+
 function requireEnv(name: string): string {
   const value = process.env[name]
   if (!value) {
-    throw new Error(`Set ${name} before running the Node integration tests.`)
+    throw new Error(
+      `Set ${name} or add it to .env.integration.local before running the Node integration tests.`,
+    )
   }
   return value
 }
+
+loadIntegrationEnv()
 
 function pad(value: number): string {
   return String(value).padStart(2, "0")
@@ -128,7 +177,8 @@ export function createAdvisor(): AdvisorCore {
 export function createPayloads(): IntegrationPayloads {
   const localeId = getEnvInt("ADVISOR_LOCALE_ID", 3477)
   const planLocaleId = getEnvInt("ADVISOR_PLAN_LOCALE_ID", 5959)
-  const stationId = process.env.ADVISOR_STATION_ID ?? DEFAULT_STATION_ID
+  const stationId = requireEnv("ADVISOR_STATION_ID")
+  const geometry = requireEnv("ADVISOR_GEOMETRY")
   const today = new Date()
   const observedDay = shiftDays(today, -1)
   const observedPeriodEnd = observedDay
@@ -172,7 +222,7 @@ export function createPayloads(): IntegrationPayloads {
       radius: 10000,
     },
     geometryPayload: {
-      geometry: DEFAULT_GEOMETRY,
+      geometry,
       startDate: startOfDay(observedDay),
       endDate: endOfDay(observedDay),
       radius: 10000,
@@ -185,7 +235,7 @@ export function createPayloads(): IntegrationPayloads {
       radius: 10000,
     },
     lightningLitePayload: {
-      geometry: DEFAULT_GEOMETRY,
+      geometry,
       startDate: startOfDay(observedPeriodStart),
       endDate: endOfDay(observedPeriodEnd),
       radius: 10000,
@@ -260,22 +310,9 @@ export async function resolveStorageDownloadPayload(
   _advisor: AdvisorCore,
   _storageListPayload: StorageListPayload,
 ): Promise<StorageDownloadPayload> {
-  const fileName = process.env.ADVISOR_STORAGE_FILE_NAME
-  const accessKey = process.env.ADVISOR_STORAGE_ACCESS_KEY
-
-  if (fileName || accessKey) {
-    if (!fileName || !accessKey) {
-      throw new Error(
-        "Set both ADVISOR_STORAGE_FILE_NAME and ADVISOR_STORAGE_ACCESS_KEY.",
-      )
-    }
-
-    return { fileName, accessKey }
-  }
-
   return {
-    fileName: DEFAULT_STORAGE_FILE_NAME,
-    accessKey: DEFAULT_STORAGE_ACCESS_KEY,
+    fileName: requireEnv("ADVISOR_STORAGE_FILE_NAME"),
+    accessKey: requireEnv("ADVISOR_STORAGE_ACCESS_KEY"),
   }
 }
 

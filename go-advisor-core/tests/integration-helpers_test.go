@@ -3,19 +3,17 @@
 package test
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
 	sdk "github.com/StormGeo/advisor-sdk/go-advisor-core"
 )
-
-const defaultStationID = "bWV0b3M6MDM0MTMyRjM6LTIyLjIzMTQ1MjQ4MDg0NDU2Oi00NC4yNTEzNTMwMzgzMTcx"
-const defaultGeometry = "{\"type\":\"Polygon\",\"coordinates\":[[[-47.09861059094109,-23.280351816702165],[-47.09861059094109,-23.895097240590488],[-46.12890390857018,-23.895097240590488],[-46.12890390857018,-23.280351816702165],[-47.09861059094109,-23.280351816702165]]]}"
-const defaultStorageFileName = "Boletim_Meteorologico_-_Andre_Alves-22_03_2026_07_02.pdf"
-const defaultStorageAccessKey = "ad441946268c2227a96ad254fafe71565acd02e2-1774173734244"
 
 type AdvisorCore = sdk.AdvisorCore
 type AdvisorCoreConfig = sdk.AdvisorCoreConfig
@@ -39,6 +37,10 @@ type TmsPayload = sdk.TmsPayload
 type WeatherPayload = sdk.WeatherPayload
 
 var NewAdvisorCore = sdk.NewAdvisorCore
+
+func init() {
+	loadIntegrationEnv()
+}
 
 type integrationPayloads struct {
 	weatherPayload          WeatherPayload
@@ -73,13 +75,93 @@ func requireEnv(t *testing.T, name string) string {
 	return value
 }
 
-func envOrDefault(name string, defaultValue string) string {
+func requireConfiguredEnv(t *testing.T, name string) string {
+	t.Helper()
+
 	value := os.Getenv(name)
 	if value == "" {
-		return defaultValue
+		t.Fatalf(
+			"set %s or add it to .env.integration.local before running the Go integration tests",
+			name,
+		)
 	}
 
 	return value
+}
+
+func requireEnvValue(name string) string {
+	value := os.Getenv(name)
+	if value == "" {
+		panic(fmt.Sprintf(
+			"set %s or add it to .env.integration.local before running the Go integration tests",
+			name,
+		))
+	}
+
+	return value
+}
+
+func loadIntegrationEnv() {
+	workingDir, err := os.Getwd()
+	if err != nil {
+		return
+	}
+
+	envFile := findIntegrationEnvFile(workingDir)
+	if envFile == "" {
+		return
+	}
+
+	file, err := os.Open(envFile)
+	if err != nil {
+		return
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) != 2 {
+			continue
+		}
+
+		name := strings.TrimSpace(parts[0])
+		if name == "" || os.Getenv(name) != "" {
+			continue
+		}
+
+		value := strings.TrimSpace(parts[1])
+		if len(value) >= 2 {
+			if (strings.HasPrefix(value, "\"") && strings.HasSuffix(value, "\"")) ||
+				(strings.HasPrefix(value, "'") && strings.HasSuffix(value, "'")) {
+				value = value[1 : len(value)-1]
+			}
+		}
+
+		_ = os.Setenv(name, value)
+	}
+}
+
+func findIntegrationEnvFile(startDir string) string {
+	currentDir := startDir
+	for {
+		candidate := filepath.Join(currentDir, ".env.integration.local")
+		if _, err := os.Stat(candidate); err == nil {
+			return candidate
+		}
+
+		parentDir := filepath.Dir(currentDir)
+		if parentDir == currentDir {
+			return ""
+		}
+
+		currentDir = parentDir
+	}
 }
 
 func envUint32(name string, defaultValue uint32) uint32 {
@@ -136,14 +218,19 @@ func newIntegrationAdvisor(t *testing.T) AdvisorCore {
 		Delay:   0,
 	})
 	advisor.SetHeaderAccept("application/json")
-	advisor.SetHeaderAcceptLanguage(envOrDefault("ADVISOR_ACCEPT_LANGUAGE", "en-US"))
+	acceptLanguage := os.Getenv("ADVISOR_ACCEPT_LANGUAGE")
+	if acceptLanguage == "" {
+		acceptLanguage = "en-US"
+	}
+	advisor.SetHeaderAcceptLanguage(acceptLanguage)
 	return advisor
 }
 
 func createIntegrationPayloads() integrationPayloads {
 	localeID := envUint32("ADVISOR_LOCALE_ID", 3477)
 	planLocaleID := envUint32("ADVISOR_PLAN_LOCALE_ID", 5959)
-	stationID := envOrDefault("ADVISOR_STATION_ID", defaultStationID)
+	stationID := requireEnvValue("ADVISOR_STATION_ID")
+	geometry := requireEnvValue("ADVISOR_GEOMETRY")
 	now := time.Now()
 	observedDay := now.AddDate(0, 0, -1)
 	observedPeriodEnd := observedDay
@@ -189,7 +276,7 @@ func createIntegrationPayloads() integrationPayloads {
 			Radius:   10000,
 		},
 		geometryPayload: GeometryPayload{
-			Geometry:  defaultGeometry,
+			Geometry:  geometry,
 			StartDate: startOfDay(observedDay),
 			EndDate:   endOfDay(observedDay),
 			Radius:    10000,
@@ -202,7 +289,7 @@ func createIntegrationPayloads() integrationPayloads {
 			Radius:    10000,
 		},
 		lightningLitePayload: LightningLitePayload{
-			Geometry:  defaultGeometry,
+			Geometry:  geometry,
 			StartDate: startOfDay(observedPeriodStart),
 			EndDate:   endOfDay(observedPeriodEnd),
 			Radius:    10000,
@@ -282,23 +369,9 @@ func createIntegrationPayloads() integrationPayloads {
 func resolveStorageDownloadPayload(t *testing.T) StorageDownloadPayload {
 	t.Helper()
 
-	fileName := os.Getenv("ADVISOR_STORAGE_FILE_NAME")
-	accessKey := os.Getenv("ADVISOR_STORAGE_ACCESS_KEY")
-
-	if fileName != "" || accessKey != "" {
-		if fileName == "" || accessKey == "" {
-			t.Fatal("set both ADVISOR_STORAGE_FILE_NAME and ADVISOR_STORAGE_ACCESS_KEY, or neither")
-		}
-
-		return StorageDownloadPayload{
-			FileName:  fileName,
-			AccessKey: accessKey,
-		}
-	}
-
 	return StorageDownloadPayload{
-		FileName:  defaultStorageFileName,
-		AccessKey: defaultStorageAccessKey,
+		FileName:  requireConfiguredEnv(t, "ADVISOR_STORAGE_FILE_NAME"),
+		AccessKey: requireConfiguredEnv(t, "ADVISOR_STORAGE_ACCESS_KEY"),
 	}
 }
 

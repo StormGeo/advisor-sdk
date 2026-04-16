@@ -11,11 +11,19 @@ import {
   resolveStorageDownloadPayload,
 } from "./integration.helpers"
 
-const payloads = createPayloads()
-const hasAdvisorToken = Boolean(process.env.ADVISOR_TOKEN)
+const REQUIRED_ENV_VARS = [
+  "ADVISOR_TOKEN",
+  "ADVISOR_STATION_ID",
+  "ADVISOR_GEOMETRY",
+  "ADVISOR_STORAGE_FILE_NAME",
+  "ADVISOR_STORAGE_ACCESS_KEY",
+] as const
+
+const missingRequiredEnv = REQUIRED_ENV_VARS.filter((name) => !process.env[name])
 
 let advisor: AdvisorCore | undefined
 let storageDownloadPayloadPromise: Promise<StorageDownloadPayload> | undefined
+let payloads: ReturnType<typeof createPayloads> | undefined
 
 function getAdvisor(): AdvisorCore {
   if (!advisor) {
@@ -25,73 +33,83 @@ function getAdvisor(): AdvisorCore {
   return advisor
 }
 
+function getPayloads() {
+  if (!payloads) {
+    payloads = createPayloads()
+  }
+
+  return payloads
+}
+
 function getStorageDownloadPayload(): Promise<StorageDownloadPayload> {
   if (!storageDownloadPayloadPromise) {
     storageDownloadPayloadPromise = resolveStorageDownloadPayload(
       getAdvisor(),
-      payloads.storageListPayload,
+      getPayloads().storageListPayload,
     )
   }
 
   return storageDownloadPayloadPromise
 }
 
-if (!hasAdvisorToken) {
-  test("integration setup requires ADVISOR_TOKEN", () => {
-    throw new Error("Set ADVISOR_TOKEN before running the Node integration tests.")
+if (missingRequiredEnv.length > 0) {
+  test("integration setup requires shared Advisor env", () => {
+    throw new Error(
+      `Set ${missingRequiredEnv.join(", ")} or add them to .env.integration.local before running the Node integration tests.`,
+    )
   })
 } else {
   for (const methodName of ["getDaily", "getHourly", "getPeriod"] as const) {
     test(`forecast.${methodName}`, async () => {
-      const response = await getAdvisor().forecast[methodName](payloads.weatherPayload)
+      const response = await getAdvisor().forecast[methodName](getPayloads().weatherPayload)
       assertJsonSuccess(response)
     })
   }
 
   for (const methodName of ["getDaily", "getHourly", "getPeriod"] as const) {
     test(`observed.${methodName}`, async () => {
-      const response = await getAdvisor().observed[methodName](payloads.weatherPayload)
+      const response = await getAdvisor().observed[methodName](getPayloads().weatherPayload)
       assertJsonSuccess(response)
     })
   }
 
   test("observed.getStationData", async () => {
-    const response = await getAdvisor().observed.getStationData(payloads.stationPayload)
+    const response = await getAdvisor().observed.getStationData(getPayloads().stationPayload)
     assertJsonSuccess(response)
   })
 
   for (const methodName of ["getFireFocus", "getLightning"] as const) {
     test(`observed.${methodName}`, async () => {
-      const response = await getAdvisor().observed[methodName](payloads.radiusPayload)
+      const response = await getAdvisor().observed[methodName](getPayloads().radiusPayload)
       assertJsonSuccess(response)
     })
   }
 
   for (const methodName of ["getFireFocusByGeometry", "getLightningByGeometry"] as const) {
     test(`observed.${methodName}`, async () => {
-      const response = await getAdvisor().observed[methodName](payloads.geometryPayload)
+      const response = await getAdvisor().observed[methodName](getPayloads().geometryPayload)
       assertJsonSuccess(response)
     })
   }
 
   test("observed.getLightningDetails", async () => {
-    const response = await getAdvisor().observed.getLightningDetails(payloads.lightningDetailsPayload)
+    const response = await getAdvisor().observed.getLightningDetails(getPayloads().lightningDetailsPayload)
     assertJsonSuccess(response)
   })
 
   test("observed.getLightningLite", async () => {
-    const response = await getAdvisor().observed.getLightningLite(payloads.lightningLitePayload)
+    const response = await getAdvisor().observed.getLightningLite(getPayloads().lightningLitePayload)
     assertJsonSuccess(response)
   })
 
   test("currentWeather.get", async () => {
-    const response = await getAdvisor().currentWeather.get(payloads.currentWeatherPayload)
+    const response = await getAdvisor().currentWeather.get(getPayloads().currentWeatherPayload)
     assertJsonSuccess(response)
   })
 
   for (const methodName of ["getDaily", "getMonthly"] as const) {
     test(`climatology.${methodName}`, async () => {
-      const response = await getAdvisor().climatology[methodName](payloads.climatologyPayload)
+      const response = await getAdvisor().climatology[methodName](getPayloads().climatologyPayload)
       assertJsonSuccess(response)
     })
   }
@@ -102,22 +120,22 @@ if (!hasAdvisorToken) {
   })
 
   test("stations.getLastData", async () => {
-    const response = await getAdvisor().stations.getLastData(payloads.stationsLastDataPayload)
+    const response = await getAdvisor().stations.getLastData(getPayloads().stationsLastDataPayload)
     assertJsonSuccess(response)
   })
 
   test("plan.getInfo", async () => {
-    const response = await getAdvisor().plan.getInfo(payloads.planInfoPayload)
+    const response = await getAdvisor().plan.getInfo(getPayloads().planInfoPayload)
     assertJsonSuccess(response)
   })
 
   test("plan.getRequestDetails", async () => {
-    const response = await getAdvisor().plan.getRequestDetails(payloads.requestDetailsPayload)
+    const response = await getAdvisor().plan.getRequestDetails(getPayloads().requestDetailsPayload)
     assertJsonSuccess(response)
   })
 
   test("plan.getLocale", async () => {
-    const response = await getAdvisor().plan.getLocale(payloads.planLocalePayload)
+    const response = await getAdvisor().plan.getLocale(getPayloads().planLocalePayload)
     assertJsonSuccess(response)
   })
 
@@ -128,13 +146,13 @@ if (!hasAdvisorToken) {
     "getObservedHourly",
   ] as const) {
     test(`chart.${methodName}`, async () => {
-      const response = await getAdvisor().chart[methodName](payloads.weatherChartPayload)
+      const response = await getAdvisor().chart[methodName](getPayloads().weatherChartPayload)
       assertBufferSuccess(response)
     })
   }
 
   test("storage.listFiles", async () => {
-    const response = await getAdvisor().storage.listFiles(payloads.storageListPayload)
+    const response = await getAdvisor().storage.listFiles(getPayloads().storageListPayload)
     assertJsonSuccess(response)
   })
 
@@ -149,17 +167,17 @@ if (!hasAdvisorToken) {
   })
 
   test("staticMap.get", async () => {
-    const response = await getAdvisor().staticMap.get(payloads.staticMapPayload)
+    const response = await getAdvisor().staticMap.get(getPayloads().staticMapPayload)
     assertBufferSuccess(response)
   })
 
   test("tms.get", async () => {
-    const response = await getAdvisor().tms.get(payloads.tmsPayload)
+    const response = await getAdvisor().tms.get(getPayloads().tmsPayload)
     assertBufferSuccess(response)
   })
 
   test("pmtiles.get", async () => {
-    const response = await getAdvisor().pmtiles.get(payloads.pmtilesPayload)
+    const response = await getAdvisor().pmtiles.get(getPayloads().pmtilesPayload)
     assertBufferSuccess(response)
   })
 
@@ -169,7 +187,7 @@ if (!hasAdvisorToken) {
   })
 
   test("schema.postDefinition", async () => {
-    const response = await getAdvisor().schema.postDefinition(payloads.schemaDefinitionPayload)
+    const response = await getAdvisor().schema.postDefinition(getPayloads().schemaDefinitionPayload)
     assertJsonSuccess(response)
   })
 }

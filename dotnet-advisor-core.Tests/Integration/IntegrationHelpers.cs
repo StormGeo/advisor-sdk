@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.IO;
 using StormGeo.AdvisorCore;
 using StormGeo.AdvisorCore.Payloads;
 using Xunit;
@@ -9,6 +10,7 @@ public sealed class IntegrationFactAttribute : FactAttribute
 {
     public IntegrationFactAttribute()
     {
+        IntegrationEnvironment.Load();
         if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("ADVISOR_TOKEN")))
         {
             Skip = "Set ADVISOR_TOKEN before running the .NET integration tests.";
@@ -38,15 +40,83 @@ public sealed class IntegrationPayloads
     public required Dictionary<string, object> SchemaParameters { get; init; }
 }
 
+internal static class IntegrationEnvironment
+{
+    private static bool _loaded;
+
+    public static void Load()
+    {
+        if (_loaded)
+        {
+            return;
+        }
+
+        _loaded = true;
+
+        var envFile = FindIntegrationEnvFile(AppContext.BaseDirectory);
+        if (envFile is null)
+        {
+            return;
+        }
+
+        foreach (var rawLine in File.ReadAllLines(envFile))
+        {
+            var line = rawLine.Trim();
+            if (line.Length == 0 || line.StartsWith('#'))
+            {
+                continue;
+            }
+
+            var separatorIndex = line.IndexOf('=');
+            if (separatorIndex < 0)
+            {
+                continue;
+            }
+
+            var name = line[..separatorIndex].Trim();
+            if (string.IsNullOrWhiteSpace(name) || !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(name)))
+            {
+                continue;
+            }
+
+            var value = line[(separatorIndex + 1)..].Trim();
+            if (value.Length >= 2)
+            {
+                var first = value[0];
+                var last = value[^1];
+                if ((first == '"' && last == '"') || (first == '\'' && last == '\''))
+                {
+                    value = value[1..^1];
+                }
+            }
+
+            Environment.SetEnvironmentVariable(name, value);
+        }
+    }
+
+    private static string? FindIntegrationEnvFile(string startDirectory)
+    {
+        var directory = new DirectoryInfo(startDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, ".env.integration.local");
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            directory = directory.Parent;
+        }
+
+        return null;
+    }
+}
+
 public static class IntegrationHelpers
 {
-    private const string DefaultStationId = "bWV0b3M6MDM0MTMyRjM6LTIyLjIzMTQ1MjQ4MDg0NDU2Oi00NC4yNTEzNTMwMzgzMTcx";
-    private const string DefaultGeometry = "{\"type\":\"Polygon\",\"coordinates\":[[[-47.09861059094109,-23.280351816702165],[-47.09861059094109,-23.895097240590488],[-46.12890390857018,-23.895097240590488],[-46.12890390857018,-23.280351816702165],[-47.09861059094109,-23.280351816702165]]]}";
-    private const string DefaultStorageFileName = "Boletim_Meteorologico_-_Andre_Alves-22_03_2026_07_02.pdf";
-    private const string DefaultStorageAccessKey = "ad441946268c2227a96ad254fafe71565acd02e2-1774173734244";
-
     public static AdvisorCore CreateSdk()
     {
+        IntegrationEnvironment.Load();
         var token = Environment.GetEnvironmentVariable("ADVISOR_TOKEN");
         if (string.IsNullOrWhiteSpace(token))
         {
@@ -61,8 +131,10 @@ public static class IntegrationHelpers
 
     public static IntegrationPayloads CreatePayloads()
     {
+        IntegrationEnvironment.Load();
         var localeId = GetEnvInt("ADVISOR_LOCALE_ID", 3477);
-        var stationId = Environment.GetEnvironmentVariable("ADVISOR_STATION_ID") ?? DefaultStationId;
+        var stationId = GetRequiredEnv("ADVISOR_STATION_ID");
+        var geometry = GetRequiredEnv("ADVISOR_GEOMETRY");
         var today = DateTime.Now;
         var observedDay = today.AddDays(-1);
         var observedPeriodEnd = observedDay;
@@ -103,7 +175,7 @@ public static class IntegrationHelpers
             },
             GeometryPayload = new GeometryPayload
             {
-                Geometry = DefaultGeometry,
+                Geometry = geometry,
                 StartDate = StartOfDay(observedDay),
                 EndDate = EndOfDay(observedDay),
                 Radius = 10000,
@@ -118,7 +190,7 @@ public static class IntegrationHelpers
             },
             LightningLitePayload = new LightningLitePayload
             {
-                Geometry = DefaultGeometry,
+                Geometry = geometry,
                 StartDate = StartOfDay(observedPeriodStart),
                 EndDate = EndOfDay(observedPeriodEnd),
                 Radius = 10000,
@@ -195,25 +267,11 @@ public static class IntegrationHelpers
 
     public static StorageDownloadPayload ResolveStorageDownloadPayload()
     {
-        var fileName = Environment.GetEnvironmentVariable("ADVISOR_STORAGE_FILE_NAME");
-        var accessKey = Environment.GetEnvironmentVariable("ADVISOR_STORAGE_ACCESS_KEY");
-
-        if (!string.IsNullOrWhiteSpace(fileName) || !string.IsNullOrWhiteSpace(accessKey))
-        {
-            Assert.False(string.IsNullOrWhiteSpace(fileName) || string.IsNullOrWhiteSpace(accessKey),
-                "Set both ADVISOR_STORAGE_FILE_NAME and ADVISOR_STORAGE_ACCESS_KEY, or neither.");
-
-            return new StorageDownloadPayload
-            {
-                FileName = fileName,
-                AccessKey = accessKey,
-            };
-        }
-
+        IntegrationEnvironment.Load();
         return new StorageDownloadPayload
         {
-            FileName = DefaultStorageFileName,
-            AccessKey = DefaultStorageAccessKey,
+            FileName = GetRequiredEnv("ADVISOR_STORAGE_FILE_NAME"),
+            AccessKey = GetRequiredEnv("ADVISOR_STORAGE_ACCESS_KEY"),
         };
     }
 
@@ -238,6 +296,18 @@ public static class IntegrationHelpers
     {
         var value = Environment.GetEnvironmentVariable(name);
         return int.TryParse(value, out var parsed) ? parsed : defaultValue;
+    }
+
+    private static string GetRequiredEnv(string name)
+    {
+        var value = Environment.GetEnvironmentVariable(name);
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            return value;
+        }
+
+        throw new InvalidOperationException(
+            $"Set {name} or add it to .env.integration.local before running the .NET integration tests.");
     }
 
     private static string StartOfDay(DateTime value)

@@ -23,15 +23,6 @@ from advisor_core import (
 
 pytestmark = pytest.mark.integration
 
-DEFAULT_STATION_ID = "bWV0b3M6MDM0MTMyRjM6LTIyLjIzMTQ1MjQ4MDg0NDU2Oi00NC4yNTEzNTMwMzgzMTcx"
-DEFAULT_GEOMETRY = (
-    '{"type":"Polygon","coordinates":[[[-47.09861059094109,-23.280351816702165],'
-    '[-47.09861059094109,-23.895097240590488],[-46.12890390857018,-23.895097240590488],'
-    '[-46.12890390857018,-23.280351816702165],[-47.09861059094109,-23.280351816702165]]]}'
-)
-DEFAULT_STORAGE_FILE_NAME = "Boletim_Meteorologico_-_Andre_Alves-22_03_2026_07_02.pdf"
-DEFAULT_STORAGE_ACCESS_KEY = "ad441946268c2227a96ad254fafe71565acd02e2-1774173734244"
-
 def _assert_json_success(response):
     assert response["error"] is None, response["error"]
     assert response["data"] is not None
@@ -47,9 +38,17 @@ def _start_of_day(value):
 def _end_of_day(value):
     return datetime.combine(value, time.max).replace(microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
 
+def _require_env(name):
+    value = os.getenv(name)
+    if not value:
+        raise pytest.UsageError(
+            f"Set {name} or add it to .env.integration.local before running the Python integration tests."
+        )
+    return value
+
 @pytest.fixture(scope="session")
 def station_id():
-    return os.getenv("ADVISOR_STATION_ID", DEFAULT_STATION_ID)
+    return _require_env("ADVISOR_STATION_ID")
 
 @pytest.fixture(scope="session")
 def weather_payload(locale_id):
@@ -99,7 +98,7 @@ def forecast_day():
 @pytest.fixture(scope="session")
 def geometry_payload(observed_day):
     return GeometryPayload(
-        geometry=DEFAULT_GEOMETRY,
+        geometry=_require_env("ADVISOR_GEOMETRY"),
         start_date=_start_of_day(observed_day),
         end_date=_end_of_day(observed_day),
         radius=10000,
@@ -108,7 +107,7 @@ def geometry_payload(observed_day):
 @pytest.fixture(scope="session")
 def lightning_lite_payload(observed_day):
     return LightningLitePayload(
-        geometry=DEFAULT_GEOMETRY,
+        geometry=_require_env("ADVISOR_GEOMETRY"),
         start_date=_start_of_day(observed_day),
         end_date=_end_of_day(observed_day),
         radius=10000,
@@ -121,23 +120,10 @@ def storage_list_payload():
     return StorageListPayload(page=1, page_size=10)
 
 @pytest.fixture(scope="session")
-def storage_download_payload(advisor, storage_list_payload):
-    file_name = os.getenv("ADVISOR_STORAGE_FILE_NAME")
-    access_key = os.getenv("ADVISOR_STORAGE_ACCESS_KEY")
-
-    if file_name or access_key:
-        if not file_name or not access_key:
-            raise pytest.UsageError(
-                "Set both ADVISOR_STORAGE_FILE_NAME and ADVISOR_STORAGE_ACCESS_KEY, or neither."
-            )
-        return StorageDownloadPayload(file_name=file_name, access_key=access_key)
-
-    response = advisor.storage.list_files(storage_list_payload)
-    _assert_json_success(response)
-
+def storage_download_payload():
     return StorageDownloadPayload(
-        file_name=DEFAULT_STORAGE_FILE_NAME,
-        access_key=DEFAULT_STORAGE_ACCESS_KEY,
+        file_name=_require_env("ADVISOR_STORAGE_FILE_NAME"),
+        access_key=_require_env("ADVISOR_STORAGE_ACCESS_KEY"),
     )
 
 @pytest.fixture(scope="session")
