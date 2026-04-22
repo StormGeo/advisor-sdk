@@ -1,0 +1,157 @@
+name: SDK Integration Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sdk-integration-tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  ADVISOR_TOKEN: ${{ secrets.ADVISOR_TOKEN }}
+  ADVISOR_STATION_ID: ${{ secrets.ADVISOR_STATION_ID }}
+  ADVISOR_GEOMETRY: ${{ secrets.ADVISOR_GEOMETRY }}
+  ADVISOR_STORAGE_FILE_NAME: ${{ secrets.ADVISOR_STORAGE_FILE_NAME }}
+  ADVISOR_STORAGE_ACCESS_KEY: ${{ secrets.ADVISOR_STORAGE_ACCESS_KEY }}
+
+jobs:
+  preflight:
+    name: Validate integration test setup
+    runs-on: ubuntu-latest
+    outputs:
+      can_run: ${{ steps.check.outputs.can_run }}
+
+    steps:
+      - name: Check secret availability
+        id: check
+        env:
+          IS_FORK_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+        run: |
+          missing=0
+
+          for name in \
+            ADVISOR_TOKEN \
+            ADVISOR_STATION_ID \
+            ADVISOR_GEOMETRY \
+            ADVISOR_STORAGE_FILE_NAME \
+            ADVISOR_STORAGE_ACCESS_KEY
+          do
+            if [ -z "${!name}" ]; then
+              echo "::warning title=Missing secret::$name is not configured for this workflow."
+              missing=1
+            fi
+          done
+
+          if [ "$IS_FORK_PR" = "true" ]; then
+            echo "::warning title=Fork pull request detected::Integration tests are skipped for forked pull requests because repository secrets are not exposed to them."
+            echo "can_run=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$missing" -ne 0 ]; then
+            echo "::warning title=Integration secrets required::Configure the required Advisor secrets in the repository settings to enable this workflow."
+            echo "can_run=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "can_run=true" >> "$GITHUB_OUTPUT"
+
+  node-integration:
+    name: Node integration tests
+    runs-on: ubuntu-latest
+    needs: preflight
+    if: needs.preflight.outputs.can_run == 'true'
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: node-advisor-core/package-lock.json
+
+      - name: Install dependencies
+        working-directory: node-advisor-core
+        run: npm ci
+
+      - name: Run integration tests
+        working-directory: node-advisor-core
+        run: npm run test:integration
+
+  python-integration:
+    name: Python integration tests
+    runs-on: ubuntu-latest
+    needs: preflight
+    if: needs.preflight.outputs.can_run == 'true'
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        working-directory: python-advisor-core
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e . pytest requests
+
+      - name: Run integration tests
+        working-directory: python-advisor-core
+        run: pytest
+
+  go-integration:
+    name: Go integration tests
+    runs-on: ubuntu-latest
+    needs: preflight
+    if: needs.preflight.outputs.can_run == 'true'
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go-advisor-core/go.mod
+
+      - name: Run integration tests
+        working-directory: go-advisor-core
+        run: go test -v -tags=integration ./...
+
+  dotnet-integration:
+    name: .NET integration tests
+    runs-on: ubuntu-latest
+    needs: preflight
+    if: needs.preflight.outputs.can_run == 'true'
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Run integration tests
+        run: dotnet test dotnet-advisor-core.Tests/AdvisorCore.IntegrationTests.csproj --configuration Release
