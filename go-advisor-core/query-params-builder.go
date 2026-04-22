@@ -56,6 +56,16 @@ func (a *queryParamsBuilder) addVariables(variables []string) *queryParamsBuilde
 	return a
 }
 
+func (a *queryParamsBuilder) addSources(sources []string) *queryParamsBuilder {
+	if len(sources) != 0 {
+		for _, source := range sources {
+			a.params = append(a.params, "sources[]="+source)
+		}
+	}
+
+	return a
+}
+
 func (a *queryParamsBuilder) addFileTypes(fileTypes []string) *queryParamsBuilder {
 	if len(fileTypes) != 0 {
 		for _, fileType := range fileTypes {
@@ -242,6 +252,38 @@ func (a *queryParamsBuilder) addHours(hours int32) *queryParamsBuilder {
 func (a *queryParamsBuilder) addMaxZoom(maxZoom uint8) *queryParamsBuilder {
 	if maxZoom > 0 {
 		a.params = append(a.params, fmt.Sprintf("maxZoom=%d", maxZoom))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addCmap(cmap string) *queryParamsBuilder {
+	if cmap != "" {
+		a.params = append(a.params, "cmap="+url.QueryEscape(cmap))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addDynamicElevation(dynamicElevation string) *queryParamsBuilder {
+	if dynamicElevation != "" {
+		a.params = append(a.params, "dynamicElevation="+url.QueryEscape(dynamicElevation))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addDynamicType(dynamicType string) *queryParamsBuilder {
+	if dynamicType != "" {
+		a.params = append(a.params, "dynamicType="+url.QueryEscape(dynamicType))
+	}
+
+	return a
+}
+
+func (a *queryParamsBuilder) addDynamicVariable(dynamicVariable string) *queryParamsBuilder {
+	if dynamicVariable != "" {
+		a.params = append(a.params, "dynamicVariable="+url.QueryEscape(dynamicVariable))
 	}
 
 	return a

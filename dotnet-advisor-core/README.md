@@ -16,6 +16,7 @@ Advisor Software Development Kit for .NET.
       - [Monitoring:](#monitoring)
       - [Observed:](#observed)
       - [Plan Information:](#plan-information)
+      - [Pmtiles:](#pmtiles)
       - [Schema/Parameter:](#schemaparameter)
       - [Static Map:](#static-map)
       - [Tms (Tiles Map Server):](#tms-tiles-map-server)
@@ -28,7 +29,9 @@ Advisor Software Development Kit for .NET.
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
+    - [LightningLitePayload](#lightninglitepayload)
     - [PlanInfoPayload](#planinfopayload)
+    - [PmtilesPayload](#pmtilespayload)
     - [RequestDetailsPayload](#requestdetailspayload)
     - [StaticMapPayload](#staticmappayload)
     - [TmsPayload](#tmspayload)
@@ -247,10 +250,22 @@ var response = await sdk.Observed.GetFireFocusAsync(radiusPayload);
 // requesting lightning observed data
 var response = await sdk.Observed.GetLightningAsync(radiusPayload);
 
+// requesting lightning observed details data
+var response = await sdk.Observed.GetLightningDetailsAsync(radiusPayload);
+
 var geometryPayload = new GeometryPayload() {
     StartDate = "2024-11-28 00:00:00",
     EndDate = "2024-11-28 23:59:59",
     Geometry = "{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
+};
+
+var lightningLitePayload = new LightningLitePayload() {
+    StartDate = "2024-11-28 00:00:00",
+    EndDate = "2024-11-28 23:59:59",
+    Geometry = "{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
+    Page = 1,
+    PageSize = 10,
+    Sources = ["earthNetworks"],
 };
 
 // requesting fire-focus observed data by geometry
@@ -258,6 +273,9 @@ var response = await sdk.Observed.GetFireFocusByGeometryAsync(geometryPayload);
 
 // requesting lightning observed data by geometry
 var response = await sdk.Observed.GetLightningByGeometryAsync(geometryPayload);
+
+// requesting lightning lite observed data by geometry
+var response = await sdk.Observed.GetLightningLiteAsync(lightningLitePayload);
 
 if (response.Error == null && response.Data != null)
 {
@@ -408,6 +426,38 @@ else
 }
 ```
 
+#### Pmtiles:
+```c#
+using StormGeo.AdvisorCore.Payloads;
+
+var pmtilesPayload = new PmtilesPayload() {
+    Mode = "forecast",
+    Model = "ct2w15_as",
+    Variable = "precipitation",
+    Aggregation = "sum",
+    Istep = "2026-03-02 00:00:00",
+    Fstep = "2026-03-02 01:00:00",
+    MaxZoom = 4,
+};
+
+var response = await sdk.Pmtiles.Get(pmtilesPayload);
+
+if (response.Error == null && response.Data != null)
+{
+    var filename = "tile.pmtiles";
+
+    using (var fileStream = new FileStream(filename, FileMode.Create))
+    {
+        await response.Data.CopyToAsync(fileStream);
+    }
+}
+else
+{
+    Console.WriteLine(response.Error); // string
+    Console.WriteLine(response.JsonDeserializeError()); // ExpandoObject if 'Error' is a json string
+}
+```
+
 ## Headers Configuration
 
 You can also set headers to translate the error descriptions or to receive the response in a different format type. This functionality is only available for some routes, consult the API documentation to find out which routes have this functionality.
@@ -509,6 +559,16 @@ All the methods return AdvisorResponse, this class contains the attributes and m
 - **Radius**: int
 - **Geometry**: string
 
+### LightningLitePayload
+
+- **StartDate**: string
+- **EndDate**: string
+- **Radius**: int
+- **Geometry**: string
+- **Page**: int
+- **PageSize**: int
+- **Sources**: string[]
+
 ### PlanInfoPayload
 - **Timezone**: int? (Optional, default is null)
 
@@ -548,6 +608,21 @@ All the methods return AdvisorResponse, this class contains the attributes and m
 - **Z**: int
 - **Istep**: string
 - **Fstep**: string
+
+### PmtilesPayload
+
+- **Mode**: string
+- **Model**: string
+- **Variable**: string
+- **Aggregation**: string
+- **Istep**: string? (Optional, default is null)
+- **Fstep**: string? (Optional, default is null)
+- **Timezone**: int? (Optional, default is null)
+- **MaxZoom**: int
+- **Cmap**: string? (Optional, default is null)
+- **DynamicElevation**: string? (Optional, default is null)
+- **DynamicType**: string? (Optional, default is null)
+- **DynamicVariable**: string? (Optional, default is null)
 
 ### StorageListPayload
 - **Page**: int

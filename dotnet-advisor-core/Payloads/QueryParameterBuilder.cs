@@ -66,6 +66,29 @@ public class QueryParameterBuilder
         return this;
     }
 
+    public QueryParameterBuilder AddPage(int? page)
+    {
+        AddParamIfValueIsNotNull("page", page?.ToString());
+        return this;
+    }
+
+    public QueryParameterBuilder AddPageSize(int? pageSize)
+    {
+        AddParamIfValueIsNotNull("pageSize", pageSize?.ToString());
+        return this;
+    }
+
+    public QueryParameterBuilder AddSources(string[]? sources)
+    {
+        if (sources != null) {
+            foreach (string source in sources)
+            {
+                AddParamIfValueIsNotNull("sources", source);
+            }
+        }
+        return this;
+    }
+
     public string Build()
     {
         return "?" + string.Join('&', _params);

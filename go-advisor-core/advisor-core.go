@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-const BASE_URL = "http://advisor-core.climatempo.io/api"
+const BASE_URL = "https://advisor-core.climatempo.io/api"
 
 type AdvisorCoreConfig struct {
 	Token     string
@@ -99,7 +99,9 @@ func NewAdvisorCore(config AdvisorCoreConfig) AdvisorCore {
 			GetHourly:              makeGetWithWeatherPayload("/v1/observed/hourly", config, header),
 			GetPeriod:              makeGetWithWeatherPayload("/v1/observed/period", config, header),
 			GetLightning:           makeGetWithRadiusPayload("/v1/observed/lightning", config, header),
+			GetLightningDetails:    makeGetWithRadiusPayload("/v1/observed/lightning/details", config, header),
 			GetLightningByGeometry: makePostWithGeometryPayload("/v1/observed/lightning", config, header),
+			GetLightningLite:       makePostWithLightningLitePayload("/v1/observed/lightning/lite", config, header),
 			GetFireFocus:           makeGetWithRadiusPayload("/v1/observed/fire-focus", config, header),
 			GetFireFocusByGeometry: makePostWithGeometryPayload("/v1/observed/fire-focus", config, header),
 			GetStationData:         makeGetWithStationPayload("/v1/station", config, header),
@@ -351,9 +353,8 @@ func makeGetWithListFilesPayload(route string, config AdvisorCoreConfig, header 
 
 func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest {
 	return func(payload TmsPayload) (imageBody io.ReadCloser, err error) {
-		url := fmt.Sprintf(
-			"%s/v1/tms/%s/%s/%s/%s/%d/%d/%d.png?istep=%s&fstep=%s&timezone=%d",
-			BASE_URL,
+		route := fmt.Sprintf(
+			"/v1/tms/%s/%s/%s/%s/%d/%d/%d.png",
 			payload.Server,
 			payload.Mode,
 			payload.Variable,
@@ -361,16 +362,13 @@ func makeGetTmsImageV1(config AdvisorCoreConfig, header http.Header) TmsRequest 
 			payload.X,
 			payload.Y,
 			payload.Z,
-			url.QueryEscape(payload.Istep),
-			url.QueryEscape(payload.Fstep),
-			payload.Timezone,
 		)
 
 		resp, respErr := retryReq(
 			"GET",
 			config.Retries,
 			config.Delay,
-			url,
+			formatUrl(route, payload.toQueryParams()),
 			nil,
 			header,
 		)
@@ -420,6 +418,19 @@ func makeGetPmtilesFileV1(config AdvisorCoreConfig, header http.Header) PmtilesR
 
 func makePostWithGeometryPayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithGeometryPayload {
 	return func(payload GeometryPayload) (response AdvisorResponse, err error) {
+		return formatResponse(retryReq(
+			"POST",
+			config.Retries,
+			config.Delay,
+			formatUrl(route, payload.toQueryParams()),
+			payload.toBodyBytes(),
+			header,
+		))
+	}
+}
+
+func makePostWithLightningLitePayload(route string, config AdvisorCoreConfig, header http.Header) RequestWithLightningLitePayload {
+	return func(payload LightningLitePayload) (response AdvisorResponse, err error) {
 		return formatResponse(retryReq(
 			"POST",
 			config.Retries,

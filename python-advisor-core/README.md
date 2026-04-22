@@ -32,6 +32,7 @@ Advisor Software Development Kit for python.
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
+    - [LightningLitePayload](#lightninglitepayload)
     - [TmsPayload](#tmspayload)
     - [PmtilesPayload](#pmtilespayload)
     - [PlanInfoPayload](#planinfopayload)
@@ -41,6 +42,7 @@ Advisor Software Development Kit for python.
     - [StorageDownloadPayload](#storagedownloadpayload)
     - [StaticMapPayload](#staticmappayload)
 ---
+
 ## Importing
 
 To install this package, use the following command:`
@@ -182,6 +184,13 @@ payload_for_geometry = GeometryPayload(
   radius=10000
 )
 
+payload_for_lightning_lite = LightningLitePayload(
+  geometry="{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}",
+  radius=10000,
+  page=1,
+  page_size=10
+)
+
 # requesting daily observed data
 response = advisor.observed.get_daily(payload)
 
@@ -200,11 +209,17 @@ response = advisor.observed.get_fire_focus(payload_for_radius)
 # requesting lightning observed data
 response = advisor.observed.get_lightning(payload_for_radius)
 
+# requesting lightning observed details data
+response = advisor.observed.get_lightning_details(payload_for_radius)
+
 # requesting fire-focus observed data by geometry
 response = advisor.observed.get_fire_focus_by_geometry(payload_for_geometry)
 
 # requesting lightning observed data by geometry
 response = advisor.observed.get_lightning_by_geometry(payload_for_geometry)
+
+# requesting lightning lite observed data by geometry
+response = advisor.observed.get_lightning_lite(payload_for_lightning_lite)
 
 if response['error']:
   print('Error trying to get data!')
@@ -541,6 +556,15 @@ All the methods will return the same pattern:
 - **radius**: int
 - **geometry**: str
 
+### LightningLitePayload
+- **start_date**: str
+- **end_date**: str
+- **radius**: int
+- **geometry**: str
+- **page**: number
+- **page_size**: number
+- **sources**: List[str]
+
 ### TmsPayload
 
 - **server**: str
@@ -564,6 +588,10 @@ All the methods will return the same pattern:
 - **fstep**: str
 - **timezone**: int
 - **max_zoom**: int
+- **cmap**: str
+- **dynamic_elevation**: str
+- **dynamic_type**: str
+- **dynamic_variable**: str
 
 ### PlanInfoPayload
 - **timezone**: int

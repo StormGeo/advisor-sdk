@@ -125,6 +125,19 @@ class ObservedAPI:
             .build()
         )
         return self.request_handler.make_request("GET", "v1/observed/lightning", params=params)
+
+    def get_lightning_details(self, payload: RadiusPayload):
+        """
+        Fetch observed lightning details.
+        GET /v1/observed/lightning/details
+        """
+        builder = QueryParamsBuilder()
+        params = (
+            builder
+            .add_payload(payload.get_params())
+            .build()
+        )
+        return self.request_handler.make_request("GET", "v1/observed/lightning/details", params=params)
     
     def get_fire_focus_by_geometry(self, payload: GeometryPayload):
         """
@@ -151,6 +164,19 @@ class ObservedAPI:
             .build()
         )
         return self.request_handler.make_request("POST", "v1/observed/lightning", params=params, json_data=payload.getBody())
+
+    def get_lightning_lite(self, payload: LightningLitePayload):
+        """
+        Fetch observed lightning lite.
+        POST /v1/observed/lightning/lite
+        """
+        builder = QueryParamsBuilder()
+        params = (
+            builder
+            .add_payload(payload.get_params())
+            .build()
+        )
+        return self.request_handler.make_request("POST", "v1/observed/lightning/lite", params=params, json_data=payload.getBody())
 
 class CurrentWeatherAPI:
     def __init__(self, request_handler):

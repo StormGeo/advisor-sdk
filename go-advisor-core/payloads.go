@@ -30,6 +30,16 @@ type GeometryPayload struct {
 	Geometry  string
 }
 
+type LightningLitePayload struct {
+	StartDate string
+	EndDate   string
+	Radius    uint32
+	Geometry  string
+	Page      uint32
+	PageSize  uint32
+	Sources   []string
+}
+
 type StorageDownloadPayload struct {
 	FileName  string
 	AccessKey string
@@ -102,14 +112,18 @@ type TmsPayload struct {
 }
 
 type PmtilesPayload struct {
-	Istep       string
-	Fstep       string
-	Mode        string
-	Model       string
-	Variable    string
-	Aggregation string
-	Timezone    int8
-	MaxZoom     uint8
+	Istep            string
+	Fstep            string
+	Mode             string
+	Model            string
+	Variable         string
+	Aggregation      string
+	Timezone         int8
+	MaxZoom          uint8
+	Cmap             string
+	DynamicElevation string
+	DynamicType      string
+	DynamicVariable  string
 }
 
 type WeatherPayload struct {
@@ -191,6 +205,27 @@ func (g GeometryPayload) toQueryParams() string {
 }
 
 func (g GeometryPayload) toBodyBytes() []byte {
+	body, _ := json.Marshal(map[string]string{
+		"geometry": g.Geometry,
+	})
+
+	return body
+}
+
+func (g LightningLitePayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addStartDate(g.StartDate).
+		addEndDate(g.EndDate).
+		addRadius(g.Radius).
+		addPage(g.Page).
+		addPageSize(g.PageSize).
+		addSources(g.Sources).
+		build()
+}
+
+func (g LightningLitePayload) toBodyBytes() []byte {
 	body, _ := json.Marshal(map[string]string{
 		"geometry": g.Geometry,
 	})
@@ -282,6 +317,20 @@ func (p PmtilesPayload) toQueryParams() string {
 		addFstep(p.Fstep).
 		addTimezone(p.Timezone).
 		addMaxZoom(p.MaxZoom).
+		addCmap(p.Cmap).
+		addDynamicElevation(p.DynamicElevation).
+		addDynamicType(p.DynamicType).
+		addDynamicVariable(p.DynamicVariable).
+		build()
+}
+
+func (t TmsPayload) toQueryParams() string {
+	builder := queryParamsBuilder{}
+
+	return builder.
+		addIstep(t.Istep).
+		addFstep(t.Fstep).
+		addTimezone(t.Timezone).
 		build()
 }
 

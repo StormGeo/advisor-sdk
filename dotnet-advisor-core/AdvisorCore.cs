@@ -15,6 +15,7 @@ public class AdvisorCore
     public MonitoringRouter Monitoring { get; }
     public ObservedRouter Observed { get; }
     public PlanRouter Plan { get; }
+    public PmtilesRouter Pmtiles { get; }
     public SchemaRouter Schema { get; set; }
     public StaticMapRouter StaticMap { get; set; }
     public TmsRouter Tms { get; set; }
@@ -35,6 +36,7 @@ public class AdvisorCore
         Monitoring = new MonitoringRouter(_config);
         Observed = new ObservedRouter(_config);
         Plan = new PlanRouter(_config);
+        Pmtiles = new PmtilesRouter(_config);
         Schema = new SchemaRouter(_config);
         StaticMap = new StaticMapRouter(_config);
         Tms = new TmsRouter(_config);

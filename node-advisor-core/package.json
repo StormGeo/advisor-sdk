@@ -1,6 +1,6 @@
 {
   "name": "@stormgeo/advisor-core",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "author": "Climatempo",
   "license": "MIT",
   "description": "SDK to access the advisor core API.",
@@ -20,12 +20,13 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test:integration": "tsc -p tsconfig.test.json && node --test dist/tests/routes.integration.test.js"
   },
   "keywords": [],
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
-    "@types/node": "^22.19.15",
+    "@types/node": "^22.19.17",
     "typescript": "^5.7.2"
   },
   "dependencies": {

@@ -24,10 +24,23 @@ public class ObservedRouter(AdvisorCoreConfig config) : BaseRouter(config)
         return await base.GetAsync("/v1/observed/lightning" + payload.GetQueryParams());
     }
 
+    public async Task<AdvisorResponse<string>> GetLightningDetailsAsync(RadiusPayload payload)
+    {
+        return await base.GetAsync("/v1/observed/lightning/details" + payload.GetQueryParams());
+    }
+
     public async Task<AdvisorResponse<string>> GetLightningByGeometryAsync(GeometryPayload payload)
     {
         return await base.PostAsync(
             "/v1/observed/lightning" + payload.GetQueryParams(),
+            payload.GetBody()
+        );
+    }
+
+    public async Task<AdvisorResponse<string>> GetLightningLiteAsync(LightningLitePayload payload)
+    {
+        return await base.PostAsync(
+            "/v1/observed/lightning/lite" + payload.GetQueryParams(),
             payload.GetBody()
         );
     }
